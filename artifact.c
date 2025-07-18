@@ -45,6 +45,44 @@ char * stat2str[] = {
 	[CRIT_DAMAGE] = "CRIT DMG",
 };
 
+float const mainstat_values[][6] = {
+	[HP_FLAT] = {717, 1530, 2342, 3155, 3967, 4780},
+	[ATK_FLAT] = {47, 100, 152, 205, 258, 311},
+
+	[HP_PERCENT] = {7, 14.9, 22.8, 30.8, 38.7, 46.6},
+	[ATK_PERCENT] = {7, 14.9, 22.8, 30.8, 38.7, 46.6},
+
+	[DEF_PERCENT] = {8.7, 18.6, 28.6, 38.5, 48.4, 58.3},
+	[PHYSICAL_BONUS] = {8.7, 18.6, 28.6, 38.5, 48.4, 58.3},
+
+	[PYRO_BONUS] = {7, 14.9, 22.8, 30.8, 38.7, 46.6},
+	[ELECTRO_BONUS] = {7, 14.9, 22.8, 30.8, 38.7, 46.6},
+	[CRYO_BONUS] = {7, 14.9, 22.8, 30.8, 38.7, 46.6},
+	[HYDRO_BONUS] = {7, 14.9, 22.8, 30.8, 38.7, 46.6},
+	[DENDRO_BONUS] = {7, 14.9, 22.8, 30.8, 38.7, 46.6},
+	[ANEMO_BONUS] = {7, 14.9, 22.8, 30.8, 38.7, 46.6},
+	[GEO_BONUS] = {7, 14.9, 22.8, 30.8, 38.7, 46.6},
+
+	[ELEMENTAL_MASTERY] = {28, 67.6, 91.4, 123.1, 154.8, 186.5},
+	[ENERGY_RECHARGE] = {7.8, 16.6, 25.4, 34.2, 43, 51.8},
+	[CRIT_RATE] = {4.7, 9.9, 15.2, 20.5, 25.8, 31.1},
+	[CRIT_DAMAGE] = {9.3, 19.9, 30.5, 41, 51.6, 62.2},
+	[HEALING_BONUS] = {5.4, 11.5, 17.6, 23.7, 29.8, 35.9},
+};
+
+static float const substat_values[] = {
+	[HP_FLAT] = 298.75,
+	[ATK_FLAT] = 19.45,
+	[DEF_FLAT] = 23.15,
+	[HP_PERCENT] = 5.83,
+	[ATK_PERCENT] = 5.83,
+	[DEF_PERCENT] = 7.29,
+	[ENERGY_RECHARGE] = 6.48,
+	[ELEMENTAL_MASTERY] = 23.31,
+	[CRIT_RATE] = 3.89,
+	[CRIT_DAMAGE] = 7.77,
+};
+
 struct stat {
 	enum stattype type;
 	float value;
@@ -59,15 +97,14 @@ enum piecetype {
 };
 
 char * piece2str[] = {
-	[FLOWER] = "flower",
-	[FEATHER] = "feather",
-	[SANDS] = "sands",
-	[GOBLET] = "goblet",
-	[CIRCLET] = "circlet",
+	[FLOWER] = "Flower",
+	[FEATHER] = "Feather",
+	[SANDS] = "Sands",
+	[GOBLET] = "Goblet",
+	[CIRCLET] = "Circlet",
 };
 
 struct artifact {
-	int quality;
 	int level;
 	enum piecetype piece;
 	struct stat mainstat;
@@ -78,7 +115,7 @@ struct artifact {
 
 void printartifact(struct artifact in)
 {
-	printf("%s\n", piece2str[in.piece]);
+	printf("%s - %d\n", piece2str[in.piece], in.level);
 	printf("Main stat: %s - %g\n", stat2str[in.mainstat.type], in.mainstat.value);
 	for (int i = 0; i < in.num_substats; i++)
 		printf("\t%s - %g\n", stat2str[in.substat[i].type], in.substat[i].value);
@@ -101,6 +138,11 @@ int weighted_random_choice(struct choice_weight const * weights, size_t len, int
 	}
 
 	return -1;
+}
+
+void set_mainstat_value(struct artifact * in)
+{
+	in->mainstat.value = mainstat_values[in->mainstat.type][in->level / 4];
 }
 
 struct stat get_sands_mainstat(void)
@@ -168,22 +210,6 @@ struct stat get_circlet_mainstat(void)
 
 void addsubstat(struct artifact * in)
 {
-	/*
-	struct choice_weight weights[] = {
-		{HP_FLAT, 6},
-		{ATK_FLAT, 6},
-		{DEF_FLAT, 6},
-		{HP_PERCENT, 4},
-		{ATK_PERCENT, 4},
-		{DEF_PERCENT, 4},
-		{ENERGY_RECHARGE, 4},
-		{ELEMENTAL_MASTERY, 4},
-		{CRIT_RATE, 3},
-		{CRIT_DAMAGE, 3},
-	};
-	static size_t const len = sizeof(weights) / sizeof(weights[0]);
-	*/
-
 	int weights[] = {
 		[HP_FLAT] = 6,
 		[ATK_FLAT] = 6,
@@ -210,15 +236,35 @@ void addsubstat(struct artifact * in)
 	for (int i = 0; i <= CRIT_DAMAGE; i++) {
 		roll -= weights[i];
 		if (roll < 0) {
+			float rv = (rand() % 4) * 0.1 + 0.7;
 			in->substat[in->num_substats].type = i;
-			in->substat[in->num_substats].value = 1;
+			in->substat[in->num_substats].value = rv * substat_values[i];
 			in->num_substats += 1;
 			break;
 		}
 	}
 }
 
-struct artifact getarti_domain(void)
+void upgrade(struct artifact * in)
+{
+	if (in->level >= 20)
+		return;
+
+	in->level += 4;
+	set_mainstat_value(in);
+
+	if (in->num_substats < 4) {
+		addsubstat(in);
+		return;
+	}
+
+	int pick = rand() % 4;
+	float rv = (rand() % 4) * 0.1 + 0.7;
+	int type = in->substat[pick].type;
+	in->substat[pick].value += rv * substat_values[type];
+}
+
+struct artifact newartifact(void)
 {
 	struct artifact out = {0};
 
@@ -242,12 +288,21 @@ struct artifact getarti_domain(void)
 			out.mainstat = get_circlet_mainstat();
 			break;
 	}
-
-	addsubstat(&out);
-	addsubstat(&out);
-	addsubstat(&out);
-	addsubstat(&out);
+	set_mainstat_value(&out);
 
 	return out;
 }
 
+struct artifact getarti(int fourliner)
+{
+	struct artifact out = newartifact();
+
+	addsubstat(&out);
+	addsubstat(&out);
+	addsubstat(&out);
+
+	if (fourliner)
+		addsubstat(&out);
+
+	return out;
+}
