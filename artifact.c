@@ -282,6 +282,19 @@ Artifact artifact_new_strongbox(void)
 	return artifact_new(rand() % 3 == 0, 1, rand() % 5);
 }
 
+Artifact artifact_upgrade_newline(Artifact in, StatType type, float rv)
+{
+	in.level += 4;
+	in.mainstat.value = mainstat_values[in.mainstat.type][in.level / 4];
+
+	int line = in.num_substats;
+	in.substat[line].type = type;
+	in.substat[line].value = rv * substat_values[type];
+	in.num_substats += 1;
+
+	return in;
+}
+
 Artifact artifact_upgrade_line(Artifact in, int line, float rv)
 {
 	in.level += 4;
