@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-enum stattype {
+typedef enum stattype {
 	HP_FLAT,
 	HP_PERCENT,
 	ATK_FLAT,
@@ -21,9 +21,37 @@ enum stattype {
 	HEALING_BONUS,
 	CRIT_RATE,
 	CRIT_DAMAGE,
-};
+} StatType;
 
-char * stat2str[] = {
+typedef enum piecetype {
+	FLOWER,
+	FEATHER,
+	SANDS,
+	GOBLET,
+	CIRCLET,
+} PieceType;
+
+typedef enum artifactset {
+	OFFSET,
+	ONSET,
+} ArtifactSet;
+
+typedef struct affix {
+	float value;
+	StatType type;
+} Affix;
+
+typedef struct artifact {
+	int level;
+	ArtifactSet set;
+	PieceType piece;
+	Affix mainstat;
+
+	size_t num_substats;
+	Affix substat[4];
+} Artifact;
+
+char const * const stat2str[] = {
 	[HP_FLAT] = "HP",
 	[HP_PERCENT] = "HP%",
 	[ATK_FLAT] = "ATK",
@@ -43,6 +71,19 @@ char * stat2str[] = {
 	[HEALING_BONUS] = "Healing Bonus",
 	[CRIT_RATE] = "CRIT Rate",
 	[CRIT_DAMAGE] = "CRIT DMG",
+};
+
+char const * const piece2str[] = {
+	[FLOWER] = "Flower",
+	[FEATHER] = "Feather",
+	[SANDS] = "Sands",
+	[GOBLET] = "Goblet",
+	[CIRCLET] = "Circlet",
+};
+
+char const * const set2str[] = {
+	[OFFSET] = "offset",
+	[ONSET] = "onset",
 };
 
 float const mainstat_values[][6] = {
@@ -70,7 +111,7 @@ float const mainstat_values[][6] = {
 	[HEALING_BONUS] = {5.4, 11.5, 17.6, 23.7, 29.8, 35.9},
 };
 
-static float const substat_values[] = {
+float const substat_values[] = {
 	[HP_FLAT] = 298.75,
 	[ATK_FLAT] = 19.45,
 	[DEF_FLAT] = 23.15,
@@ -83,134 +124,21 @@ static float const substat_values[] = {
 	[CRIT_DAMAGE] = 7.77,
 };
 
-struct stat {
-	enum stattype type;
-	float value;
-};
-
-enum piecetype {
-	FLOWER,
-	FEATHER,
-	SANDS,
-	GOBLET,
-	CIRCLET,
-};
-
-char * piece2str[] = {
-	[FLOWER] = "Flower",
-	[FEATHER] = "Feather",
-	[SANDS] = "Sands",
-	[GOBLET] = "Goblet",
-	[CIRCLET] = "Circlet",
-};
-
-struct artifact {
-	int level;
-	enum piecetype piece;
-	struct stat mainstat;
-
-	size_t num_substats;
-	struct stat substat[4];
-};
-
-void printartifact(struct artifact in)
+void artifact_print(Artifact in)
 {
-	printf("%s - %d\n", piece2str[in.piece], in.level);
-	printf("Main stat: %s - %g\n", stat2str[in.mainstat.type], in.mainstat.value);
-	for (int i = 0; i < in.num_substats; i++)
-		printf("\t%s - %g\n", stat2str[in.substat[i].type], in.substat[i].value);
-}
+	static int const percent_bitmask = 0x7ffaa;
+	static char const * const pct[] = {"", "%"};
 
-struct choice_weight {
-	int choice;
-	int weight;
-};
-
-int weighted_random_choice(struct choice_weight const * weights, size_t len, int max)
-{
-	int roll = 1 + rand() % max;
-	int accumulator = 0;
-
-	for (int i = 0; i < len; i++) {
-		accumulator += weights[i].weight;
-		if (roll <= accumulator)
-			return weights[i].choice;
+	printf("%s - %s +%d\n", set2str[in.set], piece2str[in.piece], in.level);
+	printf("%-23s%8g%s\n", stat2str[in.mainstat.type], in.mainstat.value, pct[percent_bitmask >> in.mainstat.type & 1]);
+	for (int i = 0; i < in.num_substats; i++) {
+		printf(" - %-20s%8g%s\n", stat2str[in.substat[i].type], in.substat[i].value, pct[percent_bitmask >> in.substat[i].type & 1]);
 	}
-
-	return -1;
 }
 
-void set_mainstat_value(struct artifact * in)
+Artifact _artifact_addsubstat(Artifact in)
 {
-	in->mainstat.value = mainstat_values[in->mainstat.type][in->level / 4];
-}
-
-struct stat get_sands_mainstat(void)
-{
-	static struct choice_weight const weights[] = {
-		{HP_PERCENT, 8},
-		{ATK_PERCENT, 8},
-		{DEF_PERCENT, 8},
-		{ENERGY_RECHARGE, 3},
-		{ELEMENTAL_MASTERY, 3},
-	};
-	static int const max = 30;
-	static size_t const len = sizeof(weights) / sizeof(weights[0]);
-
-	struct stat out = {0};
-	out.type = weighted_random_choice(weights, len, max);
-
-	return out;
-}
-
-struct stat get_goblet_mainstat(void)
-{
-	static struct choice_weight const weights[] = {
-		{HP_PERCENT, 77},
-		{ATK_PERCENT, 77},
-		{DEF_PERCENT, 76},
-		{PYRO_BONUS, 20},
-		{ELECTRO_BONUS, 20},
-		{CRYO_BONUS, 20},
-		{HYDRO_BONUS, 20},
-		{DENDRO_BONUS, 20},
-		{ANEMO_BONUS, 20},
-		{GEO_BONUS, 20},
-		{PHYSICAL_BONUS, 20},
-		{ELEMENTAL_MASTERY, 10},
-	};
-	static int const max = 400;
-	static size_t const len = sizeof(weights) / sizeof(weights[0]);
-
-	struct stat out = {0};
-	out.type = weighted_random_choice(weights, len, max);
-
-	return out;
-}
-
-struct stat get_circlet_mainstat(void)
-{
-	static struct choice_weight const weights[] = {
-		{HP_PERCENT, 11},
-		{ATK_PERCENT, 11},
-		{DEF_PERCENT, 11},
-		{CRIT_RATE, 5},
-		{CRIT_DAMAGE, 5},
-		{HEALING_BONUS, 5},
-		{ELEMENTAL_MASTERY, 2},
-	};
-	static int const max = 50;
-	static size_t const len = sizeof(weights) / sizeof(weights[0]);
-
-	struct stat out = {0};
-	out.type = weighted_random_choice(weights, len, max);
-
-	return out;
-}
-
-void addsubstat(struct artifact * in)
-{
-	int weights[] = {
+	int substat_weights[] = {
 		[HP_FLAT] = 6,
 		[ATK_FLAT] = 6,
 		[DEF_FLAT] = 6,
@@ -224,85 +152,163 @@ void addsubstat(struct artifact * in)
 	};
 	int max = 44;
 
-	max -= weights[in->mainstat.type];
-	weights[in->mainstat.type] = 0;
-	for (int i = 0; i < in->num_substats; i++) {
-		max -= weights[in->substat[i].type];
-		weights[in->substat[i].type] = 0;
+	max -= substat_weights[in.mainstat.type];
+	substat_weights[in.mainstat.type] = 0;
+	for (int i = 0; i < in.num_substats; i++) {
+		max -= substat_weights[in.substat[i].type];
+		substat_weights[in.substat[i].type] = 0;
 	}
 
-	int roll = rand() % max;
+	int roll = 1 + rand() % max;
+	int accumulator = 0;
+	float rv = (rand() % 4) * 0.1 + 0.7;
 
 	for (int i = 0; i <= CRIT_DAMAGE; i++) {
-		roll -= weights[i];
-		if (roll < 0) {
-			float rv = (rand() % 4) * 0.1 + 0.7;
-			in->substat[in->num_substats].type = i;
-			in->substat[in->num_substats].value = rv * substat_values[i];
-			in->num_substats += 1;
+		accumulator += substat_weights[i];
+		if (roll <= accumulator) {
+			in.substat[in.num_substats].type = i;
+			in.substat[in.num_substats].value = rv * substat_values[i];
+			in.num_substats += 1;
 			break;
 		}
 	}
+
+	return in;
 }
 
-void upgrade(struct artifact * in)
+Artifact artifact_new(bool has4substats, ArtifactSet set, PieceType piece)
 {
-	if (in->level >= 20)
-		return;
+	Artifact out = {0};
+	
+	// determine which set the arti will be on
+	out.set = set;
 
-	in->level += 4;
-	set_mainstat_value(in);
+	// determine which piece the arti will be
+	out.piece = piece;
 
-	if (in->num_substats < 4) {
-		addsubstat(in);
-		return;
+	// determine which mainstat the artifact will have
+	typedef struct choice {
+		int choice;
+		int weight;
+	} Choice;
+
+	static Choice const flower_weights[] = {
+		{HP_FLAT, 1},
+	};
+
+	static Choice const feather_weights[] = {
+		{ATK_FLAT, 1},
+	};
+
+	static Choice const sands_weights[] = {
+		{HP_PERCENT, 8},
+		{ATK_PERCENT, 8},
+		{DEF_PERCENT, 8},
+		{ENERGY_RECHARGE, 3},
+		{ELEMENTAL_MASTERY, 3},
+	};
+
+	static Choice const goblet_weights[] = {
+		{HP_PERCENT, 77},
+		{ATK_PERCENT, 77},
+		{DEF_PERCENT, 76},
+		{PYRO_BONUS, 20},
+		{ELECTRO_BONUS, 20},
+		{CRYO_BONUS, 20},
+		{HYDRO_BONUS, 20},
+		{DENDRO_BONUS, 20},
+		{ANEMO_BONUS, 20},
+		{GEO_BONUS, 20},
+		{PHYSICAL_BONUS, 20},
+		{ELEMENTAL_MASTERY, 10},
+	};
+	
+	static Choice const circlet_weights[] = {
+		{HP_PERCENT, 11},
+		{ATK_PERCENT, 11},
+		{DEF_PERCENT, 11},
+		{CRIT_RATE, 5},
+		{CRIT_DAMAGE, 5},
+		{HEALING_BONUS, 5},
+		{ELEMENTAL_MASTERY, 2},
+	};
+
+	static Choice const * const weights[] = {
+		flower_weights,
+		feather_weights,
+		sands_weights,
+		goblet_weights,
+		circlet_weights,
+	};
+	static int const max[] = {1, 1, 30, 400, 50};
+	static size_t const len[] = {
+		sizeof(flower_weights) / sizeof(flower_weights[0]),
+		sizeof(feather_weights) / sizeof(feather_weights[0]),
+		sizeof(sands_weights) / sizeof(sands_weights[0]),
+		sizeof(goblet_weights) / sizeof(goblet_weights[0]),
+		sizeof(circlet_weights) / sizeof(circlet_weights[0]),
+	};
+
+	int mainstat_roll = 1 + rand() % max[piece];
+	int accumulator = 0;
+
+	for (int i = 0; i < len[piece]; i++) {
+		accumulator += weights[piece][i].weight;
+		if (mainstat_roll <= accumulator) {
+			out.mainstat.type = weights[piece][i].choice;
+			break;
+		}
 	}
 
-	int pick = rand() % 4;
+	out.mainstat.value = mainstat_values[out.mainstat.type][0];
+
+	// determine what substats the artifact will have
+	out = _artifact_addsubstat(out);
+	out = _artifact_addsubstat(out);
+	out = _artifact_addsubstat(out);
+	if (has4substats)
+		out = _artifact_addsubstat(out);
+
+	return out;
+}
+
+Artifact artifact_new_domain(void)
+{
+	return artifact_new(rand() % 5 == 0, rand() % 2, rand() % 5);
+}
+
+Artifact artifact_new_strongbox(void)
+{
+	return artifact_new(rand() % 3 == 0, 1, rand() % 5);
+}
+
+Artifact artifact_upgrade_line(Artifact in, int line, float rv)
+{
+	in.level += 4;
+	in.mainstat.value = mainstat_values[in.mainstat.type][in.level / 4];
+
+	StatType type = in.substat[line].type;
+	in.substat[line].value += rv * substat_values[type];
+
+	return in;
+}
+
+Artifact artifact_upgrade(Artifact in)
+{
+	if (in.level >= 20)
+		return in;
+
+	in.level += 4;
+	in.mainstat.value = mainstat_values[in.mainstat.type][in.level / 4];
+
+	if (in.num_substats < 4)
+		return _artifact_addsubstat(in);
+
+	int line = rand() % 4;
 	float rv = (rand() % 4) * 0.1 + 0.7;
-	int type = in->substat[pick].type;
-	in->substat[pick].value += rv * substat_values[type];
+	StatType type = in.substat[line].type;
+	in.substat[line].value += rv * substat_values[type];
+
+	return in;
 }
 
-struct artifact newartifact(void)
-{
-	struct artifact out = {0};
-
-	// choose a random piece
-	out.piece = rand() % 5;
-
-	switch (out.piece) {
-		case FLOWER:
-			out.mainstat.type = HP_FLAT;
-			break;
-		case FEATHER:
-			out.mainstat.type = ATK_FLAT;
-			break;
-		case SANDS:
-			out.mainstat = get_sands_mainstat();
-			break;
-		case GOBLET:
-			out.mainstat = get_goblet_mainstat();
-			break;
-		case CIRCLET:
-			out.mainstat = get_circlet_mainstat();
-			break;
-	}
-	set_mainstat_value(&out);
-
-	return out;
-}
-
-struct artifact getarti(int fourliner)
-{
-	struct artifact out = newartifact();
-
-	addsubstat(&out);
-	addsubstat(&out);
-	addsubstat(&out);
-
-	if (fourliner)
-		addsubstat(&out);
-
-	return out;
-}
