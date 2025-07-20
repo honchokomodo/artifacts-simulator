@@ -81,9 +81,9 @@ AggregateStats character_aggregate_stats(Character in)
 	accumulators[CRIT_DAMAGE] += in.crit_damage;
 
 	AggregateStats out = {
-		.hp = in.hp * accumulators[HP_PERCENT] / 100 + accumulators[HP_FLAT],
-		.atk = in.atk * accumulators[ATK_PERCENT] / 100 + accumulators[ATK_FLAT],
-		.def = in.def * accumulators[DEF_PERCENT] / 100 + accumulators[DEF_FLAT],
+		.hp = in.hp * (1 + accumulators[HP_PERCENT] / 100) + accumulators[HP_FLAT],
+		.atk = in.atk * (1 + accumulators[ATK_PERCENT] / 100) + accumulators[ATK_FLAT],
+		.def = in.def * (1 + accumulators[DEF_PERCENT] / 100) + accumulators[DEF_FLAT],
 		.elemental_mastery = in.elemental_mastery + accumulators[ELEMENTAL_MASTERY],
 		.crit = 1 + (accumulators[CRIT_RATE] * accumulators[CRIT_DAMAGE] / 10000),
 		.crit_rate = in.crit_rate + accumulators[CRIT_RATE],
