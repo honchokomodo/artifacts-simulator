@@ -36,7 +36,7 @@ typedef struct character {
 	float physical_bonus;
 	// physical res
 	
-	Artifact artifacts[5];
+	Artifact artifacts[CIRCLET + 1];
 } Character;
 
 typedef struct aggregate_stats {
@@ -136,7 +136,7 @@ void character_print(Character in)
 	if (aggregate.physical_bonus != 0)
 		printf("Physical DMG Bonus - %g%%\n", aggregate.physical_bonus);
 
-	for (int i = 0; i < 5; i++) {
+	for (int i = FLOWER; i <= CIRCLET; i++) {
 		printf("\n");
 		artifact_print(in.artifacts[i]);
 	}

@@ -20,7 +20,7 @@ int main(void)
 
 	// if rand() % 5 rolls 0, then the arti will have 4 substats
 	// same chance as in domains
-	newarti = artifact_new(rand() % 5 == 0, ONSET, FLOWER);
+	newarti = ARTIFACT_NEW(rand() % 5 == 0, .set = ONSET, .piece = FLOWER);
 	// upgrade the artifact 5 times up to lv 20
 	for (int i = 0; i < 5; i++)
 		newarti = artifact_upgrade(newarti);
@@ -28,22 +28,22 @@ int main(void)
 	skirk_with_eshu.artifacts[FLOWER] = newarti;
 
 	// repeat for each other arti slot
-	newarti = artifact_new(rand() % 5 == 0, ONSET, FEATHER);
+	newarti = ARTIFACT_NEW(rand() % 5 == 0, .set = ONSET, .piece = FEATHER);
 	for (int i = 0; i < 5; i++)
 		newarti = artifact_upgrade(newarti);
 	skirk_with_eshu.artifacts[FEATHER] = newarti;
 
-	newarti = artifact_new(rand() % 5 == 0, ONSET, SANDS);
+	newarti = ARTIFACT_NEW(rand() % 5 == 0, .set = ONSET, .piece = SANDS, .mainstat.type = ATK_PERCENT);
 	for (int i = 0; i < 5; i++)
 		newarti = artifact_upgrade(newarti);
 	skirk_with_eshu.artifacts[SANDS] = newarti;
 	
-	newarti = artifact_new(rand() % 5 == 0, ONSET, GOBLET);
+	newarti = ARTIFACT_NEW(rand() % 5 == 0, .set = ONSET, .piece = GOBLET, .mainstat.type = CRYO_BONUS);
 	for (int i = 0; i < 5; i++)
 		newarti = artifact_upgrade(newarti);
 	skirk_with_eshu.artifacts[GOBLET] = newarti;
 
-	newarti = artifact_new(rand() % 5 == 0, ONSET, CIRCLET);
+	newarti = ARTIFACT_NEW(rand() % 5 == 0, .set = ONSET, .piece = CIRCLET, .mainstat.type = CRIT_DAMAGE);
 	for (int i = 0; i < 5; i++)
 		newarti = artifact_upgrade(newarti);
 	skirk_with_eshu.artifacts[CIRCLET] = newarti;

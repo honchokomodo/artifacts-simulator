@@ -2,6 +2,7 @@
 #define COMMON_H
 
 typedef enum stattype {
+	STAT_NOTHING,
 	HP_FLAT,
 	HP_PERCENT,
 	ATK_FLAT,
@@ -22,5 +23,28 @@ typedef enum stattype {
 	CRIT_RATE,
 	CRIT_DAMAGE,
 } StatType;
+
+char const * const stat2str[] = {
+	[STAT_NOTHING] = "nil stat",
+	[HP_FLAT] = "HP",
+	[HP_PERCENT] = "HP%",
+	[ATK_FLAT] = "ATK",
+	[ATK_PERCENT] = "ATK%",
+	[DEF_FLAT] = "DEF",
+	[DEF_PERCENT] = "DEF%",
+	[ELEMENTAL_MASTERY] = "Elemental Mastery",
+	[ENERGY_RECHARGE] = "Energy Recharge",
+	[PYRO_BONUS] = "Pyro DMG Bonus",
+	[ELECTRO_BONUS] = "Electro DMG Bonus",
+	[CRYO_BONUS] = "Cryo DMG Bonus",
+	[HYDRO_BONUS] = "Hydro DMG Bonus",
+	[DENDRO_BONUS] = "Dendro DMG Bonus",
+	[ANEMO_BONUS] = "Anemo DMG Bonus",
+	[GEO_BONUS] = "Geo DMG Bonus",
+	[PHYSICAL_BONUS] = "Physical DMG Bonus",
+	[HEALING_BONUS] = "Healing Bonus",
+	[CRIT_RATE] = "CRIT Rate",
+	[CRIT_DAMAGE] = "CRIT DMG",
+};
 
 #endif
