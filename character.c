@@ -113,7 +113,7 @@ void character_print(Character in)
 	printf("ATK - %g\n", aggregate.atk);
 	printf("DEF - %g\n", aggregate.def);
 	if (aggregate.elemental_mastery != 0)
-		printf("Elemental Mastery - %g%%\n", aggregate.elemental_mastery);
+		printf("Elemental Mastery - %g\n", aggregate.elemental_mastery);
 	printf("Crit RATE - %g%%\n", aggregate.crit_rate);
 	printf("Crit DMG - %g%%\n", aggregate.crit_damage);
 	if (aggregate.healing_bonus != 0)
