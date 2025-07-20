@@ -38,6 +38,7 @@ typedef struct artifact {
 
 	size_t num_substats;
 	Affix substat[MAX_SUBSTATS];
+	int num_upgrades[MAX_SUBSTATS];
 } Artifact;
 
 char const * const piece2str[] = {
@@ -101,7 +102,7 @@ void artifact_print(Artifact in)
 	printf("%s - %s +%d\n", set2str[in.set], piece2str[in.piece], in.level);
 	printf("%-23s%8g%s\n", stat2str[in.mainstat.type], in.mainstat.value, pct[percent_bitmask >> in.mainstat.type & 1]);
 	for (int i = 0; i < in.num_substats; i++) {
-		printf(" - %-20s%8g%s\n", stat2str[in.substat[i].type], in.substat[i].value, pct[percent_bitmask >> in.substat[i].type & 1]);
+		printf(" %d %-20s%8g%s\n", in.num_upgrades[i], stat2str[in.substat[i].type], in.substat[i].value, pct[percent_bitmask >> in.substat[i].type & 1]);
 	}
 }
 
@@ -165,6 +166,7 @@ Artifact artifact_upgrade_line(Artifact in, int line, float rv)
 
 	StatType type = in.substat[line].type;
 	in.substat[line].value += rv * substat_values[type];
+	in.num_upgrades[line] += 1;
 
 	return in;
 }
@@ -184,6 +186,7 @@ Artifact artifact_upgrade(Artifact in)
 	float rv = (rand() % 4) * 0.1 + 0.7;
 	StatType type = in.substat[line].type;
 	in.substat[line].value += rv * substat_values[type];
+	in.num_upgrades[line] += 1;
 
 	return in;
 }
@@ -292,6 +295,7 @@ Artifact _artifact_new(bool has4substats, Artifact in)
 		in = _artifact_addsubstat(in);
 
 	int num_upgrades = in.level / 4;
+	in.level = 0;
 	for (int i = 0; i < num_upgrades; i++)
 		in = artifact_upgrade(in);
 
@@ -300,21 +304,13 @@ Artifact _artifact_new(bool has4substats, Artifact in)
 
 Artifact artifact_new_domain(void)
 {
-	Artifact arti = {
-		.set = 1 + rand() % 2,
-		.piece = 1 + rand() % 5,
-	};
-
+	Artifact arti = {.set = 1 + rand() % 2};
 	return _artifact_new(rand() % 5 == 0, arti);
 }
 
 Artifact artifact_new_strongbox(void)
 {
-	Artifact arti = {
-		.set = ONSET,
-		.piece = 1 + rand() % 5,
-	};
-
+	Artifact arti = {.set = ONSET};
 	return _artifact_new(rand() % 3 == 0, arti);
 }
 
