@@ -1,27 +1,10 @@
+#ifndef ARTIFACT_C
+#define ARTIFACT_C
+
 #include <stdlib.h>
 #include <stdio.h>
 
-typedef enum stattype {
-	HP_FLAT,
-	HP_PERCENT,
-	ATK_FLAT,
-	ATK_PERCENT,
-	DEF_FLAT,
-	DEF_PERCENT,
-	ELEMENTAL_MASTERY,
-	ENERGY_RECHARGE,
-	PYRO_BONUS,
-	ELECTRO_BONUS,
-	CRYO_BONUS,
-	HYDRO_BONUS,
-	DENDRO_BONUS,
-	ANEMO_BONUS,
-	GEO_BONUS,
-	PHYSICAL_BONUS,
-	HEALING_BONUS,
-	CRIT_RATE,
-	CRIT_DAMAGE,
-} StatType;
+#include "common.h"
 
 typedef enum piecetype {
 	FLOWER,
@@ -325,3 +308,4 @@ Artifact artifact_upgrade(Artifact in)
 	return in;
 }
 
+#endif
