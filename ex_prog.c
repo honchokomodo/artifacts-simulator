@@ -14,7 +14,7 @@ float rating(Character in)
 		in.crit_rate += 15;
 
 	AggregateStats aggregate = character_aggregate_stats(in);
-	float score = aggregate.atk * aggregate.crit * aggregate.cryo_bonus;
+	float score = aggregate.atk * aggregate.crit * (1 + aggregate.cryo_bonus / 100);
 
 	if (numOnset >= 4)
 		score *= 1.6;
@@ -37,7 +37,7 @@ int main(void)
 		.energy_recharge = 100.0,
 	};
 
-	for (int i = 0; i < 9 * 7 * 20; i++) {
+	for (int i = 0; i < 100; i++) {
 		Character newbuild = skirk_with_eshu;
 
 		Artifact newarti = artifact_new_domain();
