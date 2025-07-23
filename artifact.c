@@ -26,8 +26,8 @@ typedef enum artifactset {
 } ArtifactSet;
 
 typedef struct affix {
-	float value;
 	StatType type;
+	float value;
 } Affix;
 
 typedef struct artifact {
@@ -96,7 +96,7 @@ float const substat_values[] = {
 
 void artifact_print(Artifact in)
 {
-	static int const percent_bitmask = 0x7ffaa << 1;
+	static int const percent_bitmask = 0xfff54;
 	static char const * const pct[] = {"", "%"};
 
 	printf("%s - %s +%d\n", set2str[in.set], piece2str[in.piece], in.level);

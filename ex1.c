@@ -1,5 +1,7 @@
-#include "character.c"
+#include <stdlib.h>
 #include <time.h>
+
+#include "character.c"
 
 int main(void)
 {
@@ -36,6 +38,58 @@ int main(void)
 
 	newarti = ARTIFACT_NEW(rand() % 5 == 0, .level = 20, .set = ONSET, .piece = CIRCLET, .mainstat.type = CRIT_DAMAGE);
 	skirk_with_eshu.artifacts[CIRCLET] = newarti;
+
+	/*
+	skirk_with_eshu.artifacts[FLOWER] = (Artifact) {
+		.level = 4, .set = ONSET, .piece = FLOWER,
+		.num_substats = 4,
+		.mainstat = {HP_FLAT, 1530},
+		.substat[0] = {CRIT_RATE, 3.9},
+		.substat[1] = {ELEMENTAL_MASTERY, 23},
+		.substat[2] = {ATK_PERCENT, 4.1},
+		.substat[3] = {DEF_FLAT, 21},
+	};
+
+	skirk_with_eshu.artifacts[FEATHER] = (Artifact) {
+		.level = 4, .set = ONSET, .piece = FEATHER,
+		.num_substats = 4,
+		.mainstat = {ATK_FLAT, 100},
+		.substat[0] = {CRIT_RATE, 3.9},
+		.substat[1] = {HP_FLAT, 239},
+		.substat[2] = {HP_PERCENT, 4.7},
+		.substat[3] = {DEF_FLAT, 16},
+	};
+
+	skirk_with_eshu.artifacts[SANDS] = (Artifact) {
+		.level = 20, .set = OFFSET, .piece = SANDS,
+		.num_substats = 4,
+		.mainstat = {ATK_PERCENT, 46.6},
+		.substat[0] = {CRIT_DAMAGE, 20.2},
+		.substat[1] = {HP_PERCENT, 19.2},
+		.substat[2] = {ELEMENTAL_MASTERY, 23},
+		.substat[3] = {DEF_PERCENT, 5.1},
+	};
+
+	skirk_with_eshu.artifacts[GOBLET] = (Artifact) {
+		.level = 4, .set = ONSET, .piece = GOBLET,
+		.num_substats = 4,
+		.mainstat = {CRYO_BONUS, 14.9},
+		.substat[0] = {ELEMENTAL_MASTERY, 16},
+		.substat[1] = {HP_PERCENT, 4.1},
+		.substat[2] = {ENERGY_RECHARGE, 5.2},
+		.substat[3] = {ATK_FLAT, 19},
+	};
+
+	skirk_with_eshu.artifacts[CIRCLET] = (Artifact) {
+		.level = 4, .set = ONSET, .piece = CIRCLET,
+		.num_substats = 4,
+		.mainstat = {CRIT_RATE, 9.9},
+		.substat[0] = {ELEMENTAL_MASTERY, 21},
+		.substat[1] = {ATK_FLAT, 18},
+		.substat[2] = {HP_PERCENT, 4.1},
+		.substat[3] = {DEF_FLAT, 23},
+	};
+	*/
 
 	character_print(skirk_with_eshu);
 

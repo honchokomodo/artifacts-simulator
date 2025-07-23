@@ -1,3 +1,6 @@
+#ifndef CHARACTER_C
+#define CHARACTER_C
+
 #include "artifact.c"
 
 typedef struct character {
@@ -64,7 +67,7 @@ AggregateStats character_aggregate_stats(Character in)
 {
 	float accumulators[CRIT_DAMAGE + 1] = {0};
 
-	for (int i = 0; i < 5; i++) {
+	for (int i = FLOWER; i <= CIRCLET; i++) {
 		Artifact arti = in.artifacts[i];
 		Affix mainstat = arti.mainstat;
 		accumulators[mainstat.type] += mainstat.value;
@@ -80,12 +83,17 @@ AggregateStats character_aggregate_stats(Character in)
 	accumulators[CRIT_RATE] += in.crit_rate;
 	accumulators[CRIT_DAMAGE] += in.crit_damage;
 
+	float critrate = accumulators[CRIT_RATE] / 100;
+	float critdmg = accumulators[CRIT_DAMAGE] / 100;
+
+	if (critrate > 1) critrate = 1;
+
 	AggregateStats out = {
 		.hp = in.hp * (1 + accumulators[HP_PERCENT] / 100) + accumulators[HP_FLAT],
 		.atk = in.atk * (1 + accumulators[ATK_PERCENT] / 100) + accumulators[ATK_FLAT],
 		.def = in.def * (1 + accumulators[DEF_PERCENT] / 100) + accumulators[DEF_FLAT],
 		.elemental_mastery = in.elemental_mastery + accumulators[ELEMENTAL_MASTERY],
-		.crit = 1 + (accumulators[CRIT_RATE] * accumulators[CRIT_DAMAGE] / 10000),
+		.crit = 1 + (critrate * critdmg),
 		.crit_rate = accumulators[CRIT_RATE],
 		.crit_damage = accumulators[CRIT_DAMAGE],
 		.healing_bonus = in.healing_bonus + accumulators[HEALING_BONUS],
@@ -141,3 +149,5 @@ void character_print(Character in)
 		artifact_print(in.artifacts[i]);
 	}
 }
+
+#endif
