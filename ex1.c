@@ -13,7 +13,7 @@ int main(void)
 		.atk = 924,
 		.atk_percent = 27.6,
 		.def = 806,
-		.crit_rate = 5.0 + 16,
+		.crit_rate = 5.0,
 		.crit_damage = 88.4,
 		.energy_recharge = 100.0,
 	};

@@ -57,6 +57,8 @@ char const * const set2str[] = {
 };
 
 float const mainstat_values[][6] = {
+	// values obtained from wiki.
+	// table has entries for levels 0, 4, 8, 12, 16, 20.
 	[HP_FLAT] = {717, 1530, 2342, 3155, 3967, 4780},
 	[ATK_FLAT] = {47, 100, 152, 205, 258, 311},
 
@@ -82,6 +84,8 @@ float const mainstat_values[][6] = {
 };
 
 float const substat_values[] = {
+	// values obtained from wiki.
+	// table has entries for max roll only.
 	[HP_FLAT] = 298.75,
 	[ATK_FLAT] = 19.45,
 	[DEF_FLAT] = 23.15,
@@ -93,6 +97,16 @@ float const substat_values[] = {
 	[CRIT_RATE] = 3.89,
 	[CRIT_DAMAGE] = 7.77,
 };
+
+void artifact_print(Artifact in);
+Artifact artifact_upgrade_newline(Artifact in, StatType type, float rv);
+Artifact artifact_upgrade_line(Artifact in, int line, float rv);
+Artifact artifact_upgrade(Artifact in);
+
+#define ARTIFACT_NEW(has4substats, ...) artifact_new(has4substats, (Artifact) {__VA_ARGS__})
+Artifact artifact_new(bool has4substats, Artifact in);
+Artifact artifact_new_domain(void);
+Artifact artifact_new_strongbox(void);
 
 void artifact_print(Artifact in)
 {
@@ -109,6 +123,7 @@ void artifact_print(Artifact in)
 Artifact _artifact_addsubstat(Artifact in)
 {
 	int substat_weights[] = {
+		// values obtained from wiki.
 		[HP_FLAT] = 6,
 		[ATK_FLAT] = 6,
 		[DEF_FLAT] = 6,
@@ -122,6 +137,7 @@ Artifact _artifact_addsubstat(Artifact in)
 	};
 	int max = 44;
 
+	// new substats may not match whatever stats are already present.
 	max -= substat_weights[in.mainstat.type];
 	substat_weights[in.mainstat.type] = 0;
 	for (int i = 0; i < in.num_substats; i++) {
@@ -191,7 +207,90 @@ Artifact artifact_upgrade(Artifact in)
 	return in;
 }
 
-#define ARTIFACT_NEW(has4substats, ...) _artifact_new(has4substats, (Artifact) {__VA_ARGS__})
+StatType _artifact_getmainstat(PieceType piece)
+{
+	typedef struct choice {
+		StatType choice;
+		int weight;
+	} Choice;
+
+	static int const max = 10000;
+
+	static Choice const flower_weights[] = {
+		// only 1 possible choice.
+		{HP_FLAT, max},
+	};
+
+	static Choice const feather_weights[] = {
+		// only 1 possible choice.
+		{ATK_FLAT, max},
+	};
+
+	static Choice const sands_weights[] = {
+		// weights obtained from wiki.
+		{HP_PERCENT, 2668},
+		{ATK_PERCENT, 2666},
+		{DEF_PERCENT, 2666},
+		{ENERGY_RECHARGE, 1000},
+		{ELEMENTAL_MASTERY, 1000},
+	};
+
+	static Choice const goblet_weights[] = {
+		// weights obtained from wiki.
+		{HP_PERCENT, 1925},
+		{ATK_PERCENT, 1925},
+		{DEF_PERCENT, 1900},
+		{PYRO_BONUS, 500},
+		{ELECTRO_BONUS, 500},
+		{CRYO_BONUS, 500},
+		{HYDRO_BONUS, 500},
+		{DENDRO_BONUS, 500},
+		{ANEMO_BONUS, 500},
+		{GEO_BONUS, 500},
+		{PHYSICAL_BONUS, 500},
+		{ELEMENTAL_MASTERY, 250},
+	};
+
+	static Choice const circlet_weights[] = {
+		// weights obtained from wiki.
+		{HP_PERCENT, 2200},
+		{ATK_PERCENT, 2200},
+		{DEF_PERCENT, 2200},
+		{CRIT_RATE, 1000},
+		{CRIT_DAMAGE, 1000},
+		{HEALING_BONUS, 1000},
+		{ELEMENTAL_MASTERY, 400},
+	};
+
+	static Choice const * const weights[] = {
+		[FLOWER] = flower_weights,
+		[FEATHER] = feather_weights,
+		[SANDS] = sands_weights,
+		[GOBLET] = goblet_weights,
+		[CIRCLET] = circlet_weights,
+	};
+
+	static size_t const len[] = {
+		[FLOWER] = sizeof(flower_weights) / sizeof(flower_weights[0]),
+		[FEATHER] = sizeof(feather_weights) / sizeof(feather_weights[0]),
+		[SANDS] = sizeof(sands_weights) / sizeof(sands_weights[0]),
+		[GOBLET] = sizeof(goblet_weights) / sizeof(goblet_weights[0]),
+		[CIRCLET] = sizeof(circlet_weights) / sizeof(circlet_weights[0]),
+	};
+
+	int mainstat_roll = 1 + rand() % max;
+	int accumulator = 0;
+
+	for (int i = 0; i < len[piece]; i++) {
+		accumulator += weights[piece][i].weight;
+		if (mainstat_roll <= accumulator) {
+			return weights[piece][i].choice;
+		}
+	}
+
+	return STAT_NOTHING;
+}
+
 Artifact _artifact_new(bool has4substats, Artifact in)
 {
 	// ignore artifact set. assume it is properly initialized
@@ -201,87 +300,8 @@ Artifact _artifact_new(bool has4substats, Artifact in)
 		in.piece = 1 + rand() % 5;
 
 	// determine which mainstat the artifact will have
-	if (in.mainstat.type == STAT_NOTHING) {
-		typedef struct choice {
-			int choice;
-			int weight;
-		} Choice;
-
-		static Choice const flower_weights[] = {
-			{HP_FLAT, 1},
-		};
-
-		static Choice const feather_weights[] = {
-			{ATK_FLAT, 1},
-		};
-
-		static Choice const sands_weights[] = {
-			{HP_PERCENT, 8},
-			{ATK_PERCENT, 8},
-			{DEF_PERCENT, 8},
-			{ENERGY_RECHARGE, 3},
-			{ELEMENTAL_MASTERY, 3},
-		};
-
-		static Choice const goblet_weights[] = {
-			{HP_PERCENT, 77},
-			{ATK_PERCENT, 77},
-			{DEF_PERCENT, 76},
-			{PYRO_BONUS, 20},
-			{ELECTRO_BONUS, 20},
-			{CRYO_BONUS, 20},
-			{HYDRO_BONUS, 20},
-			{DENDRO_BONUS, 20},
-			{ANEMO_BONUS, 20},
-			{GEO_BONUS, 20},
-			{PHYSICAL_BONUS, 20},
-			{ELEMENTAL_MASTERY, 10},
-		};
-
-		static Choice const circlet_weights[] = {
-			{HP_PERCENT, 11},
-			{ATK_PERCENT, 11},
-			{DEF_PERCENT, 11},
-			{CRIT_RATE, 5},
-			{CRIT_DAMAGE, 5},
-			{HEALING_BONUS, 5},
-			{ELEMENTAL_MASTERY, 2},
-		};
-
-		static Choice const * const weights[] = {
-			[FLOWER] = flower_weights,
-			[FEATHER] = feather_weights,
-			[SANDS] = sands_weights,
-			[GOBLET] = goblet_weights,
-			[CIRCLET] = circlet_weights,
-		};
-		static int const max[] = {
-			[FLOWER] = 1,
-			[FEATHER] = 1,
-			[SANDS] = 30,
-			[GOBLET] = 400,
-			[CIRCLET] = 50,
-		};
-		static size_t const len[] = {
-			[FLOWER] = sizeof(flower_weights) / sizeof(flower_weights[0]),
-			[FEATHER] = sizeof(feather_weights) / sizeof(feather_weights[0]),
-			[SANDS] = sizeof(sands_weights) / sizeof(sands_weights[0]),
-			[GOBLET] = sizeof(goblet_weights) / sizeof(goblet_weights[0]),
-			[CIRCLET] = sizeof(circlet_weights) / sizeof(circlet_weights[0]),
-		};
-
-		int mainstat_roll = 1 + rand() % max[in.piece];
-		int accumulator = 0;
-
-		for (int i = 0; i < len[in.piece]; i++) {
-			accumulator += weights[in.piece][i].weight;
-			if (mainstat_roll <= accumulator) {
-				in.mainstat.type = weights[in.piece][i].choice;
-				break;
-			}
-		}
-
-	}
+	if (in.mainstat.type == STAT_NOTHING)
+		in.mainstat.type = _artifact_getmainstat(in.piece);
 
 	if (in.mainstat.value == 0)
 		in.mainstat.value = mainstat_values[in.mainstat.type][in.level / 4];
