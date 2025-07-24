@@ -291,7 +291,7 @@ StatType _artifact_getmainstat(PieceType piece)
 	return STAT_NOTHING;
 }
 
-Artifact _artifact_new(bool has4substats, Artifact in)
+Artifact artifact_new(bool has4substats, Artifact in)
 {
 	// ignore artifact set. assume it is properly initialized
 	
@@ -325,13 +325,13 @@ Artifact _artifact_new(bool has4substats, Artifact in)
 Artifact artifact_new_domain(void)
 {
 	Artifact arti = {.set = 1 + rand() % 2};
-	return _artifact_new(rand() % 5 == 0, arti);
+	return artifact_new(rand() % 5 == 0, arti);
 }
 
 Artifact artifact_new_strongbox(void)
 {
 	Artifact arti = {.set = ONSET};
-	return _artifact_new(rand() % 3 == 0, arti);
+	return artifact_new(rand() % 3 == 0, arti);
 }
 
 #endif
