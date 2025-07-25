@@ -3,7 +3,6 @@
 #define CLAY_IMPLEMENTATION
 #include <clay.h>
 #include <clay_renderer_raylib.c>
-#include "artifact.c"
 #include "layout.c"
 
 void HandleClayErrors(Clay_ErrorData errorData) {
