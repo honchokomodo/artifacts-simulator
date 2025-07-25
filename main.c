@@ -16,7 +16,7 @@ Clay_RenderCommandArray CreateLayout(Clay_Context* context, Interface_Data *data
     // Run once per frame
     Clay_SetLayoutDimensions((Clay_Dimensions) {
         .width = GetScreenWidth(),
-        .height = GetScreenHeight() / 2.0
+        .height = GetScreenHeight()
     });
     Vector2 mousePosition = GetMousePosition();
     mousePosition.y -= data->yOffset;
@@ -38,6 +38,7 @@ int main(void){
         { .title = CLAY_STRING("title"), .contents = CLAY_STRING("aaaaaa")}
     };
     Clay_Raylib_Initialize(1024, 768, "Artifact Simulator", FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_HIGHDPI | FLAG_MSAA_4X_HINT | FLAG_VSYNC_HINT);
+    SetTargetFPS(30);
 
     Font fonts[2];
     fonts[FONT_ID_BODY_16] = LoadFontEx("resources/honchokomono-regular-normal.otf", 48, 0, 400);
@@ -67,12 +68,11 @@ int main(void){
     {
         dataBottom.yOffset = GetScreenHeight() / 2.0;
         Clay_RenderCommandArray renderCommandsTop = CreateLayout(clayContextTop, &dataTop);
-        Clay_RenderCommandArray renderCommandsBottom = CreateLayout(clayContextBottom, &dataBottom);
+        // Clay_RenderCommandArray renderCommandsBottom = CreateLayout(clayContextBottom, &dataBottom);
         BeginDrawing();
-        SetTargetFPS(30);
         ClearBackground(WHITE);
         Clay_Raylib_Render(renderCommandsTop, fonts);
-        Clay_Raylib_Render(renderCommandsBottom, fonts);
+        // Clay_Raylib_Render(renderCommandsBottom, fonts);
         EndDrawing();
     }
     Clay_Raylib_Close();
