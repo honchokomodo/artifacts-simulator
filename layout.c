@@ -5,10 +5,8 @@
 const int FONT_ID_BODY_16 = 0;
 const int FONT_ID_H1_24 = 1;
 Clay_Color COLOR_WHITE = { 255, 255, 255, 255};
-Clay_Color COLOR_PINK = {255, 95, 207, 255};
-Clay_Color COLOR_LIGHT_PINK = {255, 206, 240, 255};
-Clay_Color COLOR_LIGHT_PINK_1 = { 255, 215, 243, 255};
-Clay_Color COLOR_LIGHTER_PINK = {255, 239, 247, 255};
+Clay_Color COLOR_ACCENT = {255, 95, 207, 255};
+Clay_Color COLOR_BG = {255, 210, 230, 255};
 Clay_Color COLOR_BLACK = { 0, 0, 0, 255};
 
 typedef struct {
@@ -21,7 +19,7 @@ typedef struct {
     uint32_t length;
 } DocumentArray;
 
-Document documentsRaw[5];
+Document documentsRaw[3];
 DocumentArray documents = {
     .length = 5,
     .documents = documentsRaw
@@ -39,7 +37,9 @@ typedef struct {
 } Interface_Data;
 
 Interface_Data uiData_Initialize() {
-    documents.documents[0] = (Document){ .title = CLAY_STRING("Artifact Simulator for Genshin Impact"), .contents = CLAY_STRING("An aritfact simulator for Genshin Impact.") };
+    documents.documents[0] = (Document){ .title = CLAY_STRING("Artifact Simulator for Genshin Impact") };
+    documents.documents[1] = (Document){ .title = CLAY_STRING("INPUTS")};
+    documents.documents[2] = (Document){ .title = CLAY_STRING("OUTPUTS")};
 
     Interface_Data data = {
         .frameArena = { .memory = (intptr_t)malloc(1024) }
@@ -60,7 +60,7 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
     //Build UI here
     CLAY({
         .id = CLAY_ID("OuterContainer"),
-        .backgroundColor = COLOR_LIGHT_PINK,
+        .backgroundColor = COLOR_BG,
         .layout = {
             .layoutDirection = CLAY_TOP_TO_BOTTOM,
             .sizing = layoutExpand,
@@ -82,14 +82,13 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
                     .y = CLAY_ALIGN_Y_CENTER
                 }
             },
-            .backgroundColor = COLOR_PINK,
+            .backgroundColor = COLOR_ACCENT,
             .cornerRadius = CLAY_CORNER_RADIUS(8)
         }) {
-            // Header buttons but we don't have any
             CLAY({
-                .id = CLAY_ID("Header Title"),
+                .id = CLAY_ID("Header"),
             }){
-                Document selectedDocument = documents.documents[data->selectedDocumentIndex];
+                Document selectedDocument = documents.documents[0];
                 CLAY_TEXT(selectedDocument.title, CLAY_TEXT_CONFIG({
                     .fontId = FONT_ID_H1_24,
                     .fontSize = 24,
@@ -98,18 +97,18 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
             }
         }
 
+
         CLAY({
-            .id = CLAY_ID("LowerContent"),
+            .id = CLAY_ID("Inputs"),
             .layout = {
                 .sizing = layoutExpand,
                 .childGap = 16
             },
-            .backgroundColor = COLOR_PINK,
+            .backgroundColor = COLOR_WHITE,
+            .cornerRadius = CLAY_CORNER_RADIUS(8)
         }) {
-            // There could be a sidebar here if we need it
             CLAY({ 
-                .id = CLAY_ID("MainContent"),
-                .backgroundColor = COLOR_LIGHTER_PINK,
+                .id = CLAY_ID("InputContent"),
                 .clip = {
                     .vertical = true,
                     .childOffset = Clay_GetScrollOffset() },
@@ -120,19 +119,56 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
                         .sizing = layoutExpand
                     }
                 }) {
-                    // Document selectedDocument = documents.documents[data->selectedDocumentIndex];
-                    // CLAY_TEXT(selectedDocument.title, CLAY_TEXT_CONFIG({
-                    //     .fontId = FONT_ID_BODY_16,
-                    //     .fontSize = 24,
-                    //     .textColor = COLOR_BLACK })
-                    // );
-                    // CLAY_TEXT(selectedDocument.contents, CLAY_TEXT_CONFIG({
-                    //     .fontId = FONT_ID_BODY_16,
-                    //     .fontSize = 16,
-                    //     .textColor = COLOR_BLACK })
-                    // );
+                    // put stuff here
+                    CLAY({
+                        .id = CLAY_ID("InputTitle"),
+                    }){
+                        Document selectedDocument = documents.documents[1];
+                        CLAY_TEXT(selectedDocument.title, CLAY_TEXT_CONFIG({
+                            .fontId = FONT_ID_H1_24,
+                            .fontSize = 24,
+                            .textColor = COLOR_BLACK})
+                        );
+                    }
                 }
             }
+
+
+        CLAY({
+            .id = CLAY_ID("Outputs"),
+            .layout = {
+                .sizing = layoutExpand,
+                .childGap = 16
+            },
+            .backgroundColor = COLOR_WHITE,
+            .cornerRadius = CLAY_CORNER_RADIUS(8)
+        }) {
+            CLAY({ 
+                .id = CLAY_ID("OutputContent"),
+                .clip = {
+                    .vertical = true,
+                    .childOffset = Clay_GetScrollOffset() },
+                    .layout = {
+                        .layoutDirection = CLAY_TOP_TO_BOTTOM,
+                        .childGap = 16,
+                        .padding = CLAY_PADDING_ALL(16),
+                        .sizing = layoutExpand
+                    }
+                }) {
+                    // put stuff here
+                    CLAY({
+                        .id = CLAY_ID("OutputTitle"),
+                    }){
+                        Document selectedDocument = documents.documents[2];
+                        CLAY_TEXT(selectedDocument.title, CLAY_TEXT_CONFIG({
+                            .fontId = FONT_ID_H1_24,
+                            .fontSize = 24,
+                            .textColor = COLOR_BLACK})
+                        );
+                    }
+                }
+            }
+
         }
         Clay_RenderCommandArray renderCommands = Clay_EndLayout();
         for (int32_t i = 0; i < renderCommands.length; i++) {
