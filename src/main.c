@@ -41,8 +41,8 @@ int main(void){
     SetTargetFPS(30);
 
     Font fonts[2];
-    fonts[FONT_ID_BODY_16] = LoadFontEx("resources/honchokomono-regular-normal.otf", 48, 0, 400);
-    fonts[FONT_ID_H1_24] = LoadFontEx("resources/honchokomono-regular-normal.otf", 48, 0, 400);
+    fonts[FONT_ID_BODY_16] = LoadFontEx("resources/fonts/honchokomono-regular-normal.otf", 48, 0, 400);
+    fonts[FONT_ID_H1_24] = LoadFontEx("resources/fonts/honchokomono-regular-normal.otf", 48, 0, 400);
     SetTextureFilter(fonts[FONT_ID_BODY_16].texture, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(fonts[FONT_ID_H1_24].texture, TEXTURE_FILTER_BILINEAR);
 
