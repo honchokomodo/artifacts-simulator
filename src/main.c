@@ -3,12 +3,14 @@
 #define CLAY_IMPLEMENTATION
 #include <clay.h>
 #include <clay_renderer_raylib.c>
-#include "layout.c"
+//#include "layout.c"
 
-void HandleClayErrors(Clay_ErrorData errorData) {
-    printf("%s", errorData.errorText.chars);
+void HandleClayErrors(Clay_ErrorData errorData)
+{
+	printf("%s", errorData.errorText.chars);
 }
 
+/*
 Clay_RenderCommandArray CreateLayout(Clay_Context* context, Interface_Data *data) {
     Clay_SetCurrentContext(context);
     Clay_SetDebugModeEnabled(true);
@@ -32,8 +34,10 @@ Clay_RenderCommandArray CreateLayout(Clay_Context* context, Interface_Data *data
     );
     return Artifact_CreateLayout(data);
 }
+*/
 
 int main(void){
+	/*
     documents.documents = (Document[]) {
         { .title = CLAY_STRING("title"), .contents = CLAY_STRING("aaaaaa")}
     };
@@ -76,4 +80,5 @@ int main(void){
         EndDrawing();
     }
     Clay_Raylib_Close();
+*/
 }
