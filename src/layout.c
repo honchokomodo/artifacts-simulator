@@ -49,65 +49,40 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 					.y = CLAY_ALIGN_Y_CENTER
 				}
 			},
-			.backgroundColor = COLOR_ACCENT,
-			.cornerRadius = CLAY_CORNER_RADIUS(8)
+			.backgroundColor = COLOR_PRIMARY,
+			.cornerRadius = CLAY_CORNER_RADIUS(8),
+			.border = {
+				.color = COLOR_ACCENT,
+				.width = {2,2,2,2}
+			}
 		}) {
-			text_large(CLAY_STRING("Artifact Smulator for Genshin Impact"), COLOR_WHITE);
+			text_large(CLAY_STRING("Artifact Smulator for Genshin Impact"), COLOR_BLACK);
 		}
 
 		CLAY({
 			.id = CLAY_ID("Inputs"),
 			.layout = {
 				.sizing = layoutExpand,
-				.childGap = 16
+				.childGap = 16,
+				.layoutDirection = CLAY_TOP_TO_BOTTOM,
+				.padding = CLAY_PADDING_ALL(16)
 			},
-			.backgroundColor = COLOR_WHITE,
-			.cornerRadius = CLAY_CORNER_RADIUS(8)
-		}) {
-			CLAY({ 
-				.id = CLAY_ID("InputContent"),
-				.clip = {
+			.clip = {
 					.vertical = true,
 					.childOffset = Clay_GetScrollOffset()
-				},
-				.layout = {
-					.layoutDirection = CLAY_TOP_TO_BOTTOM,
-					.childGap = 16,
-					.padding = CLAY_PADDING_ALL(16),
-					.sizing = layoutExpand
-				}
-			}) {
-				// put stuff here
-				text_large(CLAY_STRING("INPUTS"),COLOR_BLACK);
-				dropdown(CLAY_STRING("dropdown menu"));
-			}
-		}
-
-		CLAY({
-			.id = CLAY_ID("Outputs"),
-			.layout = {
-				.sizing = layoutExpand,
-				.childGap = 16
 			},
 			.backgroundColor = COLOR_WHITE,
-			.cornerRadius = CLAY_CORNER_RADIUS(8)
-		}) {
-			CLAY({ 
-				.id = CLAY_ID("OutputContent"),
-				.clip = {
-					.vertical = true,
-					.childOffset = Clay_GetScrollOffset()
-				},
-				.layout = {
-					.layoutDirection = CLAY_TOP_TO_BOTTOM,
-					.childGap = 16,
-					.padding = CLAY_PADDING_ALL(16),
-					.sizing = layoutExpand
-				}
-			}) {
-				// put stuff here
-				text_large(CLAY_STRING("OUTPUTS"),COLOR_BLACK);
+			.cornerRadius = CLAY_CORNER_RADIUS(8),
+			.border = {
+				.color = COLOR_ACCENT,
+				.width = {2,2,2,2}
 			}
+		}) {
+			// put stuff here
+			text_large(CLAY_STRING("INPUTS"),COLOR_BLACK);
+			Clay_String test_dropdown[] = {CLAY_STRING("ITEM1")};
+			dropdown(CLAY_STRING("dropdown menu"), test_dropdown, CLAY_ID("dropdown"));
+			
 		}
 	}
 

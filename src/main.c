@@ -1,8 +1,8 @@
-#include "raylib.h"
+// #include "raylib.h"
 #include <stdint.h>
 #define CLAY_IMPLEMENTATION
-#include <clay.h>
-#include <clay_renderer_raylib.c>
+// #include <clay.h>
+// #include <clay_renderer_raylib.c>
 #include "layout.c"
 
 void HandleClayErrors(Clay_ErrorData errorData)
