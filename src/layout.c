@@ -31,7 +31,6 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 		.height = CLAY_SIZING_GROW(0)
 	};
 
-	/*
     //Build UI here
     CLAY({
         .id = CLAY_ID("OuterContainer"),
@@ -140,7 +139,7 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
             }
 
         }
-*/
+
 	Clay_RenderCommandArray renderCommands = Clay_EndLayout();
         return renderCommands;
     }
