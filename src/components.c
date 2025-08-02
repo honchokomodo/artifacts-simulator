@@ -10,7 +10,6 @@ Clay_Color COLOR_BG = {200, 243, 255, 255}; // light blue
 Clay_Color COLOR_COMPLEMENT = {255, 190, 2, 255}; // orange-ish color
 Clay_Color COLOR_BLACK = { 0, 0, 0, 255};
 
-
 void text_large(Clay_String text, Clay_Color color){
 	CLAY({
 	}){
@@ -37,22 +36,48 @@ void text_p(Clay_String text, Clay_Color color){
 	}
 }
 
-void dropdown(Clay_String menu_text, Clay_String items_text[], Clay_ElementId id){
+void dropdown(Clay_String menu_text, Clay_String items_text[], size_t items_text_len, Clay_ElementId id){
 	CLAY({
 		.id = id,
 		.layout = {
-			.padding = CLAY_PADDING_ALL(8),
 			.layoutDirection = CLAY_TOP_TO_BOTTOM
 		},
-		.cornerRadius = CLAY_CORNER_RADIUS(8),
-		.backgroundColor = COLOR_ACCENT
 	}){
-		text_p(menu_text, COLOR_WHITE);
-	};
-	CLAY({
-		.cornerRadius = CLAY_CORNER_RADIUS(8),
-		.backgroundColor = COLOR_BG
-	}){
-		text_p(items_text[0], COLOR_BLACK);
+		CLAY({
+			.layout = {.padding = {4,4,4,4}},
+			.cornerRadius = CLAY_CORNER_RADIUS(8),
+			.backgroundColor = COLOR_ACCENT
+		}){
+			text_p(menu_text, COLOR_WHITE);
+		}
+		for(int i=0; i < items_text_len; i++ ){
+
+			Clay_CornerRadius cornerRadius;
+
+			if (i == 0) {
+				cornerRadius = (Clay_CornerRadius){4, 4, 0, 0};
+			} else if (i == items_text_len - 1) {
+				cornerRadius = (Clay_CornerRadius){0, 0, 4, 4};
+			} else {
+				cornerRadius = (Clay_CornerRadius){0, 0, 0, 0};
+			}
+
+			CLAY({
+				.layout = {
+					.padding = {4,4,2,2},
+					.sizing = {
+						.width = CLAY_SIZING_PERCENT(1)
+					}
+				},
+				.cornerRadius = cornerRadius,
+				.backgroundColor = COLOR_BG,
+				.border = {
+					.width = {2,2,1,1},
+					.color = COLOR_ACCENT
+				}
+			}){
+				text_p(items_text[i], COLOR_BLACK);
+			}
+		}
 	};
 }
