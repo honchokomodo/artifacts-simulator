@@ -3,46 +3,37 @@
 #define CLAY_IMPLEMENTATION
 #include <clay.h>
 #include <clay_renderer_raylib.c>
-//#include "layout.c"
+#include "layout.c"
 
 void HandleClayErrors(Clay_ErrorData errorData)
 {
 	printf("%s", errorData.errorText.chars);
 }
 
-/*
-Clay_RenderCommandArray CreateLayout(Clay_Context* context, Interface_Data *data) {
-    Clay_SetCurrentContext(context);
-    Clay_SetDebugModeEnabled(true);
+Clay_RenderCommandArray CreateLayout(Clay_Context * context, Interface_Data * data)
+{
+	Clay_SetCurrentContext(context);
+	//Clay_SetDebugModeEnabled(true);
 
-    // Run once per frame
-    Clay_SetLayoutDimensions((Clay_Dimensions) {
-        .width = GetScreenWidth(),
-        .height = GetScreenHeight()
-    });
-    Vector2 mousePosition = GetMousePosition();
-    mousePosition.y -= data->yOffset;
-    Vector2 scrollDelta = GetMouseWheelMoveV();
-    Clay_SetPointerState(
-        (Clay_Vector2) { mousePosition.x, mousePosition.y},
-        IsMouseButtonDown(0)
-    );
-    Clay_UpdateScrollContainers(
-        true,
-        (Clay_Vector2) {scrollDelta.x, scrollDelta.y },
-        GetFrameTime()
-    );
-    return Artifact_CreateLayout(data);
+	// Run once per frame
+	Clay_SetLayoutDimensions(data->windowSize);
+
+	Clay_SetPointerState(
+		(Clay_Vector2) {data->mousePosition.x, data->mousePosition.y},
+		data->isLeftMouseDown
+	);
+
+	Clay_UpdateScrollContainers(
+		true,
+		(Clay_Vector2) {data->scrollDelta.x, data->scrollDelta.y},
+		data->frameTime
+	);
+
+	return Artifact_CreateLayout(data);
 }
-*/
 
 int main(void)
 {
-	/*
-    documents.documents = (Document[]) {
-        { .title = CLAY_STRING("title"), .contents = CLAY_STRING("aaaaaa")}
-    };
-    */
 	uint32_t WINDOW_CONFIG_FLAGS = 0
 		| FLAG_WINDOW_RESIZABLE
 		// FLAG_WINDOW_HIGHDPI
@@ -52,15 +43,7 @@ int main(void)
 
 	Clay_Raylib_Initialize(1024, 768, "Artifact Simulator", WINDOW_CONFIG_FLAGS);
 	SetTargetFPS(30);
-    /*
 
-    Font fonts[2];
-    fonts[FONT_ID_BODY_16] = LoadFontEx("resources/fonts/honchokomono-regular-normal.otf", 48, 0, 400);
-    fonts[FONT_ID_H1_24] = LoadFontEx("resources/fonts/honchokomono-regular-normal.otf", 48, 0, 400);
-    SetTextureFilter(fonts[FONT_ID_BODY_16].texture, TEXTURE_FILTER_BILINEAR);
-    SetTextureFilter(fonts[FONT_ID_H1_24].texture, TEXTURE_FILTER_BILINEAR);
-
-    */
 	uint64_t clayRequiredMemory = Clay_MinMemorySize();
 	Clay_Arena clayMemory = {
 		.memory = malloc(clayRequiredMemory),
@@ -72,26 +55,38 @@ int main(void)
 		.height = GetScreenHeight(),
 	};
 	Clay_ErrorHandler errorHandler = {HandleClayErrors};
-	Clay_Initialize(clayMemory, windowSize, errorHandler);
-	// load the fonts and include a measure text function here
-	// Interface_Data dataTop = uiData_Initialize(); // TODO: probably important?
-    /*
+	Clay_Context * clayContext = Clay_Initialize(clayMemory, windowSize, errorHandler);
 
-    Clay_Context *clayContextTop = Clay_Initialize(clayMemoryTop, (Clay_Dimensions) {
-        .width = GetScreenWidth(),
-        .height = GetScreenHeight()
-    }, (Clay_ErrorHandler) { HandleClayErrors });
-    Clay_SetMeasureTextFunction(Raylib_MeasureText, fonts);
+	Font fonts[2];
+	fonts[FONT_ID_BODY_16] = LoadFontEx("../resources/fonts/honchokomono-regular-normal.otf", 48, NULL, 0);
+	fonts[FONT_ID_H1_24] = LoadFontEx("../resources/fonts/honchokomono-regular-normal.otf", 48, NULL, 0);
+	/* probably important?
+	SetTextureFilter(fonts[FONT_ID_BODY_16].texture, TEXTURE_FILTER_BILINEAR);
+	SetTextureFilter(fonts[FONT_ID_H1_24].texture, TEXTURE_FILTER_BILINEAR);
+	*/
+	// include a measure text function here
+	Interface_Data uiData = uiData_Initialize();
     
-    while(!WindowShouldClose())
-    {
-        Clay_RenderCommandArray renderCommands = CreateLayout(clayContextTop, &dataTop);
-        BeginDrawing();
-        ClearBackground(WHITE);
-        Clay_Raylib_Render(renderCommands, fonts);
-        EndDrawing();
-    }
-*/
+	while(!WindowShouldClose())
+	{
+		// prepare data
+		uiData.windowSize.width = GetScreenWidth();
+		uiData.windowSize.height = GetScreenHeight();
+		uiData.mousePosition = GetMousePosition();
+		uiData.scrollDelta = GetMouseWheelMoveV();
+		uiData.isLeftMouseDown = IsMouseButtonDown(MOUSE_BUTTON_LEFT);
+		uiData.frameTime = GetFrameTime();
+
+		Clay_RenderCommandArray renderCommands = CreateLayout(clayContext, &uiData);
+
+		BeginDrawing();
+		ClearBackground(WHITE);
+
+		Clay_Raylib_Render(renderCommands, fonts);
+
+		EndDrawing();
+	}
+
 	Clay_Raylib_Close();
 	free(clayMemory.memory);
 }
