@@ -79,6 +79,7 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 			}) {
 				// put stuff here
 				text_large(CLAY_STRING("INPUTS"),COLOR_BLACK);
+				dropdown(CLAY_STRING("dropdown menu"));
 			}
 		}
 
