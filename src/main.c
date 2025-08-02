@@ -3,15 +3,15 @@
 #define CLAY_IMPLEMENTATION
 #include <clay.h>
 #include <clay_renderer_raylib.c>
-//#include "layout.c"
+#include "layout.c"
 
 void HandleClayErrors(Clay_ErrorData errorData)
 {
 	printf("%s", errorData.errorText.chars);
 }
 
-/*
-Clay_RenderCommandArray CreateLayout(Clay_Context* context, Interface_Data *data) {
+
+Clay_RenderCommandArray CreateLayout(Clay_Context* context) {
     Clay_SetCurrentContext(context);
     Clay_SetDebugModeEnabled(true);
 
@@ -21,7 +21,6 @@ Clay_RenderCommandArray CreateLayout(Clay_Context* context, Interface_Data *data
         .height = GetScreenHeight()
     });
     Vector2 mousePosition = GetMousePosition();
-    mousePosition.y -= data->yOffset;
     Vector2 scrollDelta = GetMouseWheelMoveV();
     Clay_SetPointerState(
         (Clay_Vector2) { mousePosition.x, mousePosition.y},
@@ -32,17 +31,12 @@ Clay_RenderCommandArray CreateLayout(Clay_Context* context, Interface_Data *data
         (Clay_Vector2) {scrollDelta.x, scrollDelta.y },
         GetFrameTime()
     );
-    return Artifact_CreateLayout(data);
+    return Artifact_CreateLayout();
 }
-*/
+
 
 int main(void)
 {
-	/*
-    documents.documents = (Document[]) {
-        { .title = CLAY_STRING("title"), .contents = CLAY_STRING("aaaaaa")}
-    };
-    */
 	uint32_t WINDOW_CONFIG_FLAGS = 0
 		| FLAG_WINDOW_RESIZABLE
 		// FLAG_WINDOW_HIGHDPI
@@ -52,18 +46,16 @@ int main(void)
 
 	Clay_Raylib_Initialize(1024, 768, "Artifact Simulator", WINDOW_CONFIG_FLAGS);
 	SetTargetFPS(30);
-    /*
+    
 
-    Font fonts[2];
-    fonts[FONT_ID_BODY_16] = LoadFontEx("resources/fonts/honchokomono-regular-normal.otf", 48, 0, 400);
-    fonts[FONT_ID_H1_24] = LoadFontEx("resources/fonts/honchokomono-regular-normal.otf", 48, 0, 400);
-    SetTextureFilter(fonts[FONT_ID_BODY_16].texture, TEXTURE_FILTER_BILINEAR);
-    SetTextureFilter(fonts[FONT_ID_H1_24].texture, TEXTURE_FILTER_BILINEAR);
+    Font fonts[1];
+    fonts[FONT_ID_HONCHOKOMONO] = LoadFontEx("resources/fonts/honchokomono-regular-normal.otf", 48, 0, 400);
+    SetTextureFilter(fonts[FONT_ID_HONCHOKOMONO].texture, TEXTURE_FILTER_BILINEAR);
 
-    */
+    
 	uint64_t clayRequiredMemory = Clay_MinMemorySize();
 	Clay_Arena clayMemory = {
-		.memory = malloc(clayRequiredMemory),
+	    .memory = malloc(clayRequiredMemory),
 		.capacity = clayRequiredMemory,
 	};
 
@@ -75,23 +67,23 @@ int main(void)
 	Clay_Initialize(clayMemory, windowSize, errorHandler);
 	// load the fonts and include a measure text function here
 	// Interface_Data dataTop = uiData_Initialize(); // TODO: probably important?
-    /*
-
-    Clay_Context *clayContextTop = Clay_Initialize(clayMemoryTop, (Clay_Dimensions) {
+    
+    Clay_Context *clayContext = Clay_Initialize(clayMemory, (Clay_Dimensions) {
         .width = GetScreenWidth(),
         .height = GetScreenHeight()
     }, (Clay_ErrorHandler) { HandleClayErrors });
+    // Interface_Data data = uiData_Initialize();
     Clay_SetMeasureTextFunction(Raylib_MeasureText, fonts);
     
     while(!WindowShouldClose())
     {
-        Clay_RenderCommandArray renderCommands = CreateLayout(clayContextTop, &dataTop);
+        Clay_RenderCommandArray renderCommands = CreateLayout(clayContext);
         BeginDrawing();
         ClearBackground(WHITE);
         Clay_Raylib_Render(renderCommands, fonts);
         EndDrawing();
     }
-*/
+
 	Clay_Raylib_Close();
 	free(clayMemory.memory);
 }

@@ -2,28 +2,11 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-const int FONT_ID_BODY_16 = 0;
-const int FONT_ID_H1_24 = 1;
+const int FONT_ID_HONCHOKOMONO = 0;
 Clay_Color COLOR_WHITE = { 255, 255, 255, 255};
 Clay_Color COLOR_ACCENT = {255, 95, 207, 255};
 Clay_Color COLOR_BG = {255, 210, 230, 255};
 Clay_Color COLOR_BLACK = { 0, 0, 0, 255};
-
-typedef struct {
-    Clay_String title;
-    Clay_String contents;
-} Document;
-
-typedef struct {
-    Document *documents;
-    uint32_t length;
-} DocumentArray;
-
-Document documentsRaw[3];
-DocumentArray documents = {
-    .length = 5,
-    .documents = documentsRaw
-};
 
 typedef struct {
     intptr_t offset;
@@ -31,25 +14,11 @@ typedef struct {
 } Interface_Arena;
 
 typedef struct {
-    int32_t selectedDocumentIndex;
     float yOffset;
     Interface_Arena frameArena;
 } Interface_Data;
 
-Interface_Data uiData_Initialize() {
-    documents.documents[0] = (Document){ .title = CLAY_STRING("Artifact Simulator for Genshin Impact") };
-    documents.documents[1] = (Document){ .title = CLAY_STRING("INPUTS")};
-    documents.documents[2] = (Document){ .title = CLAY_STRING("OUTPUTS")};
-
-    Interface_Data data = {
-        .frameArena = { .memory = (intptr_t)malloc(1024) }
-    };
-    return data;
-}
-
-Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
-    data->frameArena.offset = 0;
-
+Clay_RenderCommandArray Artifact_CreateLayout() {
     Clay_BeginLayout();
 
     Clay_Sizing layoutExpand = {
@@ -88,9 +57,8 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
             CLAY({
                 .id = CLAY_ID("Header"),
             }){
-                Document selectedDocument = documents.documents[0];
-                CLAY_TEXT(selectedDocument.title, CLAY_TEXT_CONFIG({
-                    .fontId = FONT_ID_H1_24,
+                CLAY_TEXT(CLAY_STRING("Artifact Simulator for Genshin Impact"), CLAY_TEXT_CONFIG({
+                    .fontId = FONT_ID_HONCHOKOMONO,
                     .fontSize = 24,
                     .textColor = COLOR_WHITE})
                 );
@@ -123,9 +91,8 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
                     CLAY({
                         .id = CLAY_ID("InputTitle"),
                     }){
-                        Document selectedDocument = documents.documents[1];
-                        CLAY_TEXT(selectedDocument.title, CLAY_TEXT_CONFIG({
-                            .fontId = FONT_ID_H1_24,
+                        CLAY_TEXT(CLAY_STRING("INPUTS"), CLAY_TEXT_CONFIG({
+                            .fontId = FONT_ID_HONCHOKOMONO,
                             .fontSize = 24,
                             .textColor = COLOR_BLACK})
                         );
@@ -159,9 +126,8 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
                     CLAY({
                         .id = CLAY_ID("OutputTitle"),
                     }){
-                        Document selectedDocument = documents.documents[2];
-                        CLAY_TEXT(selectedDocument.title, CLAY_TEXT_CONFIG({
-                            .fontId = FONT_ID_H1_24,
+                        CLAY_TEXT(CLAY_STRING("OUTPUTS"), CLAY_TEXT_CONFIG({
+                            .fontId = FONT_ID_HONCHOKOMONO,
                             .fontSize = 24,
                             .textColor = COLOR_BLACK})
                         );
@@ -172,7 +138,7 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
         }
         Clay_RenderCommandArray renderCommands = Clay_EndLayout();
         for (int32_t i = 0; i < renderCommands.length; i++) {
-            Clay_RenderCommandArray_Get(&renderCommands, i)->boundingBox.y += data->yOffset;
+            Clay_RenderCommandArray_Get(&renderCommands, i);
         }
         return renderCommands;
     }
