@@ -51,22 +51,13 @@ int main(void){
     Clay_Arena clayMemoryTop = Clay_CreateArenaWithCapacityAndMemory(clayRequiredMemory, malloc(clayRequiredMemory));
     Clay_Context *clayContextTop = Clay_Initialize(clayMemoryTop, (Clay_Dimensions) {
         .width = GetScreenWidth(),
-        .height = GetScreenHeight() /2.0
+        .height = GetScreenHeight()
     }, (Clay_ErrorHandler) { HandleClayErrors });
     Interface_Data dataTop = uiData_Initialize();
-    Clay_SetMeasureTextFunction(Raylib_MeasureText, fonts);
-
-    Clay_Arena clayMemoryBottom = Clay_CreateArenaWithCapacityAndMemory(clayRequiredMemory, malloc(clayRequiredMemory));
-    Clay_Context *clayContextBottom = Clay_Initialize(clayMemoryBottom, (Clay_Dimensions) {
-        .width = GetScreenWidth(),
-        .height = GetScreenHeight() / 2.0
-    }, (Clay_ErrorHandler) { HandleClayErrors });
-    Interface_Data dataBottom = uiData_Initialize();
     Clay_SetMeasureTextFunction(Raylib_MeasureText, fonts);
     
     while(!WindowShouldClose())
     {
-        dataBottom.yOffset = GetScreenHeight() / 2.0;
         Clay_RenderCommandArray renderCommands = CreateLayout(clayContextTop, &dataTop);
         BeginDrawing();
         ClearBackground(WHITE);
