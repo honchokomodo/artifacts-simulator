@@ -44,9 +44,10 @@ int main(void)
 	Clay_Raylib_Initialize(1024, 768, "Artifact Simulator", WINDOW_CONFIG_FLAGS);
 	SetTargetFPS(30);
 
+
 	uint64_t clayRequiredMemory = Clay_MinMemorySize();
 	Clay_Arena clayMemory = {
-		.memory = malloc(clayRequiredMemory),
+	    .memory = malloc(clayRequiredMemory),
 		.capacity = clayRequiredMemory,
 	};
 
@@ -57,13 +58,9 @@ int main(void)
 	Clay_ErrorHandler errorHandler = {HandleClayErrors};
 	Clay_Context * clayContext = Clay_Initialize(clayMemory, windowSize, errorHandler);
 
-	Font fonts[2];
-	fonts[FONT_ID_BODY_16] = LoadFontEx("../resources/fonts/honchokomono-regular-normal.otf", 48, NULL, 0);
-	fonts[FONT_ID_H1_24] = LoadFontEx("../resources/fonts/honchokomono-regular-normal.otf", 48, NULL, 0);
-	/* probably important?
-	SetTextureFilter(fonts[FONT_ID_BODY_16].texture, TEXTURE_FILTER_BILINEAR);
-	SetTextureFilter(fonts[FONT_ID_H1_24].texture, TEXTURE_FILTER_BILINEAR);
-	*/
+	Font fonts[1];
+	fonts[FONT_ID_HONCHOKOMONO] = LoadFontEx("resources/fonts/honchokomono-regular-normal.otf", 48, NULL, 0);
+	SetTextureFilter(fonts[FONT_ID_HONCHOKOMONO].texture, TEXTURE_FILTER_BILINEAR);
 	// include a measure text function here
 	Interface_Data uiData = uiData_Initialize();
     
