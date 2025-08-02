@@ -67,12 +67,10 @@ int main(void){
     while(!WindowShouldClose())
     {
         dataBottom.yOffset = GetScreenHeight() / 2.0;
-        Clay_RenderCommandArray renderCommandsTop = CreateLayout(clayContextTop, &dataTop);
-        // Clay_RenderCommandArray renderCommandsBottom = CreateLayout(clayContextBottom, &dataBottom);
+        Clay_RenderCommandArray renderCommands = CreateLayout(clayContextTop, &dataTop);
         BeginDrawing();
         ClearBackground(WHITE);
-        Clay_Raylib_Render(renderCommandsTop, fonts);
-        // Clay_Raylib_Render(renderCommandsBottom, fonts);
+        Clay_Raylib_Render(renderCommands, fonts);
         EndDrawing();
     }
     Clay_Raylib_Close();
