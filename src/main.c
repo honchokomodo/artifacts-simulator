@@ -36,13 +36,23 @@ Clay_RenderCommandArray CreateLayout(Clay_Context* context, Interface_Data *data
 }
 */
 
-int main(void){
+int main(void)
+{
 	/*
     documents.documents = (Document[]) {
         { .title = CLAY_STRING("title"), .contents = CLAY_STRING("aaaaaa")}
     };
-    Clay_Raylib_Initialize(1024, 768, "Artifact Simulator", FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_HIGHDPI | FLAG_MSAA_4X_HINT | FLAG_VSYNC_HINT);
-    SetTargetFPS(30);
+    */
+	uint32_t WINDOW_CONFIG_FLAGS = 0
+		| FLAG_WINDOW_RESIZABLE
+		// FLAG_WINDOW_HIGHDPI
+		// FLAG_WINDOW_MSAA_4X_HINT
+		// FLAG_VSYNC_HINT
+	;
+
+	Clay_Raylib_Initialize(1024, 768, "Artifact Simulator", WINDOW_CONFIG_FLAGS);
+	SetTargetFPS(30);
+    /*
 
     Font fonts[2];
     fonts[FONT_ID_BODY_16] = LoadFontEx("resources/fonts/honchokomono-regular-normal.otf", 48, 0, 400);
