@@ -60,14 +60,27 @@ int main(void)
     SetTextureFilter(fonts[FONT_ID_BODY_16].texture, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(fonts[FONT_ID_H1_24].texture, TEXTURE_FILTER_BILINEAR);
 
-    uint64_t clayRequiredMemory = Clay_MinMemorySize();
+    */
+	uint64_t clayRequiredMemory = Clay_MinMemorySize();
+	Clay_Arena clayMemory = {
+		.memory = malloc(clayRequiredMemory),
+		.capacity = clayRequiredMemory,
+	};
 
-    Clay_Arena clayMemoryTop = Clay_CreateArenaWithCapacityAndMemory(clayRequiredMemory, malloc(clayRequiredMemory));
+	Clay_Dimensions windowSize = {
+		.width = GetScreenWidth(),
+		.height = GetScreenHeight(),
+	};
+	Clay_ErrorHandler errorHandler = {HandleClayErrors};
+	Clay_Initialize(clayMemory, windowSize, errorHandler);
+	// load the fonts and include a measure text function here
+	// Interface_Data dataTop = uiData_Initialize(); // TODO: probably important?
+    /*
+
     Clay_Context *clayContextTop = Clay_Initialize(clayMemoryTop, (Clay_Dimensions) {
         .width = GetScreenWidth(),
         .height = GetScreenHeight() /2.0
     }, (Clay_ErrorHandler) { HandleClayErrors });
-    Interface_Data dataTop = uiData_Initialize();
     Clay_SetMeasureTextFunction(Raylib_MeasureText, fonts);
 
     Clay_Arena clayMemoryBottom = Clay_CreateArenaWithCapacityAndMemory(clayRequiredMemory, malloc(clayRequiredMemory));
@@ -89,6 +102,7 @@ int main(void)
         // Clay_Raylib_Render(renderCommandsBottom, fonts);
         EndDrawing();
     }
-    Clay_Raylib_Close();
 */
+	Clay_Raylib_Close();
+	free(clayMemory.memory);
 }
