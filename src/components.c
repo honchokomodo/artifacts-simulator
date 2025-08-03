@@ -1,6 +1,18 @@
 #include <clay.h>
 #include "clay_renderer_raylib.c"
 #include <raylib.h>
+#include <stddef.h>
+
+typedef struct {
+	Clay_Dimensions windowSize;
+	Vector2 mousePosition;
+	Vector2 scrollDelta;
+	bool isLeftMouseDown;
+	float frameTime;
+	bool state;
+	// we will need more stuff here later like character builds
+	// and artifact sets plus other useful values
+} Interface_Data;
 
 const int FONT_ID_HONCHOKOMONO = 0;
 Clay_Color COLOR_WHITE = { 255, 255, 255, 255};
@@ -36,43 +48,46 @@ void text_p(Clay_String text, Clay_Color color){
 	}
 }
 
-void dropdown_menu(Clay_String items_text[], size_t items_text_len, bool visibility){
-	if (visibility==0){
-		return;
-	}else{
-		for(int i=0; i < items_text_len; i++ ){
+static void dropdown_menu(Clay_String items_text[], size_t items_text_len){
+	
+	for(int i=0; i < items_text_len; i++ ){
 
-			Clay_CornerRadius cornerRadius;
-	
-			if (i == 0) {
-				cornerRadius = (Clay_CornerRadius){4, 4, 0, 0};
-			} else if (i == items_text_len - 1) {
-				cornerRadius = (Clay_CornerRadius){0, 0, 4, 4};
-			} else {
-				cornerRadius = (Clay_CornerRadius){0, 0, 0, 0};
-			}
-	
-			CLAY({
-				.layout = {
-					.padding = {4,4,2,2},
-					.sizing = {
-						.width = CLAY_SIZING_PERCENT(1)
-					}
-				},
-				.cornerRadius = cornerRadius,
-				.backgroundColor = COLOR_BG,
-				.border = {
-					.width = {2,2,1,1},
-					.color = COLOR_ACCENT
+		Clay_CornerRadius cornerRadius;
+
+		if (i == 0) {
+			cornerRadius = (Clay_CornerRadius){4, 4, 0, 0};
+		} else if (i == items_text_len - 1) {
+			cornerRadius = (Clay_CornerRadius){0, 0, 4, 4};
+		} else {
+			cornerRadius = (Clay_CornerRadius){0, 0, 0, 0};
+		}
+
+		CLAY({
+			.id = CLAY_ID("dropdown_menu"),
+			.layout = {
+				.padding = {4,4,2,2},
+				.sizing = {
+					.width = CLAY_SIZING_PERCENT(1)
 				}
-			}){
-				text_p(items_text[i], COLOR_BLACK);
+			},
+			.floating = {
+				.attachPoints = CLAY_ATTACH_POINT_LEFT_BOTTOM
+			},
+			.cornerRadius = cornerRadius,
+			.backgroundColor = COLOR_BG,
+			.border = {
+				.width = {2,2,1,1},
+				.color = COLOR_ACCENT
 			}
+		}){
+			text_p(items_text[i], COLOR_BLACK);
 		}
 	}
+
 }
 
-void dropdown_button(Clay_String menu_text, Clay_String items_text[], size_t items_text_len, Clay_ElementId id){
+void dropdown_button(Clay_ElementId id, Clay_String button_text, Clay_String items_text[], size_t items_text_len, bool state){
+
 	CLAY({
 		.id = id,
 		.layout = {
@@ -84,13 +99,14 @@ void dropdown_button(Clay_String menu_text, Clay_String items_text[], size_t ite
 			.cornerRadius = CLAY_CORNER_RADIUS(8),
 			.backgroundColor = COLOR_ACCENT
 		}){
-			text_p(menu_text, COLOR_WHITE);
+			text_p(button_text, COLOR_WHITE);
 		}
-		if(Clay_PointerOver(id) && IsMouseButtonDown(MOUSE_LEFT_BUTTON)){
-			dropdown_menu(items_text, items_text_len, 1);
-		}else if(!Clay_PointerOver(id) && IsMouseButtonDown(MOUSE_LEFT_BUTTON)){
-			dropdown_menu(items_text, items_text_len, 0);
+		if(state){
+			dropdown_menu(items_text, items_text_len);
+			// if(IsMouseButtonDown(MOUSE_LEFT_BUTTON)){
+			// 	dropdown_menu(items_text, items_text_len);
+			// }
+	
 		}
-		
 	};
 }

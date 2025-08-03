@@ -1,3 +1,4 @@
+#include "raylib.h"
 #include <stdint.h>
 #define CLAY_IMPLEMENTATION
 #include "layout.c"
@@ -10,7 +11,7 @@ void HandleClayErrors(Clay_ErrorData errorData)
 Clay_RenderCommandArray CreateLayout(Clay_Context * context, Interface_Data * data)
 {
 	Clay_SetCurrentContext(context);
-	// Clay_SetDebugModeEnabled(true);
+	Clay_SetDebugModeEnabled(true);
 
 	// Run once per frame
 	Clay_SetLayoutDimensions(data->windowSize);
@@ -74,6 +75,14 @@ int main(void)
 		uiData.scrollDelta = GetMouseWheelMoveV();
 		uiData.isLeftMouseDown = IsMouseButtonDown(MOUSE_BUTTON_LEFT);
 		uiData.frameTime = GetFrameTime();
+
+		if(Clay_PointerOver(Clay_GetElementId(CLAY_STRING("dropdown"))) && IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
+			uiData.state = 
+			(Clay_PointerOver(Clay_GetElementId(CLAY_STRING("dropdown"))))
+			|| Clay_PointerOver(Clay_GetElementId(CLAY_STRING("dropdown_menu")));
+		}else if(!Clay_PointerOver(Clay_GetElementId(CLAY_STRING("dropdown"))) && IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
+			uiData.state = false;
+		}
 
 		Clay_RenderCommandArray renderCommands = CreateLayout(clayContext, &uiData);
 

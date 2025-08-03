@@ -1,16 +1,6 @@
 // vim: ts=2 sw=2
 #include "components.c"
 
-typedef struct {
-	Clay_Dimensions windowSize;
-	Vector2 mousePosition;
-	Vector2 scrollDelta;
-	bool isLeftMouseDown;
-	float frameTime;
-	// we will need more stuff here later like character builds
-	// and artifact sets plus other useful values
-} Interface_Data;
-
 Interface_Data uiData_Initialize() {
 	Interface_Data data = {0};
 	return data;
@@ -87,7 +77,9 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 				CLAY_STRING("ITEM4")
 			};
 			size_t test_dropdown_len = sizeof(test_dropdown) / sizeof(test_dropdown[0]);
-			dropdown_button(CLAY_STRING("dropdown menu"), test_dropdown, test_dropdown_len, CLAY_ID("dropdown"));
+
+			// dropdown(dropDownState, CLAY_STRING("TEST INPUT"), test_dropdown,test_dropdown_len);
+			dropdown_button(CLAY_ID("dropdown"), CLAY_STRING("TEST INPUT"), test_dropdown, test_dropdown_len, data->state);
 			
 		}
 	}
