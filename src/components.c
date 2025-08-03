@@ -36,24 +36,14 @@ void text_p(Clay_String text, Clay_Color color){
 	}
 }
 
-void dropdown(Clay_String menu_text, Clay_String items_text[], size_t items_text_len, Clay_ElementId id){
-	CLAY({
-		.id = id,
-		.layout = {
-			.layoutDirection = CLAY_TOP_TO_BOTTOM
-		},
-	}){
-		CLAY({
-			.layout = {.padding = {4,4,4,4}},
-			.cornerRadius = CLAY_CORNER_RADIUS(8),
-			.backgroundColor = COLOR_ACCENT
-		}){
-			text_p(menu_text, COLOR_WHITE);
-		}
+void dropdown_menu(Clay_String items_text[], size_t items_text_len, bool visibility){
+	if (visibility==0){
+		return;
+	}else{
 		for(int i=0; i < items_text_len; i++ ){
 
 			Clay_CornerRadius cornerRadius;
-
+	
 			if (i == 0) {
 				cornerRadius = (Clay_CornerRadius){4, 4, 0, 0};
 			} else if (i == items_text_len - 1) {
@@ -61,7 +51,7 @@ void dropdown(Clay_String menu_text, Clay_String items_text[], size_t items_text
 			} else {
 				cornerRadius = (Clay_CornerRadius){0, 0, 0, 0};
 			}
-
+	
 			CLAY({
 				.layout = {
 					.padding = {4,4,2,2},
@@ -79,5 +69,28 @@ void dropdown(Clay_String menu_text, Clay_String items_text[], size_t items_text
 				text_p(items_text[i], COLOR_BLACK);
 			}
 		}
+	}
+}
+
+void dropdown_button(Clay_String menu_text, Clay_String items_text[], size_t items_text_len, Clay_ElementId id){
+	CLAY({
+		.id = id,
+		.layout = {
+			.layoutDirection = CLAY_TOP_TO_BOTTOM
+		},
+	}){
+		CLAY({
+			.layout = {.padding = {4,4,4,4}},
+			.cornerRadius = CLAY_CORNER_RADIUS(8),
+			.backgroundColor = COLOR_ACCENT
+		}){
+			text_p(menu_text, COLOR_WHITE);
+		}
+		if(Clay_PointerOver(id) && IsMouseButtonDown(MOUSE_LEFT_BUTTON)){
+			dropdown_menu(items_text, items_text_len, 1);
+		}else if(!Clay_PointerOver(id) && IsMouseButtonDown(MOUSE_LEFT_BUTTON)){
+			dropdown_menu(items_text, items_text_len, 0);
+		}
+		
 	};
 }

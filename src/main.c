@@ -1,8 +1,5 @@
-// #include "raylib.h"
 #include <stdint.h>
 #define CLAY_IMPLEMENTATION
-// #include <clay.h>
-// #include <clay_renderer_raylib.c>
 #include "layout.c"
 
 void HandleClayErrors(Clay_ErrorData errorData)
@@ -13,7 +10,7 @@ void HandleClayErrors(Clay_ErrorData errorData)
 Clay_RenderCommandArray CreateLayout(Clay_Context * context, Interface_Data * data)
 {
 	Clay_SetCurrentContext(context);
-	//Clay_SetDebugModeEnabled(true);
+	// Clay_SetDebugModeEnabled(true);
 
 	// Run once per frame
 	Clay_SetLayoutDimensions(data->windowSize);

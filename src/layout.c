@@ -80,9 +80,14 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 		}) {
 			// put stuff here
 			text_large(CLAY_STRING("INPUTS"),COLOR_BLACK);
-			Clay_String test_dropdown[] = {CLAY_STRING("ITEM1"),CLAY_STRING("ITEM2")};
+			Clay_String test_dropdown[] = {
+				CLAY_STRING("ITEM1"),
+				CLAY_STRING("ITEM2"),
+				CLAY_STRING("ITEM3"),
+				CLAY_STRING("ITEM4")
+			};
 			size_t test_dropdown_len = sizeof(test_dropdown) / sizeof(test_dropdown[0]);
-			dropdown(CLAY_STRING("dropdown menu"), test_dropdown, test_dropdown_len, CLAY_ID("dropdown"));
+			dropdown_button(CLAY_STRING("dropdown menu"), test_dropdown, test_dropdown_len, CLAY_ID("dropdown"));
 			
 		}
 	}
