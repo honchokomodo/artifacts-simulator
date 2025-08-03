@@ -10,6 +10,7 @@ typedef struct {
 	bool isLeftMouseDown;
 	float frameTime;
 	bool state;
+	bool showDebug;
 	// we will need more stuff here later like character builds
 	// and artifact sets plus other useful values
 } Interface_Data;
@@ -22,6 +23,7 @@ Clay_Color COLOR_BG = {200, 243, 255, 255}; // light blue
 Clay_Color COLOR_COMPLEMENT = {255, 190, 2, 255}; // orange-ish color
 Clay_Color COLOR_BLACK = { 0, 0, 0, 255};
 
+Clay_Color COLOR_BUTTON_PRIMARY = {50, 132, 232, 255}; // dark blue
 void text_large(Clay_String text, Clay_Color color){
 	CLAY({
 	}){
@@ -50,6 +52,7 @@ void text_p(Clay_String text, Clay_Color color){
 
 static void dropdown_menu(Clay_ElementId menu_id, Clay_String items_text[], size_t items_text_len){
 
+
 	CLAY({
 		.id = menu_id,
 		.layout = {
@@ -70,6 +73,7 @@ static void dropdown_menu(Clay_ElementId menu_id, Clay_String items_text[], size
 			}
 	
 			CLAY({
+				.id = CLAY_SIDI(menu_id.stringId, i),
 				.layout = {
 					.padding = {4,4,2,2},
 					.sizing = {
@@ -80,7 +84,7 @@ static void dropdown_menu(Clay_ElementId menu_id, Clay_String items_text[], size
 				.backgroundColor = COLOR_BG,
 				.border = {
 					.width = {2,2,1,1},
-					.color = COLOR_ACCENT
+					.color = COLOR_BUTTON_PRIMARY
 				}
 			}){
 				text_p(items_text[i], COLOR_BLACK);
@@ -97,7 +101,7 @@ void dropdown_button(Clay_ElementId id, Clay_ElementId menu_id, Clay_String butt
 		.layout = {
 			.layoutDirection = CLAY_TOP_TO_BOTTOM,
 			.childGap = 4,
-			.sizing = { .width = CLAY_SIZING_FIXED(125)}
+			.sizing = { .width = CLAY_SIZING_FIXED(150)}
 		},
 	}){
 		CLAY({
@@ -108,7 +112,7 @@ void dropdown_button(Clay_ElementId id, Clay_ElementId menu_id, Clay_String butt
 					}
 			},
 			.cornerRadius = CLAY_CORNER_RADIUS(8),
-			.backgroundColor = COLOR_ACCENT
+			.backgroundColor = COLOR_BUTTON_PRIMARY
 		}){
 			text_p(button_text, COLOR_WHITE);
 		}
