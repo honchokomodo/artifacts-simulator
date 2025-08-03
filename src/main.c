@@ -1,4 +1,5 @@
 #include "raylib.h"
+#include <stdbool.h>
 #include <stdint.h>
 #define CLAY_IMPLEMENTATION
 #include "layout.c"
@@ -11,7 +12,8 @@ void HandleClayErrors(Clay_ErrorData errorData)
 Clay_RenderCommandArray CreateLayout(Clay_Context * context, Interface_Data * data)
 {
 	Clay_SetCurrentContext(context);
-	//Clay_SetDebugModeEnabled(true);
+
+	Clay_SetDebugModeEnabled(data->showDebug);
 
 	// Run once per frame
 	Clay_SetLayoutDimensions(data->windowSize);
@@ -75,15 +77,23 @@ int main(void)
 		uiData.scrollDelta = GetMouseWheelMoveV();
 		uiData.isLeftMouseDown = IsMouseButtonDown(MOUSE_BUTTON_LEFT);
 		uiData.frameTime = GetFrameTime();
+
+		if(IsKeyPressed(KEY_D)){
+			uiData.showDebug = !uiData.showDebug;
+		}
 		
-		Clay_String dropdownButton = CLAY_STRING("SANDS_button");
-		Clay_String dropdownMenu = CLAY_STRING("SANDS_menu");
-		if(Clay_PointerOver(Clay_GetElementId(dropdownButton)) && IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
-			uiData.state = 
-			(Clay_PointerOver(Clay_GetElementId(dropdownButton)))
-			|| Clay_PointerOver(Clay_GetElementId(dropdownMenu));
-		}else if(!Clay_PointerOver(Clay_GetElementId(dropdownButton)) && IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
-			uiData.state = false;
+		Clay_String dropdownIds[][2] = {
+			CLAY_STRING("SANDS_Button"), CLAY_STRING("SANDS_Menu")
+		};
+		size_t dropdownIdsLens = sizeof(dropdownIds) / sizeof(dropdownIds[0]);
+		for(int i = 0; i<dropdownIdsLens; i++){
+			if(Clay_PointerOver(Clay_GetElementId(dropdownIds[i][0])) && IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
+				uiData.state = 
+				(Clay_PointerOver(Clay_GetElementId(dropdownIds[i][0])))
+				|| Clay_PointerOver(Clay_GetElementId(dropdownIds[i][1]));
+			}else if(!Clay_PointerOver(Clay_GetElementId(dropdownIds[i][0])) && IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
+				uiData.state = false;
+			}
 		}
 
 		Clay_RenderCommandArray renderCommands = CreateLayout(clayContext, &uiData);
