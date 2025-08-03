@@ -96,22 +96,24 @@ void dropdown_button(Clay_ElementId id, Clay_ElementId menu_id, Clay_String butt
 		.id = id,
 		.layout = {
 			.layoutDirection = CLAY_TOP_TO_BOTTOM,
-			.childGap = 4
+			.childGap = 4,
+			.sizing = { .width = CLAY_SIZING_FIXED(125)}
 		},
 	}){
 		CLAY({
-			.layout = {.padding = {4,4,4,4}},
+			.layout = {
+				.padding = {4,4,4,4},
+				.sizing = {
+					.width = CLAY_SIZING_GROW()
+					}
+			},
 			.cornerRadius = CLAY_CORNER_RADIUS(8),
 			.backgroundColor = COLOR_ACCENT
 		}){
 			text_p(button_text, COLOR_WHITE);
 		}
 		if(state){
-			dropdown_menu(menu_id, items_text, items_text_len);
-			// if(IsMouseButtonDown(MOUSE_LEFT_BUTTON)){
-			// 	dropdown_menu(items_text, items_text_len);
-			// }
-	
+			dropdown_menu(menu_id, items_text, items_text_len);	
 		}
 	};
 }

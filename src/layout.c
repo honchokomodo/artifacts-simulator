@@ -1,5 +1,6 @@
 // vim: ts=2 sw=2
 #include "components.c"
+#include "artifact.c"
 
 Interface_Data uiData_Initialize() {
 	Interface_Data data = {0};
@@ -70,16 +71,21 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 		}) {
 			// put stuff here
 			text_large(CLAY_STRING("INPUTS"),COLOR_BLACK);
-			Clay_String test_dropdown[] = {
-				CLAY_STRING("ITEM1"),
-				CLAY_STRING("ITEM2"),
-				CLAY_STRING("ITEM3"),
-				CLAY_STRING("ITEM4")
+			text_p(CLAY_STRING("Input main stats:"), COLOR_BLACK); 
+			
+			Clay_String SANDS_select[] = {
+				CLAY_STRING("HP_PERCENT"),
+				CLAY_STRING("ATK_PERCENT"),
+				CLAY_STRING("DEF_PERCENT"),
+				CLAY_STRING("ENERGY_RECHARGE"),
+				CLAY_STRING("ELEMENTAL_MASTERY")
 			};
-			size_t test_dropdown_len = sizeof(test_dropdown) / sizeof(test_dropdown[0]);
 
-			// dropdown(dropDownState, CLAY_STRING("TEST INPUT"), test_dropdown,test_dropdown_len);
-			dropdown_button(CLAY_ID("dropdown"), CLAY_ID("dropdown_menu"), CLAY_STRING("TEST INPUT"), test_dropdown, test_dropdown_len, data->state);
+			size_t select_lens[] = {
+				[SANDS] = sizeof(SANDS_select) / sizeof(SANDS_select[0])
+			};
+			
+			dropdown_button(CLAY_ID("SANDS_Button"), CLAY_ID("SANDS_Menu"), CLAY_STRING("SANDS"), SANDS_select, select_lens[SANDS], data->state);
 			
 		}
 	}
