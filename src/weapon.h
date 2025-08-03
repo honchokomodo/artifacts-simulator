@@ -29,6 +29,23 @@ increased by 16%.
 	.stat = {ATK_PERCENT, 27.6},
 };
 
+Weapon mistsplitter_reforged_r1 = {
+/* from wiki:
+Mistsplitter's Edge
+Gain a 12~24% Elemental DMG Bonus for all elements and receive the might of 
+the Mistsplitter's Emblem. At stack levels 1/2/3, Mistsplitter's Emblem provides
+a 8/16/28~16/32/56% Elemental DMG Bonus for the character's Elemental Type. 
+The character will obtain 1 stack of Mistsplitter's Emblem in each of the 
+following scenarios: Normal Attack deals Elemental DMG (stack lasts 5s), casting
+Elemental Burst (stack lasts 10s); Energy is less than 100% (stack disappears
+when Energy is full). Each stack's duration is calculated independently.
+*/
+	.type = MISTSPLITTER_REFORGED,
+	.refinement = 1,
+	.atk = 674,
+	.stat = {CRIT_DMG, 44.1}
+}
+
 Weapon skyward_harp_r1_90 = {
 /* from wiki:
 Echoing Ballad
