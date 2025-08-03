@@ -10,7 +10,7 @@
 #define MAX_SUBSTATS 4
 #define MAX_UPGRADES 5
 
-typedef enum piecetype {
+typedef enum piece_type {
 	PIECE_NOTHING,
 	FLOWER,
 	FEATHER,
@@ -19,10 +19,11 @@ typedef enum piecetype {
 	CIRCLET,
 } PieceType;
 
-typedef enum artifactset {
+typedef enum artifact_set {
 	SET_NOTHING,
 	OFFSET,
 	ONSET,
+	FINALE_OF_THE_DEEP_GALLERIES,
 } ArtifactSet;
 
 typedef struct affix {
@@ -41,6 +42,16 @@ typedef struct artifact {
 	int num_upgrades[MAX_SUBSTATS];
 } Artifact;
 
+/* may not even be necesssary
+typedef struct artifact_loadout {
+	Artifact flower;
+	Artifact feather;
+	Artifact sands;
+	Artifact goblet;
+	Artifact circlet;
+} ArtifactLoadout;
+*/
+
 char const * const piece2str[] = {
 	[PIECE_NOTHING] = "nil piece",
 	[FLOWER] = "Flower",
@@ -54,6 +65,7 @@ char const * const set2str[] = {
 	[SET_NOTHING] = "nil set",
 	[OFFSET] = "offset",
 	[ONSET] = "onset",
+	[FINALE_OF_THE_DEEP_GALLERIES] = "Finale of the Deep Galleries",
 };
 
 float const mainstat_values[][6] = {

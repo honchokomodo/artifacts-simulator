@@ -1,12 +1,25 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "character.c"
+#include "../character.c"
 
 int main(void)
 {
 	srand(time(NULL));
 
+	CharacterBuild skirk = {
+		.character = skirk90,
+		.weapon = calamity_of_eshu_r5_90,
+		.flower = ARTIFACT_NEW(rand() % 5 == 0, .level = 20, .set = FINALE_OF_THE_DEEP_GALLERIES, .piece = FLOWER),
+		.feather = ARTIFACT_NEW(rand() % 5 == 0, .level = 20, .set = FINALE_OF_THE_DEEP_GALLERIES, .piece = FEATHER),
+		.sands = ARTIFACT_NEW(rand() % 5 == 0, .level = 20, .set = FINALE_OF_THE_DEEP_GALLERIES, .piece = SANDS, .mainstat.type = ATK_PERCENT),
+		.goblet = ARTIFACT_NEW(rand() % 5 == 0, .level = 20, .set = FINALE_OF_THE_DEEP_GALLERIES, .piece = GOBLET, .mainstat.type = CRYO_BONUS),
+		.circlet = ARTIFACT_NEW(rand() % 5 == 0, .level = 20, .set = FINALE_OF_THE_DEEP_GALLERIES, .piece = CIRCLET, .mainstat.type = CRIT_DAMAGE),
+	};
+
+	characterbuild_print(skirk);
+
+	/*
 	Character skirk_with_eshu = {
 		.name = "Skirk with Calamity of Eshu",
 		.hp = 12417,
@@ -38,6 +51,7 @@ int main(void)
 
 	newarti = ARTIFACT_NEW(rand() % 5 == 0, .level = 20, .set = ONSET, .piece = CIRCLET, .mainstat.type = CRIT_DAMAGE);
 	skirk_with_eshu.artifacts[CIRCLET] = newarti;
+	*/
 
 	/*
 	skirk_with_eshu.artifacts[FLOWER] = (Artifact) {
@@ -91,7 +105,7 @@ int main(void)
 	};
 	*/
 
-	character_print(skirk_with_eshu);
+//	character_print(skirk_with_eshu);
 
 	return 0;
 }
