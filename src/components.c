@@ -48,50 +48,55 @@ void text_p(Clay_String text, Clay_Color color){
 	}
 }
 
-static void dropdown_menu(Clay_String items_text[], size_t items_text_len){
+static void dropdown_menu(Clay_ElementId menu_id, Clay_String items_text[], size_t items_text_len){
+
+	CLAY({
+		.id = menu_id,
+		.layout = {
+			.layoutDirection = CLAY_TOP_TO_BOTTOM,
+			.sizing = { .width = CLAY_SIZING_PERCENT(1)}
+		},
+	}){
+		for(int i=0; i < items_text_len; i++ ){
+
+			Clay_CornerRadius cornerRadius;
 	
-	for(int i=0; i < items_text_len; i++ ){
-
-		Clay_CornerRadius cornerRadius;
-
-		if (i == 0) {
-			cornerRadius = (Clay_CornerRadius){4, 4, 0, 0};
-		} else if (i == items_text_len - 1) {
-			cornerRadius = (Clay_CornerRadius){0, 0, 4, 4};
-		} else {
-			cornerRadius = (Clay_CornerRadius){0, 0, 0, 0};
-		}
-
-		CLAY({
-			.id = CLAY_ID("dropdown_menu"),
-			.layout = {
-				.padding = {4,4,2,2},
-				.sizing = {
-					.width = CLAY_SIZING_PERCENT(1)
-				}
-			},
-			.floating = {
-				.attachPoints = CLAY_ATTACH_POINT_LEFT_BOTTOM
-			},
-			.cornerRadius = cornerRadius,
-			.backgroundColor = COLOR_BG,
-			.border = {
-				.width = {2,2,1,1},
-				.color = COLOR_ACCENT
+			if (i == 0) {
+				cornerRadius = (Clay_CornerRadius){4, 4, 0, 0};
+			} else if (i == items_text_len - 1) {
+				cornerRadius = (Clay_CornerRadius){0, 0, 4, 4};
+			} else {
+				cornerRadius = (Clay_CornerRadius){0, 0, 0, 0};
 			}
-		}){
-			text_p(items_text[i], COLOR_BLACK);
+	
+			CLAY({
+				.layout = {
+					.padding = {4,4,2,2},
+					.sizing = {
+						.width = CLAY_SIZING_PERCENT(1)
+					}
+				},
+				.cornerRadius = cornerRadius,
+				.backgroundColor = COLOR_BG,
+				.border = {
+					.width = {2,2,1,1},
+					.color = COLOR_ACCENT
+				}
+			}){
+				text_p(items_text[i], COLOR_BLACK);
+			}
 		}
 	}
 
 }
 
-void dropdown_button(Clay_ElementId id, Clay_String button_text, Clay_String items_text[], size_t items_text_len, bool state){
+void dropdown_button(Clay_ElementId id, Clay_ElementId menu_id, Clay_String button_text, Clay_String items_text[], size_t items_text_len, bool state){
 
 	CLAY({
 		.id = id,
 		.layout = {
-			.layoutDirection = CLAY_TOP_TO_BOTTOM
+			.layoutDirection = CLAY_TOP_TO_BOTTOM,
+			.childGap = 4
 		},
 	}){
 		CLAY({
@@ -102,7 +107,7 @@ void dropdown_button(Clay_ElementId id, Clay_String button_text, Clay_String ite
 			text_p(button_text, COLOR_WHITE);
 		}
 		if(state){
-			dropdown_menu(items_text, items_text_len);
+			dropdown_menu(menu_id, items_text, items_text_len);
 			// if(IsMouseButtonDown(MOUSE_LEFT_BUTTON)){
 			// 	dropdown_menu(items_text, items_text_len);
 			// }

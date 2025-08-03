@@ -79,7 +79,7 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 			size_t test_dropdown_len = sizeof(test_dropdown) / sizeof(test_dropdown[0]);
 
 			// dropdown(dropDownState, CLAY_STRING("TEST INPUT"), test_dropdown,test_dropdown_len);
-			dropdown_button(CLAY_ID("dropdown"), CLAY_STRING("TEST INPUT"), test_dropdown, test_dropdown_len, data->state);
+			dropdown_button(CLAY_ID("dropdown"), CLAY_ID("dropdown_menu"), CLAY_STRING("TEST INPUT"), test_dropdown, test_dropdown_len, data->state);
 			
 		}
 	}
