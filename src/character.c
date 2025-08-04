@@ -102,7 +102,74 @@ CharacterBase skirk90 = {
 
 void characterbuild_print(CharacterBuild in)
 {
-	//TODO: IMPLEMENT THIS
+	float accumulators[CRIT_DAMAGE + 1] = {0};
+
+	float hp_base = in.character.hp;
+	float atk_base = in.character.atk;
+	float def_base = in.character.def;
+	accumulators[HP_PERCENT] += in.character.hp_percent;
+	accumulators[ATK_PERCENT] += in.character.atk_percent;
+	accumulators[DEF_PERCENT] += in.character.def_percent;
+	accumulators[ELEMENTAL_MASTERY] += in.character.elemental_mastery;
+	accumulators[ENERGY_RECHARGE] += in.character.energy_recharge;
+	accumulators[PYRO_BONUS] += in.character.pyro_bonus;
+	accumulators[ELECTRO_BONUS] += in.character.electro_bonus;
+	accumulators[CRYO_BONUS] += in.character.cryo_bonus;
+	accumulators[HYDRO_BONUS] += in.character.hydro_bonus;
+	accumulators[DENDRO_BONUS] += in.character.dendro_bonus;
+	accumulators[ANEMO_BONUS] += in.character.anemo_bonus;
+	accumulators[GEO_BONUS] += in.character.geo_bonus;
+	accumulators[PHYSICAL_BONUS] += in.character.physical_bonus;
+	accumulators[HEALING_BONUS] += in.character.healing_bonus;
+	accumulators[CRIT_RATE] += in.character.crit_rate;
+	accumulators[CRIT_DAMAGE] += in.character.crit_damage;
+
+	// step 1: aggregate artifact stats
+#define AGGREGATE_ARTIFACT_STATS(arti) \
+	do { \
+		accumulators[arti.mainstat.type] += arti.mainstat.value; \
+		for (int line = 0; line < 4; line++) { \
+			Affix substat = arti.substat[line]; \
+			accumulators[substat.type] += substat.value; \
+		} \
+	} while (0)
+
+	AGGREGATE_ARTIFACT_STATS(in.flower);
+	AGGREGATE_ARTIFACT_STATS(in.feather);
+	AGGREGATE_ARTIFACT_STATS(in.sands);
+	AGGREGATE_ARTIFACT_STATS(in.goblet);
+	AGGREGATE_ARTIFACT_STATS(in.circlet);
+
+#undef AGGREGATE_ARTIFACT_STATS
+	
+	// step 2: handle artifact set bonuses
+	// this is going to be a total nightmare
+	// TODO
+
+	// step 3: handle weapon stats
+	atk_base += in.weapon.atk;
+	accumulators[in.weapon.stat.type] += in.weapon.stat.value;
+
+	// step 4: handle weapon passives
+	// this is going to be a total nightmare
+	// TODO
+	
+	// step 5: handle character passives
+	// this is going to be a total nightmare
+	// TODO
+
+	// step 5: combine base stats with aggregate stats
+	float hp_fac = 1 + accumulators[HP_PERCENT] / 100;
+	float atk_fac = 1 + accumulators[ATK_PERCENT] / 100;
+	float def_fac = 1 + accumulators[DEF_PERCENT] / 100;
+
+	float hp = hp_base * hp_fac + accumulators[HP_FLAT];
+	float atk = atk_base * atk_fac + accumulators[ATK_FLAT];
+	float def = def_base * def_fac + accumulators[DEF_FLAT];
+
+	// step 6: print the stats
+	// TODO
+	
 }
 
 #endif

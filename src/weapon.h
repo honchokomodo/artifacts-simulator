@@ -5,8 +5,9 @@
 
 typedef enum weapon_type {
 	WEAPON_NOTHING,
-	SKYWARD_HARP,
 	CALAMITY_OF_ESHU,
+	SKYWARD_HARP,
+	MISTSPLITTER_REFORGED,
 } WeaponType;
 
 typedef struct weapon {
@@ -43,8 +44,8 @@ when Energy is full). Each stack's duration is calculated independently.
 	.type = MISTSPLITTER_REFORGED,
 	.refinement = 1,
 	.atk = 674,
-	.stat = {CRIT_DMG, 44.1}
-}
+	.stat = {CRIT_DAMAGE, 44.1},
+};
 
 Weapon skyward_harp_r1_90 = {
 /* from wiki:
