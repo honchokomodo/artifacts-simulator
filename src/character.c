@@ -144,7 +144,7 @@ void characterbuild_print(CharacterBuild in)
 	
 	// step 2: handle artifact set bonuses
 	// this is going to be a total nightmare
-	// TODO
+	// TODO: use function pointers?
 
 	// step 3: handle weapon stats
 	atk_base += in.weapon.atk;
@@ -152,11 +152,11 @@ void characterbuild_print(CharacterBuild in)
 
 	// step 4: handle weapon passives
 	// this is going to be a total nightmare
-	// TODO
+	// TODO: use function pointers?
 	
 	// step 5: handle character passives
 	// this is going to be a total nightmare
-	// TODO
+	// TODO: use function pointers?
 
 	// step 5: combine base stats with aggregate stats
 	float hp_fac = 1 + accumulators[HP_PERCENT] / 100;
