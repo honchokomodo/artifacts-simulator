@@ -24,74 +24,92 @@ Clay_Color COLOR_COMPLEMENT = {255, 190, 2, 255}; // orange-ish color
 Clay_Color COLOR_BLACK = { 0, 0, 0, 255};
 
 Clay_Color COLOR_BUTTON_PRIMARY = {50, 132, 232, 255}; // dark blue
+
 void text_large(Clay_String text, Clay_Color color){
-	CLAY({
-	}){
-		CLAY_TEXT(text,
-			CLAY_TEXT_CONFIG({
-				.fontId = FONT_ID_HONCHOKOMONO,
-				.fontSize = 24,
-				.textColor = color
-			})
-		);
-	}
+	CLAY_TEXT(text,
+		CLAY_TEXT_CONFIG({
+			.fontId = FONT_ID_HONCHOKOMONO,
+			.fontSize = 24,
+			.textColor = color
+		})
+	);
+}
+
+void text_sub_heading(Clay_String text, Clay_Color color){
+	CLAY_TEXT(text,
+		CLAY_TEXT_CONFIG({
+			.fontId = FONT_ID_HONCHOKOMONO,
+			.fontSize = 22,
+			.textColor = color
+		})
+	);
 }
 
 void text_p(Clay_String text, Clay_Color color){
-	CLAY({
-	}){
-		CLAY_TEXT(text,
-			CLAY_TEXT_CONFIG({
-				.fontId = FONT_ID_HONCHOKOMONO,
-				.fontSize = 18, 
-				.textColor = color
-			})
-		);
-	}
+	CLAY_TEXT(text,
+		CLAY_TEXT_CONFIG({
+			.fontId = FONT_ID_HONCHOKOMONO,
+			.fontSize = 18, 
+			.textColor = color
+		})
+	);
 }
 
 static void dropdown_menu(Clay_ElementId menu_id, Clay_String items_text[], size_t items_text_len){
 
-
 	CLAY({
 		.id = menu_id,
-		.layout = {
-			.layoutDirection = CLAY_TOP_TO_BOTTOM,
-			.sizing = { .width = CLAY_SIZING_PERCENT(1)}
-		},
+		.floating = {
+			.attachTo = CLAY_ATTACH_TO_PARENT,
+            .attachPoints = {
+                .parent = CLAY_ATTACH_POINT_CENTER_BOTTOM,
+				.element = CLAY_ATTACH_POINT_CENTER_TOP
+			},
+		}
 	}){
-		for(int i=0; i < items_text_len; i++ ){
-
-			Clay_CornerRadius cornerRadius;
-			Clay_BorderWidth borderWidth;
-	
-			if (i == 0) {
-				cornerRadius = (Clay_CornerRadius){4, 4, 0, 0};
-				borderWidth = (Clay_BorderWidth){2,2,2,1};
-			} else if (i == items_text_len - 1) {
-				cornerRadius = (Clay_CornerRadius){0, 0, 4, 4};
-				borderWidth = (Clay_BorderWidth){2,2,1,2};
-			} else {
-				cornerRadius = (Clay_CornerRadius){0, 0, 0, 0};
-				borderWidth = (Clay_BorderWidth){2,2,1,1};
-			}
-	
-			CLAY({
-				.id = CLAY_SIDI(menu_id.stringId, i),
-				.layout = {
-					.padding = {4,4,2,2},
-					.sizing = {
-						.width = CLAY_SIZING_PERCENT(1)
-					}
+		CLAY({
+			.layout = {
+				.layoutDirection = CLAY_TOP_TO_BOTTOM,
+				.sizing = {
+						.width = CLAY_SIZING_FIXED(135)
 				},
-				.cornerRadius = cornerRadius,
-				.backgroundColor = COLOR_BG,
-				.border = {
-					.width = borderWidth,
-					.color = COLOR_BUTTON_PRIMARY
+			},
+			.backgroundColor = {40, 40, 40, 255 },
+			.cornerRadius = CLAY_CORNER_RADIUS(8)
+		}) {
+			for(int i=0; i < items_text_len; i++ ){
+
+				Clay_CornerRadius cornerRadius;
+				Clay_BorderWidth borderWidth;
+		
+				if (i == 0) {
+					cornerRadius = (Clay_CornerRadius){4, 4, 0, 0};
+					borderWidth = (Clay_BorderWidth){2,2,2,1};
+				} else if (i == items_text_len - 1) {
+					cornerRadius = (Clay_CornerRadius){0, 0, 4, 4};
+					borderWidth = (Clay_BorderWidth){2,2,1,2};
+				} else {
+					cornerRadius = (Clay_CornerRadius){0, 0, 0, 0};
+					borderWidth = (Clay_BorderWidth){2,2,1,1};
 				}
-			}){
-				text_p(items_text[i], COLOR_BLACK);
+	
+				CLAY({
+					.id = CLAY_SIDI(menu_id.stringId, i),
+					.layout = {
+						.padding = {4,4,2,2},
+						.sizing = {
+							.width = CLAY_SIZING_PERCENT(1)
+						}
+					},
+					.cornerRadius = cornerRadius,
+					.backgroundColor = COLOR_BG,
+					.border = {
+						.width = borderWidth,
+						.color = COLOR_BUTTON_PRIMARY
+					}
+				}){
+					text_p(items_text[i], COLOR_BLACK);
+				}
 			}
 		}
 	}
@@ -100,28 +118,19 @@ static void dropdown_menu(Clay_ElementId menu_id, Clay_String items_text[], size
 
 void dropdown_button(Clay_ElementId id, Clay_ElementId menu_id, Clay_String button_text, Clay_String items_text[], size_t items_text_len, bool state){
 
-	CLAY({
-		.id = id,
-		.layout = {
-			.layoutDirection = CLAY_TOP_TO_BOTTOM,
-			.childGap = 4,
-			.sizing = { .width = CLAY_SIZING_FIXED(150)}
-		},
-	}){
 		CLAY({
+			.id = id,
 			.layout = {
 				.padding = {4,4,4,4},
-				.sizing = {
-					.width = CLAY_SIZING_GROW()
-					}
 			},
+			.backgroundColor = COLOR_BUTTON_PRIMARY,
 			.cornerRadius = CLAY_CORNER_RADIUS(8),
-			.backgroundColor = COLOR_BUTTON_PRIMARY
 		}){
 			text_p(button_text, COLOR_WHITE);
+
+			if(state){
+				dropdown_menu(menu_id, items_text, items_text_len);	
+			}
 		}
-		if(state){
-			dropdown_menu(menu_id, items_text, items_text_len);	
-		}
-	};
+
 }
