@@ -24,6 +24,8 @@ typedef enum artifact_set {
 	OFFSET,
 	ONSET,
 	FINALE_OF_THE_DEEP_GALLERIES,
+	MARECHAUSSEE_HUNTER,
+	WANDERERS_TROUPE,
 } ArtifactSet;
 
 typedef struct affix {
@@ -66,6 +68,8 @@ char const * const set2str[] = {
 	[OFFSET] = "offset",
 	[ONSET] = "onset",
 	[FINALE_OF_THE_DEEP_GALLERIES] = "Finale of the Deep Galleries",
+	[MARECHAUSSEE_HUNTER] = "Marechaussee Hunter",
+	[WANDERERS_TROUPE] = "Wanderer's Troupe",
 };
 
 float const mainstat_values[][6] = {
@@ -117,8 +121,8 @@ Artifact artifact_upgrade(Artifact in);
 
 #define ARTIFACT_NEW(has4substats, ...) artifact_new(has4substats, (Artifact) {__VA_ARGS__})
 Artifact artifact_new(bool has4substats, Artifact in);
-Artifact artifact_new_domain(void);
-Artifact artifact_new_strongbox(void);
+Artifact artifact_new_domain(ArtifactSet set1, ArtifactSet set2);
+Artifact artifact_new_strongbox(ArtifactSet set);
 
 void artifact_print(Artifact in)
 {
@@ -334,15 +338,15 @@ Artifact artifact_new(bool has4substats, Artifact in)
 	return in;
 }
 
-Artifact artifact_new_domain(void)
+Artifact artifact_new_domain(ArtifactSet set1, ArtifactSet set2)
 {
-	Artifact arti = {.set = 1 + rand() % 2};
+	Artifact arti = {.set = rand() % 2 != 0 ? set1 : set2};
 	return artifact_new(rand() % 5 == 0, arti);
 }
 
-Artifact artifact_new_strongbox(void)
+Artifact artifact_new_strongbox(ArtifactSet set)
 {
-	Artifact arti = {.set = ONSET};
+	Artifact arti = {.set = set};
 	return artifact_new(rand() % 3 == 0, arti);
 }
 

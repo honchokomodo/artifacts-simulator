@@ -73,6 +73,12 @@ typedef struct character_build {
 */
 } CharacterBuild;
 
+char const * const character2str[] = {
+	[CHARACTER_NOTHING] = "nil character",
+	[AMBER] = "Amber",
+	[SKIRK] = "Skirk",
+};
+
 CharacterBase amber90 = {
 	.type = AMBER,
 	.level = 90,
@@ -100,8 +106,10 @@ CharacterBase skirk90 = {
 	.energy_recharge = 100.0,
 };
 
+// should match what is seen in-game as closely as possible.
 void characterbuild_print(CharacterBuild in)
 {
+	// step 1: prepare accumulators
 	float accumulators[CRIT_DAMAGE + 1] = {0};
 
 	float hp_base = in.character.hp;
@@ -124,7 +132,7 @@ void characterbuild_print(CharacterBuild in)
 	accumulators[CRIT_RATE] += in.character.crit_rate;
 	accumulators[CRIT_DAMAGE] += in.character.crit_damage;
 
-	// step 1: aggregate artifact stats
+	// step 2: aggregate artifact stats into accumulators
 #define AGGREGATE_ARTIFACT_STATS(arti) \
 	do { \
 		accumulators[arti.mainstat.type] += arti.mainstat.value; \
@@ -142,23 +150,23 @@ void characterbuild_print(CharacterBuild in)
 
 #undef AGGREGATE_ARTIFACT_STATS
 	
-	// step 2: handle artifact set bonuses
+	// step 3: handle artifact set bonuses
 	// this is going to be a total nightmare
 	// TODO: use function pointers?
 
-	// step 3: handle weapon stats
+	// step 4: handle weapon stats
 	atk_base += in.weapon.atk;
 	accumulators[in.weapon.stat.type] += in.weapon.stat.value;
 
-	// step 4: handle weapon passives
+	// step 5: handle weapon passives
 	// this is going to be a total nightmare
 	// TODO: use function pointers?
 	
-	// step 5: handle character passives
+	// step 6: handle character passives
 	// this is going to be a total nightmare
 	// TODO: use function pointers?
 
-	// step 5: combine base stats with aggregate stats
+	// step 7: combine base stats with aggregate stats
 	float hp_fac = 1 + accumulators[HP_PERCENT] / 100;
 	float atk_fac = 1 + accumulators[ATK_PERCENT] / 100;
 	float def_fac = 1 + accumulators[DEF_PERCENT] / 100;
@@ -167,9 +175,45 @@ void characterbuild_print(CharacterBuild in)
 	float atk = atk_base * atk_fac + accumulators[ATK_FLAT];
 	float def = def_base * def_fac + accumulators[DEF_FLAT];
 
-	// step 6: print the stats
-	// TODO
-	
+	// step 8: print the stats
+#define COND_PRINT(fmt, key) \
+	do { \
+		if (accumulators[key] != 0) \
+			printf(fmt, accumulators[key]); \
+	} while (0)
+
+	printf("%s\n", character2str[in.character.type]);
+	printf("HP - %g\n", hp);
+	printf("ATK - %g\n", atk);
+	printf("DEF - %g\n", def);
+	COND_PRINT("Elemental Mastery - %g\n", ELEMENTAL_MASTERY);
+	printf("Crit RATE - %g%%\n", accumulators[CRIT_RATE]);
+	printf("Crit DMG - %g%%\n", accumulators[CRIT_DAMAGE]);
+	COND_PRINT("Healing Bonus - %g%%\n", HEALING_BONUS);
+	printf("Energy Recharge - %g%%\n", accumulators[ENERGY_RECHARGE]);
+	COND_PRINT("Pyro DMG Bonus - %g%%\n", PYRO_BONUS);
+	COND_PRINT("Hydro DMG Bonus - %g%%\n", HYDRO_BONUS);
+	COND_PRINT("Dendro DMG Bonus - %g%%\n", DENDRO_BONUS);
+	COND_PRINT("Electro DMG Bonus - %g%%\n", ELECTRO_BONUS);
+	COND_PRINT("Anemo DMG Bonus - %g%%\n", ANEMO_BONUS);
+	COND_PRINT("Cryo DMG Bonus - %g%%\n", CRYO_BONUS);
+	COND_PRINT("Geo DMG Bonus - %g%%\n", GEO_BONUS);
+	COND_PRINT("Physical DMG Bonus - %g%%\n", PHYSICAL_BONUS);
+
+#undef COND_PRINT
+
+	// step 9: print the artifacts
+	printf("\n");
+	artifact_print(in.flower);
+	printf("\n");
+	artifact_print(in.feather);
+	printf("\n");
+	artifact_print(in.sands);
+	printf("\n");
+	artifact_print(in.circlet);
+	printf("\n");
+	artifact_print(in.goblet);
+	printf("\n");
 }
 
 #endif
