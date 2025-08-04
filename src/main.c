@@ -83,16 +83,19 @@ int main(void)
 		}
 		
 		Clay_String dropdownIds[][2] = {
-			CLAY_STRING("SANDS_Button"), CLAY_STRING("SANDS_Menu")
+			{CLAY_STRING("SANDS_Button"), CLAY_STRING("SANDS_Menu")},
+			{CLAY_STRING("GOBLET_Button"), CLAY_STRING("GOBLET_Menu")},
+			{CLAY_STRING("CIRCLET_Button"), CLAY_STRING("CIRCLET_Menu")}
 		};
 		size_t dropdownIdsLens = sizeof(dropdownIds) / sizeof(dropdownIds[0]);
+
 		for(int i = 0; i<dropdownIdsLens; i++){
 			if(Clay_PointerOver(Clay_GetElementId(dropdownIds[i][0])) && IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
-				uiData.state = 
+				uiData.state[i] = 
 				(Clay_PointerOver(Clay_GetElementId(dropdownIds[i][0])))
 				|| Clay_PointerOver(Clay_GetElementId(dropdownIds[i][1]));
 			}else if(!Clay_PointerOver(Clay_GetElementId(dropdownIds[i][0])) && IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
-				uiData.state = false;
+				uiData.state[i] = false;
 			}
 		}
 

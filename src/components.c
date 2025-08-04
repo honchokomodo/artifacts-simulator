@@ -9,8 +9,8 @@ typedef struct {
 	Vector2 scrollDelta;
 	bool isLeftMouseDown;
 	float frameTime;
-	bool state;
 	bool showDebug;
+	bool state[3];
 	// we will need more stuff here later like character builds
 	// and artifact sets plus other useful values
 } Interface_Data;
@@ -63,13 +63,17 @@ static void dropdown_menu(Clay_ElementId menu_id, Clay_String items_text[], size
 		for(int i=0; i < items_text_len; i++ ){
 
 			Clay_CornerRadius cornerRadius;
+			Clay_BorderWidth borderWidth;
 	
 			if (i == 0) {
 				cornerRadius = (Clay_CornerRadius){4, 4, 0, 0};
+				borderWidth = (Clay_BorderWidth){2,2,2,1};
 			} else if (i == items_text_len - 1) {
 				cornerRadius = (Clay_CornerRadius){0, 0, 4, 4};
+				borderWidth = (Clay_BorderWidth){2,2,1,2};
 			} else {
 				cornerRadius = (Clay_CornerRadius){0, 0, 0, 0};
+				borderWidth = (Clay_BorderWidth){2,2,1,1};
 			}
 	
 			CLAY({
@@ -83,7 +87,7 @@ static void dropdown_menu(Clay_ElementId menu_id, Clay_String items_text[], size
 				.cornerRadius = cornerRadius,
 				.backgroundColor = COLOR_BG,
 				.border = {
-					.width = {2,2,1,1},
+					.width = borderWidth,
 					.color = COLOR_BUTTON_PRIMARY
 				}
 			}){
