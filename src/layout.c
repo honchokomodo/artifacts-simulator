@@ -1,6 +1,7 @@
 // vim: ts=2 sw=2
 #include "components.c"
 #include "artifact.c"
+#include "raylib.h"
 
 Interface_Data uiData_Initialize() {
 	Interface_Data data = {0};
@@ -82,6 +83,10 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 			text_large(CLAY_STRING("Artifact Smulator for Genshin Impact"), COLOR_BLACK);
 		}
 
+		Image test_image = LoadImage("resources/images/test.PNG");   
+		Texture2D texture = LoadTextureFromImage(test_image);  
+		UnloadImage(test_image);
+
 		CLAY({ .layout = { .layoutDirection = CLAY_LEFT_TO_RIGHT, .sizing = { .width = CLAY_SIZING_GROW(), .height = CLAY_SIZING_PERCENT(0.35)}, .childGap = 8} }){
 			CLAY({
 				.id = CLAY_ID("Character Image"),
@@ -90,15 +95,19 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 					.sizing = { .width = CLAY_SIZING_PERCENT(0.25), .height = CLAY_SIZING_GROW()},
 					.padding = {8, 8, 4, 4}
 				},
-				.backgroundColor = COLOR_WHITE,
 				.cornerRadius = CLAY_CORNER_RADIUS(8),
 				.border = {
 					.color = COLOR_ACCENT,
 					.width = {2,2,2,2}
-				}
+				},
+				.image = {
+					.imageData = &texture,
+				},
 			}){
-				text_sub_heading(CLAY_STRING("Character Image"), COLOR_BLACK);
+				// text_sub_heading(CLAY_STRING("Character Image"), COLOR_BLACK);
+				
 			};
+
 			CLAY({
 				.id = CLAY_ID("Character Summary"),
 				.layout = { 
@@ -201,7 +210,6 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 			}){
 				// text_sub_heading(CLAY_STRING("Sands"), COLOR_BLACK);
 				dropdown_button(CLAY_ID("SANDS_Button"), CLAY_ID("SANDS_Menu"), CLAY_STRING("SANDS"), SANDS_select, select_lens[SANDS], data->state[0]);
-
 			};
 
 			CLAY({

@@ -65,7 +65,8 @@ int main(void)
 	fonts[FONT_ID_HONCHOKOMONO] = LoadFontEx("resources/fonts/honchokomono-regular-normal.otf", 48, NULL, 0);
 #endif
 	SetTextureFilter(fonts[FONT_ID_HONCHOKOMONO].texture, TEXTURE_FILTER_BILINEAR);
-	Clay_SetMeasureTextFunction(Raylib_MeasureText, fonts);
+	Clay_SetMeasureTextFunction(Raylib_MeasureText, fonts);  
+
 	Interface_Data uiData = uiData_Initialize();
     
 	while(!WindowShouldClose())

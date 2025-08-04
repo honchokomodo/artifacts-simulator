@@ -16,6 +16,7 @@ typedef struct {
 } Interface_Data;
 
 const int FONT_ID_HONCHOKOMONO = 0;
+
 Clay_Color COLOR_WHITE = { 255, 255, 255, 255};
 Clay_Color COLOR_PRIMARY = {151, 239, 255, 255}; // blue
 Clay_Color COLOR_ACCENT = {2, 215, 255, 255}; // bolder blue
