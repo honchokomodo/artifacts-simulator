@@ -84,4 +84,22 @@ attack, dealing 125% Physical ATK DMG. Can only occur once every 4s.
 	.passive = noop_weapon_bonus_func, //TODO: implement this
 };
 
+Weapon thundering_pulse_r1_90 = {
+/* from wiki:
+Rule By Thunder
+Increases ATK by 20~40% and grants the might of the Thunder Emblem. 
+At stack levels 1/2/3, the Thunder Emblem increases Normal Attack DMG
+by 12/24/40~24/48/80%. The character will obtain 1 stack of Thunder
+Emblem in each of the following scenarios: Normal Attack deals DMG
+(stack lasts 5s), casting Elemental Skill (stack lasts 10s); Energy
+is less than 100% (stack disappears when Energy is full). Each 
+stack's duration is calculated independently.
+*/
+
+	.name = "Thundering Pulse",
+	.refinement = 1,
+	.stat = {CRIT_DAMAGE, 66.2},
+	.passive = noop_weapon_bonus_func, //TODO: implement this
+};
+
 #endif
