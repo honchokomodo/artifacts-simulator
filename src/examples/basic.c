@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "../character.c"
+#include "../character_list.c"
 
 int main(void)
 {
@@ -10,7 +10,6 @@ int main(void)
 	CharacterBuild skirk = {
 		.character = skirk90,
 		.weapon = calamity_of_eshu_r5_90,
-/*
 		.flower = {
 			.piece = FLOWER, 
 			.set = FINALE_OF_THE_DEEP_GALLERIES,
@@ -65,7 +64,7 @@ int main(void)
 			.substat[2] = {ATK_PERCENT, 5.3},
 			.substat[3] = {HP_FLAT, 478},
 		},
-*/
+/*
 		.flower = ARTIFACT_NEW(rand() % 5 == 0,
 				.level = 20,
 				.set = FINALE_OF_THE_DEEP_GALLERIES,
@@ -89,6 +88,7 @@ int main(void)
 				.set = FINALE_OF_THE_DEEP_GALLERIES,
 				.piece = CIRCLET,
 				.mainstat.type = CRIT_DAMAGE),
+*/
 	};
 
 	characterbuild_print(skirk);

@@ -72,6 +72,8 @@ char const * const set2str[] = {
 	[WANDERERS_TROUPE] = "Wanderer's Troupe",
 };
 
+#include "artifact_set_bonuses.c"
+
 float const mainstat_values[][6] = {
 	// values obtained from wiki.
 	// table has entries for levels 0, 4, 8, 12, 16, 20.

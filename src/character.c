@@ -4,14 +4,16 @@
 #include "artifact.c"
 #include "weapon.h"
 
+/*
 typedef enum character_type {
 	CHARACTER_NOTHING,
 	AMBER,
 	SKIRK,
 } CharacterType;
+*/
 
 typedef struct character_base {
-	CharacterType type;
+	char * name;
 	int level;
 
 	float hp;
@@ -73,40 +75,7 @@ typedef struct character_build {
 */
 } CharacterBuild;
 
-char const * const character2str[] = {
-	[CHARACTER_NOTHING] = "nil character",
-	[AMBER] = "Amber",
-	[SKIRK] = "Skirk",
-};
-
-CharacterBase amber90 = {
-	.type = AMBER,
-	.level = 90,
-
-	// values obtained from wiki
-	.hp = 9461.18,
-	.atk = 223.02,
-	.atk_percent = 24.0,
-	.def = 600.62,
-	.crit_rate = 5.0,
-	.crit_damage = 50.0,
-	.energy_recharge = 100.0,
-};
-
-CharacterBase skirk90 = {
-	.type = SKIRK,
-	.level = 90,
-	
-	// values obtained from wiki
-	.hp = 12417.35,
-	.atk = 358.77,
-	.def = 806.21,
-	.crit_rate = 5.0,
-	.crit_damage = 50.0 + 38.4,
-	.energy_recharge = 100.0,
-};
-
-// should match what is seen in-game as closely as possible.
+// should match what is seen idle in-game as closely as possible.
 void characterbuild_print(CharacterBuild in)
 {
 	// step 1: prepare accumulators
@@ -132,13 +101,30 @@ void characterbuild_print(CharacterBuild in)
 	accumulators[CRIT_RATE] += in.character.crit_rate;
 	accumulators[CRIT_DAMAGE] += in.character.crit_damage;
 
-	// step 2: aggregate artifact stats into accumulators
+	typedef struct set_entry {
+		ArtifactSet set;
+		int count;
+	} Entry;
+	Entry setcounters[5] = {0};
+
+	float multiplicative_factor = 1;
+
+	// step 2: aggregate artifact stats and sets into accumulators
 #define AGGREGATE_ARTIFACT_STATS(arti) \
 	do { \
 		accumulators[arti.mainstat.type] += arti.mainstat.value; \
 		for (int line = 0; line < 4; line++) { \
 			Affix substat = arti.substat[line]; \
 			accumulators[substat.type] += substat.value; \
+		} \
+		for (int i = 0; i < 5; i++) { \
+			if (setcounters[i].set == SET_NOTHING) { \
+				setcounters[i].set = arti.set; \
+			} \
+			if (setcounters[i].set == arti.set) { \
+				setcounters[i].count += 1; \
+				break; \
+			} \
 		} \
 	} while (0)
 
@@ -151,20 +137,26 @@ void characterbuild_print(CharacterBuild in)
 #undef AGGREGATE_ARTIFACT_STATS
 	
 	// step 3: handle artifact set bonuses
-	// this is going to be a total nightmare
-	// TODO: use function pointers?
+	for (int i = 0; i < 5; i++) {
+		set2bonusfunc[setcounters[i].set](
+				setcounters[i].count,
+				accumulators,
+				&multiplicative_factor);
+	}
 
 	// step 4: handle weapon stats
 	atk_base += in.weapon.atk;
 	accumulators[in.weapon.stat.type] += in.weapon.stat.value;
 
 	// step 5: handle weapon passives
-	// this is going to be a total nightmare
-	// TODO: use function pointers?
+	in.weapon.passive(
+			accumulators,
+			&multiplicative_factor
+			);
 	
-	// step 6: handle character passives
+	// step 6: handle character passives and constellations
 	// this is going to be a total nightmare
-	// TODO: use function pointers?
+	// TODO: implement this. use function pointers?
 
 	// step 7: combine base stats with aggregate stats
 	float hp_fac = 1 + accumulators[HP_PERCENT] / 100;
@@ -182,7 +174,7 @@ void characterbuild_print(CharacterBuild in)
 			printf(fmt, accumulators[key]); \
 	} while (0)
 
-	printf("%s\n", character2str[in.character.type]);
+	printf("%s\n", in.character.name);
 	printf("HP - %g\n", hp);
 	printf("ATK - %g\n", atk);
 	printf("DEF - %g\n", def);
@@ -202,7 +194,8 @@ void characterbuild_print(CharacterBuild in)
 
 #undef COND_PRINT
 
-	// step 9: print the artifacts
+	// step 9: print the weapon and artifacts
+	printf("\n");
 	printf("\n");
 	artifact_print(in.flower);
 	printf("\n");

@@ -3,31 +3,54 @@
 
 #include "common.h"
 
+/*
 typedef enum weapon_type {
 	WEAPON_NOTHING,
 	CALAMITY_OF_ESHU,
 	SKYWARD_HARP,
 	MISTSPLITTER_REFORGED,
 } WeaponType;
+*/
+
+typedef void (*WeaponBonusHandlerFunc)(
+		float accumulators[CRIT_DAMAGE + 1],
+		float * multiplicative_factor);
+
+void noop_weapon_bonus_func(
+		float accumulators[CRIT_DAMAGE + 1],
+		float * multiplicative_factor)
+{
+	// this function does nothing
+}
 
 typedef struct weapon {
-	WeaponType type;
+	char * name;
 	int refinement;
 	float atk;
 	Affix stat;
+	WeaponBonusHandlerFunc passive;
 } Weapon;
 
-Weapon calamity_of_eshu_r5_90 = {
 /* from wiki:
 Diffusing Boundary
 While characters are protected by a Shield, DMG dealt by Normal and Charged
 Attacks is increased by 40%, and Normal and Charged Attack CRIT Rate is
 increased by 16%.
 */
-	.type = CALAMITY_OF_ESHU,
+void calamity_of_eshu_r5_passive_func(
+		float accumulators[CRIT_DAMAGE + 1],
+		float * multiplicative_factor)
+{
+	*multiplicative_factor *= 1.4;
+	accumulators[CRIT_RATE] += 16.0;
+}
+
+Weapon calamity_of_eshu_r5_90 = {
+	.name = "Calamity of Eshu",
 	.refinement = 5,
 	.atk = 565,
 	.stat = {ATK_PERCENT, 27.6},
+	.passive = calamity_of_eshu_r5_passive_func,
 };
 
 Weapon mistsplitter_reforged_r1 = {
@@ -41,10 +64,11 @@ following scenarios: Normal Attack deals Elemental DMG (stack lasts 5s), casting
 Elemental Burst (stack lasts 10s); Energy is less than 100% (stack disappears
 when Energy is full). Each stack's duration is calculated independently.
 */
-	.type = MISTSPLITTER_REFORGED,
+	.name = "Mistsplitter Reforged",
 	.refinement = 1,
 	.atk = 674,
 	.stat = {CRIT_DAMAGE, 44.1},
+	.passive = noop_weapon_bonus_func, //TODO: implement this
 };
 
 Weapon skyward_harp_r1_90 = {
@@ -53,10 +77,11 @@ Echoing Ballad
 Increases CRIT DMG by 20%. Hits have a 60% chance to inflict a small AoE
 attack, dealing 125% Physical ATK DMG. Can only occur once every 4s.
 */
-	.type = SKYWARD_HARP,
+	.name = "Skyward Harp",
 	.refinement = 1,
 	.atk = 674,
 	.stat = {CRIT_RATE, 22.1},
+	.passive = noop_weapon_bonus_func, //TODO: implement this
 };
 
 #endif
