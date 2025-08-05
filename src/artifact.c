@@ -128,13 +128,20 @@ Artifact artifact_new_strongbox(ArtifactSet set);
 
 void artifact_print(Artifact in)
 {
+	/*
 	static int const percent_bitmask = 0xfff54;
 	static char const * const pct[] = {"", "%"};
+	*/
 
 	printf("%s - %s +%d\n", set2str[in.set], piece2str[in.piece], in.level);
+	/*
 	printf("%-23s%8g%s\n", stat2str[in.mainstat.type], in.mainstat.value, pct[percent_bitmask >> in.mainstat.type & 1]);
 	for (int i = 0; i < in.num_substats; i++) {
 		printf(" %d %-20s%8g%s\n", in.num_upgrades[i], stat2str[in.substat[i].type], in.substat[i].value, pct[percent_bitmask >> in.substat[i].type & 1]);
+		*/
+	printf("%-23s%8g%s\n", stat2str[in.mainstat.type], in.mainstat.value, stat2pct[in.mainstat.type]);
+	for (int i = 0; i < in.num_substats; i++) {
+		printf(" %d %-20s%8g%s\n", in.num_upgrades[i], stat2str[in.substat[i].type], in.substat[i].value, stat2pct[in.substat[i].type]);
 	}
 }
 

@@ -47,4 +47,50 @@ char const * const stat2str[] = {
 	[CRIT_DAMAGE] = "CRIT DMG",
 };
 
+char const * const stat2abbr[] = {
+	[STAT_NOTHING] = "nil",
+	[HP_FLAT] = "HP",
+	[HP_PERCENT] = "HP%",
+	[ATK_FLAT] = "ATK",
+	[ATK_PERCENT] = "ATK%",
+	[DEF_FLAT] = "DEF",
+	[DEF_PERCENT] = "DEF%",
+	[ELEMENTAL_MASTERY] = "EM",
+	[ENERGY_RECHARGE] = "ER",
+	[PYRO_BONUS] = "Pyr.",
+	[ELECTRO_BONUS] = "Ele.",
+	[CRYO_BONUS] = "Cry.",
+	[HYDRO_BONUS] = "Hyd.",
+	[DENDRO_BONUS] = "Den.",
+	[ANEMO_BONUS] = "Ane.",
+	[GEO_BONUS] = "Geo.",
+	[PHYSICAL_BONUS] = "Phy.",
+	[HEALING_BONUS] = "Hea.",
+	[CRIT_RATE] = "CR",
+	[CRIT_DAMAGE] = "CD",
+};
+
+char const * const stat2pct[] = {
+	[STAT_NOTHING] = "",
+	[HP_FLAT] = "",
+	[HP_PERCENT] = "%",
+	[ATK_FLAT] = "",
+	[ATK_PERCENT] = "%",
+	[DEF_FLAT] = "",
+	[DEF_PERCENT] = "%",
+	[ELEMENTAL_MASTERY] = "",
+	[ENERGY_RECHARGE] = "%",
+	[PYRO_BONUS] = "%",
+	[ELECTRO_BONUS] = "%",
+	[CRYO_BONUS] = "%",
+	[HYDRO_BONUS] = "%",
+	[DENDRO_BONUS] = "%",
+	[ANEMO_BONUS] = "%",
+	[GEO_BONUS] = "%",
+	[PHYSICAL_BONUS] = "%",
+	[HEALING_BONUS] = "%",
+	[CRIT_RATE] = "%",
+	[CRIT_DAMAGE] = "%",
+};
+
 #endif

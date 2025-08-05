@@ -174,7 +174,7 @@ void characterbuild_print(CharacterBuild in)
 			printf(fmt, accumulators[key]); \
 	} while (0)
 
-	printf("%s\n", in.character.name);
+	printf("%s - lv.%d\n", in.character.name, in.character.level);
 	printf("HP - %g\n", hp);
 	printf("ATK - %g\n", atk);
 	printf("DEF - %g\n", def);
@@ -196,6 +196,10 @@ void characterbuild_print(CharacterBuild in)
 
 	// step 9: print the weapon and artifacts
 	printf("\n");
+	printf("%s - R%d\n", in.weapon.name, in.weapon.refinement);
+	printf("ATK - %g\n", in.weapon.atk);
+	printf("%s - %g%s\n", stat2str[in.weapon.stat.type], in.weapon.stat.value, stat2pct[in.weapon.stat.type]);
+
 	printf("\n");
 	artifact_print(in.flower);
 	printf("\n");
