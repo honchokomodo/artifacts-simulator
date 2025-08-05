@@ -12,6 +12,11 @@ typedef enum character_type {
 } CharacterType;
 */
 
+// TODO: make use of this
+typedef void (*CharacterPassiveHandlerFunc)(
+		float accumulators[CRIT_DAMAGE + 1],
+		float * multiplicative_factor);
+
 typedef struct character_base {
 	char * name;
 	int level;
@@ -138,7 +143,8 @@ void characterbuild_print(CharacterBuild in)
 	
 	// step 3: handle artifact set bonuses
 	for (int i = 0; i < 5; i++) {
-		set2bonusfunc[setcounters[i].set](
+		handle_artifact_set_bonuses(
+				setcounters[i].set,
 				setcounters[i].count,
 				accumulators,
 				&multiplicative_factor);

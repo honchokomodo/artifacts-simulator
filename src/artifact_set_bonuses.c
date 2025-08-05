@@ -42,7 +42,7 @@ void wanderers_troupe_set_bonus_func(
 }
 
 typedef void (*SetBonusHandlerFunc)(
-		int,
+		int num_pieces,
 		float accumulators[CRIT_DAMAGE + 1],
 		float * multiplicative_factor);
 
@@ -54,5 +54,14 @@ SetBonusHandlerFunc const set2bonusfunc[] = {
 	[MARECHAUSSEE_HUNTER] = marechaussee_hunter_set_bonus_func,
 	[WANDERERS_TROUPE] = wanderers_troupe_set_bonus_func,
 };
+
+void handle_artifact_set_bonuses(
+		ArtifactSet set,
+		int num_pieces,
+		float accumulators[CRIT_DAMAGE + 1],
+		float * multiplicative_factor)
+{
+	set2bonusfunc[set](num_pieces, accumulators, multiplicative_factor);
+}
 
 #endif
