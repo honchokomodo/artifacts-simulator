@@ -1,6 +1,9 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include <assert.h>
+static_assert(0, "this file doesnt work atm bc i rewrote a bunch of stuff in character.c");
+
 #include "character.c"
 
 float rating(Character in)
