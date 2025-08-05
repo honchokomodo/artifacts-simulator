@@ -3,6 +3,10 @@
 #include "artifact.c"
 #include "raylib.h"
 
+Image yoimiya;
+
+Texture2D yoimiya_tex;
+
 Interface_Data uiData_Initialize() {
 	Interface_Data data = {0};
 	return data;
@@ -83,16 +87,12 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 			text_large(CLAY_STRING("Artifact Smulator for Genshin Impact"), COLOR_BLACK);
 		}
 
-		Image test_image = LoadImage("resources/images/test.PNG");   
-		Texture2D texture = LoadTextureFromImage(test_image);  
-		UnloadImage(test_image);
-
-		CLAY({ .layout = { .layoutDirection = CLAY_LEFT_TO_RIGHT, .sizing = { .width = CLAY_SIZING_GROW(), .height = CLAY_SIZING_PERCENT(0.35)}, .childGap = 8} }){
+		CLAY({ .layout = { .layoutDirection = CLAY_LEFT_TO_RIGHT, .childAlignment = CLAY_ALIGN_X_CENTER, .sizing = { .width = CLAY_SIZING_GROW(), .height = CLAY_SIZING_PERCENT(0.35)}, .childGap = 8} }){
 			CLAY({
 				.id = CLAY_ID("Character Image"),
 				.layout = { 
 					.childAlignment = CLAY_ALIGN_X_CENTER, 
-					.sizing = { .width = CLAY_SIZING_PERCENT(0.25), .height = CLAY_SIZING_GROW()},
+					.sizing = { .width = CLAY_SIZING_GROW(), .height = CLAY_SIZING_GROW()},
 					.padding = {8, 8, 4, 4}
 				},
 				.cornerRadius = CLAY_CORNER_RADIUS(8),
@@ -100,12 +100,12 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 					.color = COLOR_ACCENT,
 					.width = {2,2,2,2}
 				},
-				.image = {
-					.imageData = &texture,
-				},
+				.image = { .imageData = &yoimiya_tex },
+				.aspectRatio = (float) yoimiya.width / yoimiya.height,
+				// .backgroundColor = COLOR_WHITE,
 			}){
 				// text_sub_heading(CLAY_STRING("Character Image"), COLOR_BLACK);
-				
+				// CLAY({ .image = { .imageData = &yoimiya_tex }, .aspectRatio = (float) yoimiya.width / yoimiya.height }){};
 			};
 
 			CLAY({

@@ -67,6 +67,13 @@ int main(void)
 	SetTextureFilter(fonts[FONT_ID_HONCHOKOMONO].texture, TEXTURE_FILTER_BILINEAR);
 	Clay_SetMeasureTextFunction(Raylib_MeasureText, fonts);  
 
+	yoimiya = LoadImage("resources/images/characters/yoimiya.png");
+
+	yoimiya_tex = LoadTextureFromImage(yoimiya);
+
+	UnloadImage(yoimiya);
+
+
 	Interface_Data uiData = uiData_Initialize();
     
 	while(!WindowShouldClose())
