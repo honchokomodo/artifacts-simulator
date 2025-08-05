@@ -4,20 +4,15 @@
 #include "artifact.c"
 #include "weapon.h"
 
-/*
-typedef enum character_type {
-	CHARACTER_NOTHING,
-	AMBER,
-	SKIRK,
-} CharacterType;
-*/
+typedef enum character_type CharacterType;
 
 // TODO: make use of this
 typedef void (*CharacterPassiveHandlerFunc)(
 		float accumulators[CRIT_DAMAGE + 1],
 		float * multiplicative_factor);
 
-typedef struct character_base {
+typedef struct character_stats {
+	CharacterType type;
 	char * name;
 	int level;
 
@@ -54,7 +49,7 @@ typedef struct character_base {
 	// geo res
 	float physical_bonus;
 	// physical res
-} CharacterBase;
+} CharacterStats;
 
 typedef struct character_build {
 	CharacterBase character;

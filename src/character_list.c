@@ -3,7 +3,13 @@
 
 #include "character.c"
 
-CharacterBase amber90 = {
+enum character_type {
+	CHARACTER_NOTHING,
+	AMBER,
+	SKIRK
+};
+
+CharacterStats amber90 = {
 	.name = "Amber",
 	.level = 90,
 
@@ -17,7 +23,7 @@ CharacterBase amber90 = {
 	.energy_recharge = 100.0,
 };
 
-CharacterBase skirk90 = {
+CharacterStats skirk90 = {
 	.name = "Skirk",
 	.level = 90,
 	
