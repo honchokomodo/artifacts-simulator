@@ -1,11 +1,7 @@
 // vim: ts=2 sw=2
 #include "components.c"
 #include "artifact.c"
-#include "raylib.h"
 
-Image yoimiya;
-
-Texture2D yoimiya_tex;
 
 Interface_Data uiData_Initialize() {
 	Interface_Data data = {0};
@@ -95,14 +91,13 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 					.sizing = { .width = CLAY_SIZING_GROW(), .height = CLAY_SIZING_GROW()},
 					.padding = {8, 8, 4, 4}
 				},
-				.cornerRadius = CLAY_CORNER_RADIUS(8),
+				// .cornerRadius = CLAY_CORNER_RADIUS(8),
 				.border = {
-					.color = COLOR_ACCENT,
+					.color = COLOR_BUTTON_PRIMARY,
 					.width = {2,2,2,2}
 				},
 				.image = { .imageData = &yoimiya_tex },
 				.aspectRatio = (float) yoimiya.width / yoimiya.height,
-				// .backgroundColor = COLOR_WHITE,
 			}){
 				// text_sub_heading(CLAY_STRING("Character Image"), COLOR_BLACK);
 				// CLAY({ .image = { .imageData = &yoimiya_tex }, .aspectRatio = (float) yoimiya.width / yoimiya.height }){};
@@ -124,6 +119,7 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 			}){
 				text_sub_heading(CLAY_STRING("Character Summary"), COLOR_BLACK);
 			};
+
 			CLAY({
 				.layout = { 
 					.childAlignment = CLAY_ALIGN_X_CENTER, 
@@ -135,10 +131,34 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 				.border = {
 					.color = COLOR_ACCENT,
 					.width = {2,2,2,2}
-				}			
+				},
+				// .image = { .imageData = &Thundering_Pulse_tex },
+				// .aspectRatio = (float) Thundering_Pulse.width / Thundering_Pulse.height,	
 			}){
-				text_sub_heading(CLAY_STRING("Weapon Profile"), COLOR_BLACK);
+				// text_sub_heading(CLAY_STRING("Weapon Profile"), COLOR_BLACK);
+				CLAY({
+					.layout = { 
+						// .childAlignment = CLAY_ALIGN_X_CENTER, 
+						.sizing = { .width = CLAY_SIZING_GROW(), .height = CLAY_SIZING_GROW()},
+						// .padding = {8, 8, 4, 4},
+					},
+					.border = { .width = {2,2,2,2}, .color = COLOR_BUTTON_PRIMARY,  },
+					.image = { .imageData = &Background_Item_5_Star_tex },
+					.aspectRatio = (float) Background_Item_5_Star.width / Background_Item_5_Star.height,
+				}){
+					CLAY({
+						.layout = { 
+							// .childAlignment = CLAY_ALIGN_X_CENTER, 
+							.sizing = { .width = CLAY_SIZING_GROW(), .height = CLAY_SIZING_GROW()},
+							// .padding = {8, 8, 4, 4},
+						},
+						.border = { .width = {2,2,2,2}, .color = COLOR_BUTTON_PRIMARY,  },
+						.image = { .imageData = &Thundering_Pulse_tex },
+						.aspectRatio = (float) Thundering_Pulse.width / Thundering_Pulse.height,
+					}){};
+				}
 			};
+
 			CLAY({
 				.id = CLAY_ID("Artifact Set Selection"),
 				.layout = { 
@@ -151,9 +171,10 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 				.border = {
 					.color = COLOR_ACCENT,
 					.width = {2,2,2,2}
-				}
+				},
 			}){
 				text_sub_heading(CLAY_STRING("Artifact Set Selection"), COLOR_BLACK);
+				
 			};
 			
 		};

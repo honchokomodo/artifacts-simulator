@@ -17,6 +17,16 @@ typedef struct {
 
 const int FONT_ID_HONCHOKOMONO = 0;
 
+Image yoimiya;
+
+Image Background_Item_5_Star;
+Image Thundering_Pulse;
+
+Texture2D yoimiya_tex;
+
+Texture2D Background_Item_5_Star_tex;
+Texture2D Thundering_Pulse_tex;
+
 Clay_Color COLOR_WHITE = { 255, 255, 255, 255};
 Clay_Color COLOR_PRIMARY = {151, 239, 255, 255}; // blue
 Clay_Color COLOR_ACCENT = {2, 215, 255, 255}; // bolder blue
