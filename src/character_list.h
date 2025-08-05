@@ -36,4 +36,17 @@ CharacterStats skirk90 = {
 	.energy_recharge = 100.0,
 };
 
+CharacterBase yoimiya90 = {
+	.name = "Yoimiya",
+	.level = 90,
+
+	//values obtained from wiki
+	.hp = 10164.11,
+	.atk = 322.89,
+	.def = 614.84,
+	.crit_rate = 5.0 + 19.2,
+	.crit_damage = 50.0,
+	.energy_recharge = 100.0,
+};
+
 #endif

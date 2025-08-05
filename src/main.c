@@ -69,10 +69,17 @@ int main(void)
 
 	yoimiya = LoadImage("resources/images/characters/yoimiya.png");
 
+	Background_Item_5_Star = LoadImage("resources/images/Background_Item_5_Star.png");
+	Thundering_Pulse = LoadImage("resources/images/weapons/Thundering_Pulse.png");
+
 	yoimiya_tex = LoadTextureFromImage(yoimiya);
 
-	UnloadImage(yoimiya);
+	Background_Item_5_Star_tex = LoadTextureFromImage(Background_Item_5_Star);
+	Thundering_Pulse_tex = LoadTextureFromImage(Thundering_Pulse);
 
+	UnloadImage(yoimiya);
+	UnloadImage(Background_Item_5_Star);
+	UnloadImage(Thundering_Pulse);
 
 	Interface_Data uiData = uiData_Initialize();
     
