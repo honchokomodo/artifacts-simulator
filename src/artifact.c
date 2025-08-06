@@ -10,15 +10,6 @@
 #define MAX_SUBSTATS 4
 #define MAX_UPGRADES 5
 
-typedef enum piece_type {
-	PIECE_NOTHING,
-	FLOWER,
-	FEATHER,
-	SANDS,
-	GOBLET,
-	CIRCLET,
-} PieceType;
-
 typedef struct affix {
 	StatType type;
 	float value;
@@ -34,25 +25,6 @@ typedef struct artifact {
 	Affix substat[MAX_SUBSTATS];
 	int num_upgrades[MAX_SUBSTATS];
 } Artifact;
-
-/* may not even be necesssary
-typedef struct artifact_loadout {
-	Artifact flower;
-	Artifact feather;
-	Artifact sands;
-	Artifact goblet;
-	Artifact circlet;
-} ArtifactLoadout;
-*/
-
-char const * const piece2str[] = {
-	[PIECE_NOTHING] = "nil piece",
-	[FLOWER] = "Flower",
-	[FEATHER] = "Feather",
-	[SANDS] = "Sands",
-	[GOBLET] = "Goblet",
-	[CIRCLET] = "Circlet",
-};
 
 #include "artifact_set_bonuses.c"
 

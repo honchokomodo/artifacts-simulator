@@ -4,13 +4,6 @@
 #include "artifact.c"
 #include "weapon.h"
 
-typedef enum character_type CharacterType;
-
-// TODO: make use of this
-typedef void (*CharacterPassiveHandlerFunc)(
-		float accumulators[CRIT_DAMAGE + 1],
-		float * multiplicative_factor);
-
 typedef struct character_stats {
 	CharacterType type;
 	int level;

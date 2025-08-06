@@ -24,6 +24,23 @@ typedef enum stattype {
 	CRIT_DAMAGE,
 } StatType;
 
+typedef enum piece_type {
+	PIECE_NOTHING,
+	FLOWER,
+	FEATHER,
+	SANDS,
+	GOBLET,
+	CIRCLET,
+} PieceType;
+
+// may need to be auto generated.
+typedef enum artifact_set {
+	SET_NOTHING,
+	FINALE_OF_THE_DEEP_GALLERIES,
+	MARECHAUSSEE_HUNTER,
+	WANDERERS_TROUPE,
+} ArtifactSet;
+
 char const * const stat2str[] = {
 	[STAT_NOTHING] = "nil stat",
 	[HP_FLAT] = "HP",
@@ -92,14 +109,15 @@ char const * const stat2pct[] = {
 	[CRIT_RATE] = "%",
 	[CRIT_DAMAGE] = "%",
 };
-
-// may need to be auto generated.
-typedef enum artifact_set {
-	SET_NOTHING,
-	FINALE_OF_THE_DEEP_GALLERIES,
-	MARECHAUSSEE_HUNTER,
-	WANDERERS_TROUPE,
-} ArtifactSet;
+ 
+char const * const piece2str[] = {
+	[PIECE_NOTHING] = "nil piece",
+	[FLOWER] = "Flower",
+	[FEATHER] = "Feather",
+	[SANDS] = "Sands",
+	[GOBLET] = "Goblet",
+	[CIRCLET] = "Circlet",
+};
 
 // may need to be auto generated.
 char const * const set2str[] = {
