@@ -4,4 +4,6 @@
 
 // AUTOGEN character2bonus amber_character_bonus_func
 something
+woohoo
 // AUTOGEN end
+// trailing?
