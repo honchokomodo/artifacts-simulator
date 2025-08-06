@@ -1,7 +1,11 @@
 #include <clay.h>
 #include "clay_renderer_raylib.c"
 #include <raylib.h>
+#include <stdbool.h>
 #include <stddef.h>
+#include <string.h>
+
+#define CLAY_STR(s) (CLAY__INIT(Clay_String) { .isStaticallyAllocated = true, .length = strlen(s), .chars = s} )
 
 typedef struct {
 	Clay_Dimensions windowSize;
@@ -28,13 +32,22 @@ Texture2D Background_Item_5_Star_tex;
 Texture2D Thundering_Pulse_tex;
 
 Clay_Color COLOR_WHITE = { 255, 255, 255, 255};
-Clay_Color COLOR_PRIMARY = {151, 239, 255, 255}; // blue
-Clay_Color COLOR_ACCENT = {2, 215, 255, 255}; // bolder blue
-Clay_Color COLOR_BG = {200, 243, 255, 255}; // light blue
-Clay_Color COLOR_COMPLEMENT = {255, 190, 2, 255}; // orange-ish color
 Clay_Color COLOR_BLACK = { 0, 0, 0, 255};
+Clay_Color COLOR_PRIMARY = {46, 46, 78, 255}; // blue
+Clay_Color COLOR_ACCENT = {215, 182, 91, 255}; 
+Clay_Color COLOR_BG = {63, 63, 87, 255}; 
+Clay_Color COLOR_COMPLEMENT = {255, 190, 2, 255}; // orange-ish color
 
-Clay_Color COLOR_BUTTON_PRIMARY = {50, 132, 232, 255}; // dark blue
+Clay_Color COLOR_BUTTON_PRIMARY = {238, 185, 36, 255}; // dark blue
+
+char* int_to_str(int integer){
+	char* buffer = malloc(12);
+    if (!buffer) {
+        return NULL; // allocation failed
+    }
+    sprintf(buffer, "%d", integer);
+    return buffer;
+}
 
 void text_large(Clay_String text, Clay_Color color){
 	CLAY_TEXT(text,
@@ -56,12 +69,33 @@ void text_sub_heading(Clay_String text, Clay_Color color){
 	);
 }
 
+void text_sub_heading1(Clay_String text, Clay_Color color){
+	CLAY_TEXT(text,
+		CLAY_TEXT_CONFIG({
+			.fontId = FONT_ID_HONCHOKOMONO,
+			.fontSize = 20,
+			.textColor = color,
+		})
+	);
+}
+
 void text_p(Clay_String text, Clay_Color color){
 	CLAY_TEXT(text,
 		CLAY_TEXT_CONFIG({
 			.fontId = FONT_ID_HONCHOKOMONO,
 			.fontSize = 18, 
 			.textColor = color
+		})
+	);
+}
+
+void text_desc(Clay_String text, Clay_Color color){
+	CLAY_TEXT(text,
+		CLAY_TEXT_CONFIG({
+			.fontId = FONT_ID_HONCHOKOMONO,
+			.fontSize = 15, 
+			.textColor = color,
+			.textAlignment = CLAY_TEXT_ALIGN_LEFT,
 		})
 	);
 }
@@ -113,10 +147,10 @@ static void dropdown_menu(Clay_ElementId menu_id, Clay_String items_text[], size
 						}
 					},
 					.cornerRadius = cornerRadius,
-					.backgroundColor = COLOR_BG,
+					.backgroundColor = COLOR_ACCENT,
 					.border = {
 						.width = borderWidth,
-						.color = COLOR_BUTTON_PRIMARY
+						.color = COLOR_WHITE
 					}
 				}){
 					text_p(items_text[i], COLOR_BLACK);

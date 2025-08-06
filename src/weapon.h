@@ -26,6 +26,7 @@ void noop_weapon_bonus_func(
 typedef struct weapon {
 	char * name;
 	int refinement;
+	int level;
 	float atk;
 	Affix stat;
 	WeaponBonusHandlerFunc passive;
@@ -48,12 +49,13 @@ void calamity_of_eshu_r5_passive_func(
 Weapon calamity_of_eshu_r5_90 = {
 	.name = "Calamity of Eshu",
 	.refinement = 5,
+	.level = 90,
 	.atk = 565,
 	.stat = {ATK_PERCENT, 27.6},
 	.passive = calamity_of_eshu_r5_passive_func,
 };
 
-Weapon mistsplitter_reforged_r1 = {
+Weapon mistsplitter_reforged_r1_90 = {
 /* from wiki:
 Mistsplitter's Edge
 Gain a 12~24% Elemental DMG Bonus for all elements and receive the might of 
@@ -66,6 +68,7 @@ when Energy is full). Each stack's duration is calculated independently.
 */
 	.name = "Mistsplitter Reforged",
 	.refinement = 1,
+	.level = 90,
 	.atk = 674,
 	.stat = {CRIT_DAMAGE, 44.1},
 	.passive = noop_weapon_bonus_func, //TODO: implement this
@@ -79,6 +82,7 @@ attack, dealing 125% Physical ATK DMG. Can only occur once every 4s.
 */
 	.name = "Skyward Harp",
 	.refinement = 1,
+	.level = 90,
 	.atk = 674,
 	.stat = {CRIT_RATE, 22.1},
 	.passive = noop_weapon_bonus_func, //TODO: implement this
@@ -98,6 +102,8 @@ stack's duration is calculated independently.
 
 	.name = "Thundering Pulse",
 	.refinement = 1,
+	.level = 90,
+	.atk = 608,
 	.stat = {CRIT_DAMAGE, 66.2},
 	.passive = noop_weapon_bonus_func, //TODO: implement this
 };
