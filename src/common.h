@@ -121,6 +121,6 @@ typedef enum character_type  {
 } CharacterType;
 */
 
-#include "build/include/characters_enum.h"
+#include "../build/include/characters_enum.h"
 
 #endif
