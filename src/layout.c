@@ -1,6 +1,10 @@
 // vim: ts=2 sw=2
+#include "common.h"
 #include "components.c"
 #include "artifact.c"
+#include <stdbool.h>
+#include <string.h>
+#include "weapon.h"
 
 
 Interface_Data uiData_Initialize() {
@@ -77,10 +81,10 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 			.cornerRadius = CLAY_CORNER_RADIUS(8),
 			.border = {
 				.color = COLOR_ACCENT,
-				.width = {2,2,2,2}
+				.width = {2,2,2,2},
 			}
 		}) {
-			text_large(CLAY_STRING("Artifact Smulator for Genshin Impact"), COLOR_BLACK);
+			text_large(CLAY_STRING("Artifact Smulator for Genshin Impact"), COLOR_WHITE);
 		}
 
 		CLAY({ .layout = { .layoutDirection = CLAY_LEFT_TO_RIGHT, .childAlignment = CLAY_ALIGN_X_CENTER, .sizing = { .width = CLAY_SIZING_GROW(), .height = CLAY_SIZING_PERCENT(0.35)}, .childGap = 8} }){
@@ -108,55 +112,92 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 				.layout = { 
 					.childAlignment = CLAY_ALIGN_X_CENTER, 
 					.sizing = { .width = CLAY_SIZING_PERCENT(0.25), .height = CLAY_SIZING_PERCENT(0.8)},
-					.padding = {8, 8, 4, 4}
+					.padding = {8, 4, 4, 4}
 				},
-				.backgroundColor = COLOR_WHITE,
+				.backgroundColor = COLOR_PRIMARY,
 				.cornerRadius = CLAY_CORNER_RADIUS(8),
 				.border = {
 					.color = COLOR_ACCENT,
 					.width = {2,2,2,2}
 				}
 			}){
-				text_sub_heading(CLAY_STRING("Character Summary"), COLOR_BLACK);
+				text_sub_heading(CLAY_STRING("Character Summary"), COLOR_WHITE);
 			};
 
 			CLAY({
 				.layout = { 
-					.childAlignment = CLAY_ALIGN_X_CENTER, 
 					.sizing = { .width = CLAY_SIZING_PERCENT(0.25), .height = CLAY_SIZING_PERCENT(0.8)},
-					.padding = {8, 8, 4, 4},
+					.padding = {8,2,8,8},
+					.childAlignment = {0, CLAY_ALIGN_Y_CENTER},
+					.layoutDirection = CLAY_TOP_TO_BOTTOM,
 				},
-				.backgroundColor = COLOR_WHITE,
+				.backgroundColor = COLOR_PRIMARY,
 				.cornerRadius = CLAY_CORNER_RADIUS(8),
 				.border = {
 					.color = COLOR_ACCENT,
 					.width = {2,2,2,2}
 				},
-				// .image = { .imageData = &Thundering_Pulse_tex },
-				// .aspectRatio = (float) Thundering_Pulse.width / Thundering_Pulse.height,	
 			}){
-				// text_sub_heading(CLAY_STRING("Weapon Profile"), COLOR_BLACK);
-				CLAY({
-					.layout = { 
-						// .childAlignment = CLAY_ALIGN_X_CENTER, 
-						.sizing = { .width = CLAY_SIZING_GROW(), .height = CLAY_SIZING_GROW()},
-						// .padding = {8, 8, 4, 4},
-					},
-					.border = { .width = {2,2,2,2}, .color = COLOR_BUTTON_PRIMARY,  },
-					.image = { .imageData = &Background_Item_5_Star_tex },
-					.aspectRatio = (float) Background_Item_5_Star.width / Background_Item_5_Star.height,
-				}){
+				CLAY({ .layout = { .sizing = { .width = CLAY_SIZING_GROW() }}}){
 					CLAY({
 						.layout = { 
-							// .childAlignment = CLAY_ALIGN_X_CENTER, 
-							.sizing = { .width = CLAY_SIZING_GROW(), .height = CLAY_SIZING_GROW()},
-							// .padding = {8, 8, 4, 4},
+							.sizing = { .width = CLAY_SIZING_PERCENT(0.33), .height = CLAY_SIZING_GROW()},
 						},
 						.border = { .width = {2,2,2,2}, .color = COLOR_BUTTON_PRIMARY,  },
-						.image = { .imageData = &Thundering_Pulse_tex },
-						.aspectRatio = (float) Thundering_Pulse.width / Thundering_Pulse.height,
-					}){};
-				}
+						.image = { .imageData = &Background_Item_5_Star_tex },
+						.aspectRatio = (float) Background_Item_5_Star.width / Background_Item_5_Star.height,
+					}){
+						CLAY({
+							.layout = { 
+								.sizing = { .width = CLAY_SIZING_GROW(), .height = CLAY_SIZING_GROW()},
+							},
+							.border = { .width = {2,2,2,2}, .color = COLOR_BUTTON_PRIMARY,  },
+							.image = { .imageData = &Thundering_Pulse_tex },
+							.aspectRatio = (float) Thundering_Pulse.width / Thundering_Pulse.height,
+						}){};
+					}
+	
+					CLAY({
+						.layout = { 
+							.sizing = { .width = CLAY_SIZING_GROW(), .height = CLAY_SIZING_GROW() },
+							.layoutDirection = 	CLAY_TOP_TO_BOTTOM,
+							.childAlignment = CLAY_ALIGN_X_CENTER,
+						},
+					}){
+						text_sub_heading1(CLAY_STR(thundering_pulse_r1_90.name), COLOR_WHITE);
+	
+						CLAY({ .layout = { .childAlignment = {CLAY_ALIGN_X_LEFT, CLAY_ALIGN_Y_BOTTOM}, .layoutDirection = CLAY_LEFT_TO_RIGHT } }){
+							text_p(CLAY_STRING("Lvl: "), COLOR_WHITE);
+							text_large(CLAY_STR(int_to_str(thundering_pulse_r1_90.level)), COLOR_WHITE);
+						}
+	
+						CLAY({ .layout = { .layoutDirection = CLAY_LEFT_TO_RIGHT, .childGap = 32}}){
+							CLAY({ .layout = { .childAlignment = CLAY_ALIGN_X_LEFT, .layoutDirection = CLAY_TOP_TO_BOTTOM,} } ){
+								text_p(CLAY_STR("ATK"), COLOR_WHITE);
+								text_p(CLAY_STR(stat2str[thundering_pulse_r1_90.stat.type]), COLOR_WHITE);
+							};
+							CLAY({ .layout = { .childAlignment = CLAY_ALIGN_X_RIGHT, .layoutDirection = CLAY_TOP_TO_BOTTOM,} } ){
+								text_p(CLAY_STR(int_to_str(thundering_pulse_r1_90.atk)), COLOR_WHITE);
+								text_p(CLAY_STR(int_to_str((int) thundering_pulse_r1_90.stat.value) ), COLOR_WHITE);
+							};
+						};
+					};
+
+				};
+
+				CLAY({
+					.layout = {
+						.sizing = { .width = CLAY_SIZING_GROW(), },
+						.layoutDirection = CLAY_TOP_TO_BOTTOM,
+						.padding = {0,0,4,0}
+					},
+				}){
+					text_sub_heading1(CLAY_STR("Rule By Thunder"), COLOR_WHITE);
+					CLAY({ .clip = { .vertical = true, .childOffset = Clay_GetScrollOffset() },}){
+						text_desc(CLAY_STR("Increases ATK by 20~40% and grants the might of the Thunder Emblem. At stack levels 1/2/3, the Thunder Emblem increases Normal Attack DMG by 12/24/40~24/48/80%. The character will obtain 1 stack of Thunder Emblem in each of the following scenarios: Normal Attack deals DMG (stack lasts 5s), casting Elemental Skill (stack lasts 10s); Energy is less than 100% (stack disappears when Energy is full). Each stack's duration is calculated independently."), COLOR_WHITE);
+					}
+				};
+
 			};
 
 			CLAY({
@@ -166,14 +207,14 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 					.sizing = { .width = CLAY_SIZING_PERCENT(0.25), .height = CLAY_SIZING_PERCENT(0.8)},
 					.padding = {8, 8, 4, 4},
 				},
-				.backgroundColor = COLOR_WHITE,
+				.backgroundColor = COLOR_PRIMARY,
 				.cornerRadius = CLAY_CORNER_RADIUS(8),
 				.border = {
 					.color = COLOR_ACCENT,
 					.width = {2,2,2,2}
 				},
 			}){
-				text_sub_heading(CLAY_STRING("Artifact Set Selection"), COLOR_BLACK);
+				text_sub_heading(CLAY_STRING("Artifact Set Selection"), COLOR_WHITE);
 				
 			};
 			
@@ -187,14 +228,14 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 					.sizing = { .width = CLAY_SIZING_PERCENT(0.2), .height = CLAY_SIZING_GROW()},
 					.padding = {8, 8, 4, 4},
 				},
-				.backgroundColor = COLOR_WHITE,
+				.backgroundColor = COLOR_PRIMARY,
 				.cornerRadius = CLAY_CORNER_RADIUS(8),
 				.border = {
 					.color = COLOR_ACCENT,
 					.width = {2,2,2,2}
 				}
 			}){
-				text_sub_heading(CLAY_STRING("Flower"), COLOR_BLACK);
+				text_sub_heading(CLAY_STRING("Flower"), COLOR_WHITE);
 			};
 
 			CLAY({
@@ -204,14 +245,14 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 					.sizing = { .width = CLAY_SIZING_PERCENT(0.2), .height = CLAY_SIZING_GROW()},
 					.padding = {8, 8, 4, 4},
 				},
-				.backgroundColor = COLOR_WHITE,
+				.backgroundColor = COLOR_PRIMARY,
 				.cornerRadius = CLAY_CORNER_RADIUS(8),
 				.border = {
 					.color = COLOR_ACCENT,
 					.width = {2,2,2,2}
 				}
 			}){
-				text_sub_heading(CLAY_STRING("Feather"), COLOR_BLACK);
+				text_sub_heading(CLAY_STRING("Feather"), COLOR_WHITE);
 
 			};
 
@@ -222,7 +263,7 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 					.sizing = { .width = CLAY_SIZING_PERCENT(0.2), .height = CLAY_SIZING_GROW()},
 					.padding = {8, 8, 4, 4},
 				},
-				.backgroundColor = COLOR_WHITE,
+				.backgroundColor = COLOR_PRIMARY,
 				.cornerRadius = CLAY_CORNER_RADIUS(8),
 				.border = {
 					.color = COLOR_ACCENT,
@@ -240,7 +281,7 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 					.sizing = { .width = CLAY_SIZING_PERCENT(0.2), .height = CLAY_SIZING_GROW()},
 					.padding = {8, 8, 4, 4},
 				},
-				.backgroundColor = COLOR_WHITE,
+				.backgroundColor = COLOR_PRIMARY,
 				.cornerRadius = CLAY_CORNER_RADIUS(8),
 				.border = {
 					.color = COLOR_ACCENT,
@@ -259,7 +300,7 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 					.sizing = { .width = CLAY_SIZING_PERCENT(0.2), .height = CLAY_SIZING_GROW()},
 					.padding = {8, 8, 4, 4},
 				},
-				.backgroundColor = COLOR_WHITE,
+				.backgroundColor = COLOR_PRIMARY,
 				.cornerRadius = CLAY_CORNER_RADIUS(8),
 				.border = {
 					.color = COLOR_ACCENT,
@@ -279,14 +320,14 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 					.sizing = { .width = CLAY_SIZING_PERCENT(0.25), .height = CLAY_SIZING_GROW()},
 					.padding = {8, 8, 4, 4},
 				},
-				.backgroundColor = COLOR_WHITE,
+				.backgroundColor = COLOR_PRIMARY,
 				.cornerRadius = CLAY_CORNER_RADIUS(8),
 				.border = {
 					.color = COLOR_ACCENT,
 					.width = {2,2,2,2}
 				}
 			}){
-				text_sub_heading(CLAY_STRING("Build Score Graph"), COLOR_BLACK);
+				text_sub_heading(CLAY_STRING("Build Score Graph"), COLOR_WHITE);
 			};
 
 			CLAY({
@@ -296,14 +337,14 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 					.sizing = { .width = CLAY_SIZING_PERCENT(0.25), .height = CLAY_SIZING_GROW()},
 					.padding = {8, 8, 4, 4},
 				},
-				.backgroundColor = COLOR_WHITE,
+				.backgroundColor = COLOR_PRIMARY,
 				.cornerRadius = CLAY_CORNER_RADIUS(8),
 				.border = {
 					.color = COLOR_ACCENT,
 					.width = {2,2,2,2}
 				}
 			}){
-				text_sub_heading(CLAY_STRING("Artifact Grade"), COLOR_BLACK);
+				text_sub_heading(CLAY_STRING("Artifact Grade"), COLOR_WHITE);
 			};
 
 			CLAY({
@@ -313,14 +354,14 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 					.sizing = { .width = CLAY_SIZING_GROW(), .height = CLAY_SIZING_GROW()},
 					.padding = {8, 8, 4, 4},
 				},
-				.backgroundColor = COLOR_WHITE,
+				.backgroundColor = COLOR_PRIMARY,
 				.cornerRadius = CLAY_CORNER_RADIUS(8),
 				.border = {
 					.color = COLOR_ACCENT,
 					.width = {2,2,2,2}
 				}
 			}){
-				text_sub_heading(CLAY_STRING("Inventory"), COLOR_BLACK);
+				text_sub_heading(CLAY_STRING("Inventory"), COLOR_WHITE);
 			};
 		}
 	}
