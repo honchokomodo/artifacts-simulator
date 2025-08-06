@@ -3,30 +3,76 @@
 #include <stdlib.h>
 #include <string.h>
 
-char ** CharacterType_keys;
-char ** character2str_names;
+size_t count;
+size_t capacity;
+char ** type_keys;
+char ** str_names;
+char ** bonus_funcs;
+char ** bonus_impls;
+
+// can be replaced by strndup when compilers update to c23
+char * allocstr(char const * const buf, size_t len)
+{
+	char * out = malloc(len + 1);
+	if (!out) return NULL;
+	memcpy(out, buf, len);
+	return out;
+}
 
 void process_file_contents(FILE * file)
 {
+	// this method of getting the file size only works properly on
+	// unixy/posixy files
 	fseek(file, 0, SEEK_END);
-	size_t filesize = ftell(file);
+	// i know that this can only handle files of up to 2 GiB but if the
+	// file is that big then something is very wrong
+	int filesize = ftell(file);
 	rewind(file);
 
 	char * buf = malloc(filesize + 1);
+	if (!buf) return;
 	fread(buf, sizeof(*buf), filesize, file);
 	buf[filesize] = '\0';
 
-	/*
-	typedef enum readmode {
-		NOTHING,
-		LINE,
-		MULTI,
-	} ReadMode;
-	*/
+	// i know that this can only handle files of up to 2 GiB but if the
+	// file is that big then something is very wrong
+	int start = 0;
+	int multistart = 0;
 
-	printf("file: %zu bytes\n", filesize);
-	printf("%s", buf);
-	printf("end file\n");
+	static char const key[] = "// AUTOGEN CharacterType ";
+	static char const name[] = "// AUTOGEN character2str ";
+	static char const bonus[] = "// AUTOGEN character2bonus ";
+	static char const end[] = "// AUTOGEN end ";
+
+	for (int cur = 0; cur < filesize; cur++) {
+		if (buf[cur] != '\n')
+			continue;
+
+		// at this point, the chars from start to cur (inclusive) are
+		// part of the line, and cur is the \n at the end of the line
+
+		// is it a special line that we are responsible for?
+		if (strncmp(key, buf + start, strlen(key)) == 0) {
+			start += strlen(key);
+			type_keys[count] = allocstr(buf + start, cur - start);
+
+		} else if (strncmp(name, buf + start, strlen(name)) == 0) {
+			start += strlen(key);
+			str_names[count] = allocstr(buf + start, cur - start);
+
+		} else if (strncmp(bonus, buf + start, strlen(bonus)) == 0) {
+			start += strlen(key);
+			bonus_funcs[count] = allocstr(buf + start, cur - start);
+			multistart = cur + 1;
+
+		} else if (strncmp(end, buf + start, strlen(end)) == 0) {
+			// copy everything from i = multistart; i < start
+			bonus_impls[count] = allocstr(buf + multistart, start - multistart);
+		}
+
+		start = cur + 1;
+	}
+
 	free(buf);
 }
 
@@ -42,7 +88,26 @@ int main(void)
 		exit(1);
 	}
 
+	count = 0;
+	capacity = 1;
+	type_keys = calloc(capacity, sizeof(*type_keys));
+	str_names = calloc(capacity, sizeof(*str_names));
+	bonus_funcs = calloc(capacity, sizeof(*bonus_funcs));
+
 	while (entry = readdir(directory)) {
+		if (count >= capacity) {
+			capacity *= 2;
+			type_keys = realloc(type_keys, capacity * sizeof(*type_keys));
+			str_names = realloc(str_names, capacity * sizeof(*str_names));
+			bonus_funcs = realloc(bonus_funcs, capacity * sizeof(*bonus_funcs));
+			bonus_impls = realloc(bonus_funcs, capacity * sizeof(*bonus_impls));
+		}
+
+		type_keys[count] = NULL;
+		str_names[count] = NULL;
+		bonus_funcs[count] = NULL;
+		bonus_impls[count] = NULL;
+
 		if (entry->d_name[0] == '.') {
 			continue;
 		}
@@ -62,9 +127,15 @@ int main(void)
 
 		process_file_contents(file);
 		fclose(file);
+
+		count += 1;
 	}
 
 	closedir(directory);
+
+	for (int i = 0; i < count; i++)
+		if (type_keys[i] != NULL)
+			printf("start--%s--end\n", type_keys[i]);
 
 	return 0;
 }
