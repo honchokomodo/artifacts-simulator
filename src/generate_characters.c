@@ -8,50 +8,26 @@ char ** character2str_names;
 
 void process_file_contents(FILE * file)
 {
+	fseek(file, 0, SEEK_END);
+	size_t filesize = ftell(file);
+	rewind(file);
+
+	char * buf = malloc(filesize + 1);
+	fread(buf, sizeof(*buf), filesize, file);
+	buf[filesize] = '\0';
+
+	/*
 	typedef enum readmode {
 		NOTHING,
 		LINE,
 		MULTI,
 	} ReadMode;
+	*/
 
-
-	while (1) {
-		// I HATE WINDOWS!!
-		// linelen = getline(&line, &linesize, file);
-
-		char * line = NULL;
-		size_t linesize = 0;
-		ssize_t linelen = 0;
-
-		char c;
-		while (1) {
-			if (linelen >= linesize) {
-				linesize *= 2;
-				if (!linesize) {
-					// this should be long enough pls
-					linesize = 200;
-				}
-				line = realloc(line, linesize);
-			}
-
-			c = fgetc(file);
-			if (c == EOF)
-				break;
-
-			line[linelen] = c;
-			linelen += 1;
-
-			if (c == '\n')
-				break;
-		}
-
-		if (feof(file))
-			break;
-
-		printf("%s", line);
-
-		free(line);
-	}
+	printf("file: %zu bytes\n", filesize);
+	printf("%s", buf);
+	printf("end file\n");
+	free(buf);
 }
 
 int main(void)
