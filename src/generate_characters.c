@@ -14,16 +14,44 @@ void process_file_contents(FILE * file)
 		MULTI,
 	} ReadMode;
 
-	char * line = NULL;
-	size_t linesize;
-	ssize_t linelen;
 
-	while (linelen > 0) {
-		linelen = getline(&line, &linesize, file);
+	while (1) {
+		// I HATE WINDOWS!!
+		// linelen = getline(&line, &linesize, file);
+
+		char * line = NULL;
+		size_t linesize = 0;
+		ssize_t linelen = 0;
+
+		char c;
+		while (1) {
+			if (linelen >= linesize) {
+				linesize *= 2;
+				if (!linesize) {
+					// this should be long enough pls
+					linesize = 200;
+				}
+				line = realloc(line, linesize);
+			}
+
+			c = fgetc(file);
+			if (c == EOF)
+				break;
+
+			line[linelen] = c;
+			linelen += 1;
+
+			if (c == '\n')
+				break;
+		}
+
+		if (feof(file))
+			break;
+
 		printf("%s", line);
-	}
 
-	free(line);
+		free(line);
+	}
 }
 
 int main(void)
@@ -43,7 +71,7 @@ int main(void)
 			continue;
 		}
 
-		char fname[128]; // hope that this is enough
+		char fname[300]; // hope that this is enough
 		if (strlen(dirname) + strlen(entry->d_name) >= sizeof(fname)) {
 			printf("the file name is too long. skipping\n");
 			continue;
