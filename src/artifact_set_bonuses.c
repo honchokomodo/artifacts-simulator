@@ -48,8 +48,6 @@ typedef void (*SetBonusHandlerFunc)(
 
 SetBonusHandlerFunc const set2bonusfunc[] = {
 	[SET_NOTHING] = noop_set_bonus_func,
-	[OFFSET] = noop_set_bonus_func,
-	[ONSET] = noop_set_bonus_func,
 	[FINALE_OF_THE_DEEP_GALLERIES] = finale_of_the_deep_galleries_set_bonus_func,
 	[MARECHAUSSEE_HUNTER] = marechaussee_hunter_set_bonus_func,
 	[WANDERERS_TROUPE] = wanderers_troupe_set_bonus_func,

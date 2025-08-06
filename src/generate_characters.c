@@ -161,8 +161,8 @@ int main(void)
 	}
 
 	fprintf(type_keys_file, "#ifdef CHARACTERS_ENUM_H\n"
-			"#define CHARACTERS_ENUM_H\n"
-			"typedef enum character_type {\n"
+			"#define CHARACTERS_ENUM_H\n\n");
+	fprintf(type_keys_file, "typedef enum character_type {\n"
 			"\tCHARACTER_NOTHING,\n");
 	for (int i = 0; i < count; i++) {
 		if (type_keys[i] != NULL)
@@ -170,8 +170,15 @@ int main(void)
 		else
 			fprintf(type_keys_file, "\tNIL%d,\n", i);
 	}
-	fprintf(type_keys_file, "} CharacterType;\n"
-			"#endif");
+	fprintf(type_keys_file, "} CharacterType;\n\n");
+	fprintf(type_keys_file, "char const * const character2str[] = {\n"
+			"\t[CHARACTER_NOTHING] = \"nil character\",\n");
+	for (int i = 0; i < count; i++) {
+		if (type_keys[i] != NULL && str_names[i] != NULL)
+			fprintf(type_keys_file, "\t[%s] = \"%s\",\n", type_keys[i], str_names[i]);
+	}
+	fprintf(type_keys_file, "};\n");
+	fprintf(type_keys_file, "\n#endif");
 
 	return 0;
 }

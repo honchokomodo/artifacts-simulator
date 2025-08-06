@@ -96,8 +96,6 @@ char const * const stat2pct[] = {
 // may need to be auto generated.
 typedef enum artifact_set {
 	SET_NOTHING,
-	OFFSET,
-	ONSET,
 	FINALE_OF_THE_DEEP_GALLERIES,
 	MARECHAUSSEE_HUNTER,
 	WANDERERS_TROUPE,
@@ -110,16 +108,6 @@ char const * const set2str[] = {
 	[MARECHAUSSEE_HUNTER] = "Marechaussee Hunter",
 	[WANDERERS_TROUPE] = "Wanderer's Troupe",
 };
-
-// may need to be auto generated.
-/*
-typedef enum character_type  {
-	CHARACTER_NOTHING,
-	AMBER,
-	SKIRK,
-	YOIMIYA,
-} CharacterType;
-*/
 
 #include "../build/include/characters_enum.h"
 
