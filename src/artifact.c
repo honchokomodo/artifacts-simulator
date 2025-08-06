@@ -19,15 +19,6 @@ typedef enum piece_type {
 	CIRCLET,
 } PieceType;
 
-typedef enum artifact_set {
-	SET_NOTHING,
-	OFFSET,
-	ONSET,
-	FINALE_OF_THE_DEEP_GALLERIES,
-	MARECHAUSSEE_HUNTER,
-	WANDERERS_TROUPE,
-} ArtifactSet;
-
 typedef struct affix {
 	StatType type;
 	float value;
@@ -61,15 +52,6 @@ char const * const piece2str[] = {
 	[SANDS] = "Sands",
 	[GOBLET] = "Goblet",
 	[CIRCLET] = "Circlet",
-};
-
-char const * const set2str[] = {
-	[SET_NOTHING] = "nil set",
-	[OFFSET] = "offset",
-	[ONSET] = "onset",
-	[FINALE_OF_THE_DEEP_GALLERIES] = "Finale of the Deep Galleries",
-	[MARECHAUSSEE_HUNTER] = "Marechaussee Hunter",
-	[WANDERERS_TROUPE] = "Wanderer's Troupe",
 };
 
 #include "artifact_set_bonuses.c"

@@ -1,14 +1,14 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "../character_list.c"
+#include "../character.c"
 
 int main(void)
 {
 	srand(time(NULL));
 
 	CharacterBuild skirk = {
-		.character = skirk90,
+		.character = CHARACTER_NEW(SKIRK, .level = 90),
 		.weapon = calamity_of_eshu_r5_90,
 		.flower = {
 			.piece = FLOWER, 

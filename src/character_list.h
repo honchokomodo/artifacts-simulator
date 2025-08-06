@@ -1,14 +1,6 @@
 #ifndef CHARACTER_LIST_C
 #define CHARACTER_LIST_C
 
-#include "character.c"
-
-enum character_type {
-	CHARACTER_NOTHING,
-	AMBER,
-	SKIRK
-};
-
 CharacterStats amber90 = {
 	.name = "Amber",
 	.level = 90,
@@ -36,7 +28,7 @@ CharacterStats skirk90 = {
 	.energy_recharge = 100.0,
 };
 
-CharacterBase yoimiya90 = {
+CharacterStats yoimiya90 = {
 	.name = "Yoimiya",
 	.level = 90,
 

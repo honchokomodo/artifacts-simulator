@@ -13,8 +13,10 @@ typedef void (*CharacterPassiveHandlerFunc)(
 
 typedef struct character_stats {
 	CharacterType type;
-	char * name;
 	int level;
+	int constellation;
+	int talent[3];
+	char * name;
 
 	float hp;
 	float hp_percent;
@@ -51,8 +53,10 @@ typedef struct character_stats {
 	// physical res
 } CharacterStats;
 
+#include "character_list.h"
+
 typedef struct character_build {
-	CharacterBase character;
+	CharacterStats character;
 	Weapon weapon;
 
 /*
@@ -74,6 +78,23 @@ typedef struct character_build {
 	};
 */
 } CharacterBuild;
+
+// compute all character stats from type, level, constellation, and talents
+#define CHARACTER_NEW(type, ...) character_new(type, (CharacterStats) {__VA_ARGS__})
+CharacterStats character_new(CharacterType type, CharacterStats in)
+{
+	//TODO: this sucks. redo this
+	switch (type) {
+		case AMBER:
+			return amber90;
+		case SKIRK:
+			return skirk90;
+		case YOIMIYA:
+			return yoimiya90;
+		default:
+			return in;
+	}
+}
 
 // should match what is seen idle in-game as closely as possible.
 void characterbuild_print(CharacterBuild in)
