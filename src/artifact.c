@@ -5,26 +5,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#include "common.h"
-
-#define MAX_SUBSTATS 4
-#define MAX_UPGRADES 5
-
-typedef struct affix {
-	StatType type;
-	float value;
-} Affix;
-
-typedef struct artifact {
-	int level;
-	ArtifactSet set;
-	PieceType piece;
-	Affix mainstat;
-
-	size_t num_substats;
-	Affix substat[MAX_SUBSTATS];
-	int num_upgrades[MAX_SUBSTATS];
-} Artifact;
+#include "artifact_defs.h"
 
 #include "artifact_set_bonuses.c"
 
@@ -69,16 +50,6 @@ float const substat_values[] = {
 	[CRIT_RATE] = 3.89,
 	[CRIT_DAMAGE] = 7.77,
 };
-
-void artifact_print(Artifact in);
-Artifact artifact_upgrade_newline(Artifact in, StatType type, float rv);
-Artifact artifact_upgrade_line(Artifact in, int line, float rv);
-Artifact artifact_upgrade(Artifact in);
-
-#define ARTIFACT_NEW(has4substats, ...) artifact_new(has4substats, (Artifact) {__VA_ARGS__})
-Artifact artifact_new(bool has4substats, Artifact in);
-Artifact artifact_new_domain(ArtifactSet set1, ArtifactSet set2);
-Artifact artifact_new_strongbox(ArtifactSet set);
 
 void artifact_print(Artifact in)
 {
@@ -260,6 +231,7 @@ StatType _artifact_getmainstat(PieceType piece)
 	return STAT_NOTHING;
 }
 
+#define ARTIFACT_NEW(has4substats, ...) artifact_new(has4substats, (Artifact) {__VA_ARGS__})
 Artifact artifact_new(bool has4substats, Artifact in)
 {
 	// ignore artifact set. assume it is properly initialized

@@ -30,4 +30,8 @@ CharacterStats amber_generator_func(CharacterStats in)
 }
 // AUTOGEN end
 
+// AUTOGEN character2ui amber_ui_func
+// something goes here
+// AUTOGEN end
+
 // trailing?

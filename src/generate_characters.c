@@ -11,6 +11,8 @@ char ** talent_funcs;
 char ** talent_impls;
 char ** gen_funcs;
 char ** gen_impls;
+char ** ui_funcs;
+char ** ui_impls;
 
 // can be replaced by strndup when compilers update to c23
 char * allocstr(char const * const buf, size_t len)
@@ -47,6 +49,7 @@ void process_file_contents(FILE * file)
 	static char const name[] = "// AUTOGEN character2str ";
 	static char const talent[] = "// AUTOGEN character2talent ";
 	static char const gen[] = "// AUTOGEN character2generator ";
+	static char const ui[] = "// AUTOGEN character2ui ";
 	static char const end[] = "// AUTOGEN end"; // no space here
 
 	for (int cur = 0; cur < filesize; cur++) {
@@ -75,6 +78,12 @@ void process_file_contents(FILE * file)
 			start += strlen(gen);
 			gen_funcs[count] = allocstr(buf + start, cur - start);
 			dest = gen_impls + count;
+			multistart = cur + 1;
+
+		} else if (strncmp(ui, buf + start, strlen(ui)) == 0) {
+			start += strlen(ui);
+			ui_funcs[count] = allocstr(buf + start, cur - start);
+			dest = ui_impls + count;
 			multistart = cur + 1;
 
 		} else if (strncmp(end, buf + start, strlen(end)) == 0) {
@@ -108,6 +117,8 @@ int main(void)
 	talent_impls = calloc(capacity, sizeof(*talent_impls));
 	gen_funcs = calloc(capacity, sizeof(*gen_funcs));
 	gen_impls = calloc(capacity, sizeof(*gen_impls));
+	ui_funcs = calloc(capacity, sizeof(*ui_funcs));
+	ui_impls = calloc(capacity, sizeof(*ui_impls));
 
 	while (entry = readdir(directory)) {
 		if (count >= capacity) {
@@ -118,6 +129,8 @@ int main(void)
 			talent_impls = realloc(talent_impls, capacity * sizeof(*talent_impls));
 			gen_funcs = realloc(gen_funcs, capacity * sizeof(*gen_funcs));
 			gen_impls = realloc(gen_impls, capacity * sizeof(*gen_impls));
+			ui_funcs = realloc(ui_funcs, capacity * sizeof(*ui_funcs));
+			ui_impls = realloc(ui_impls, capacity * sizeof(*ui_impls));
 		}
 
 		type_keys[count] = NULL;
@@ -126,6 +139,8 @@ int main(void)
 		talent_impls[count] = NULL;
 		gen_funcs[count] = NULL;
 		gen_impls[count] = NULL;
+		ui_funcs[count] = NULL;
+		ui_impls[count] = NULL;
 
 		if (entry->d_name[0] == '.') {
 			continue;
@@ -189,7 +204,7 @@ int main(void)
 	}
 	fprintf(arrays_file, "};\n\n");
 
-	fprintf(arrays_file, "CharacterTalentFunc character2talent[] = {\n"
+	fprintf(arrays_file, "CharacterTalentFunc const character2talent[] = {\n"
 			"\t[CHARACTER_NOTHING] = noop_talent_func,\n");
 	for (int i = 0; i < count; i++) {
 		if (type_keys[i] != NULL && talent_funcs[i] != NULL)
@@ -197,7 +212,7 @@ int main(void)
 	}
 	fprintf(arrays_file, "};\n\n");
 
-	fprintf(arrays_file, "CharacterGeneratorFunc character2generator[] = {\n"
+	fprintf(arrays_file, "CharacterGeneratorFunc const character2generator[] = {\n"
 			"\t[CHARACTER_NOTHING] = noop_character_generator_func,\n");
 	for (int i = 0; i < count; i++) {
 		if (type_keys[i] != NULL && gen_funcs[i] != NULL)
@@ -209,23 +224,46 @@ int main(void)
 	fclose(arrays_file);
 
 	FILE * impls_file = fopen("build/include/characters_impls.c", "w");
-	if (!arrays_file) {
+	if (!impls_file) {
 		printf("failed to create characters_impls.c");
 		exit(1);
 	}
 
-	fprintf(arrays_file, "#ifndef CHARACTERS_IMPLS_H\n"
+	fprintf(impls_file, "#ifndef CHARACTERS_IMPLS_H\n"
 			"#define CHARACTERS_IMPLS_H\n\n");
-	fprintf(arrays_file, "#include \"../../src/character_defs.h\"\n\n");
+	fprintf(impls_file, "#include \"../../src/character_defs.h\"\n\n");
 	for (int i = 0; i < count; i++)
 		if (talent_impls[i] != NULL)
-			fprintf(arrays_file, "%s", talent_impls[i]);
+			fprintf(impls_file, "%s", talent_impls[i]);
 	for (int i = 0; i < count; i++)
 		if (gen_impls[i] != NULL)
-			fprintf(arrays_file, "%s", gen_impls[i]);
-	fprintf(arrays_file, "\n#endif");
+			fprintf(impls_file, "%s", gen_impls[i]);
+	fprintf(impls_file, "\n#endif");
 
 	fclose(impls_file);
+
+	FILE * ui_file = fopen("build/include/characters_ui.c", "w");
+	if (!ui_file) {
+		printf("failed to create characters_ui.c");
+		exit(1);
+	}
+
+	fprintf(ui_file, "#ifndef CHARACTERS_UI_H\n"
+			"#define CHARACTERS_UI_H\n\n");
+	fprintf(ui_file, "#include \"../../src/character.c\"\n\n");
+	for (int i = 0; i < count; i++)
+		if (ui_impls[i] != NULL)
+			fprintf(ui_file, "%s", ui_impls[i]);
+	fprintf(ui_file, "\n");
+	fprintf(ui_file, "something const character2ui[] = {\n"
+			"\t[CHARACTER_NOTHING] = something,\n");
+	for (int i = 0; i < count; i++)
+		if (type_keys[i] != NULL && ui_funcs[i] != NULL)
+			fprintf(impls_file, "\t[%s] = %s,\n", type_keys[i], ui_funcs[i]);
+	fprintf(arrays_file, "};\n");
+	fprintf(ui_file, "\n#endif");
+
+	fclose(ui_file);
 
 	return 0;
 }

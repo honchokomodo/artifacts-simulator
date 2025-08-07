@@ -1,13 +1,13 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "../character.c"
+#include "../scenario.c"
 
 int main(void)
 {
 	srand(time(NULL));
 
-	CharacterBuild skirk = {
+	Scenario skirk = {
 		.character = CHARACTER_NEW(SKIRK, .level = 90),
 		.weapon = calamity_of_eshu_r5_90,
 		.flower = {
@@ -91,7 +91,7 @@ int main(void)
 */
 	};
 
-	characterbuild_print(skirk);
+	scenario_print(skirk);
 
 	return 0;
 }
