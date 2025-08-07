@@ -7,8 +7,10 @@ size_t count;
 size_t capacity;
 char ** type_keys;
 char ** str_names;
-char ** bonus_funcs;
-char ** bonus_impls;
+char ** talent_funcs;
+char ** talent_impls;
+char ** gen_funcs;
+char ** gen_impls;
 
 // can be replaced by strndup when compilers update to c23
 char * allocstr(char const * const buf, size_t len)
@@ -39,10 +41,12 @@ void process_file_contents(FILE * file)
 	// file is that big then something is very wrong
 	int start = 0;
 	int multistart = 0;
+	char ** dest = NULL;
 
 	static char const key[] = "// AUTOGEN CharacterType ";
 	static char const name[] = "// AUTOGEN character2str ";
-	static char const bonus[] = "// AUTOGEN character2bonus ";
+	static char const talent[] = "// AUTOGEN character2talent ";
+	static char const gen[] = "// AUTOGEN character2generator ";
 	static char const end[] = "// AUTOGEN end"; // no space here
 
 	for (int cur = 0; cur < filesize; cur++) {
@@ -61,14 +65,21 @@ void process_file_contents(FILE * file)
 			start += strlen(key);
 			str_names[count] = allocstr(buf + start, cur - start);
 
-		} else if (strncmp(bonus, buf + start, strlen(bonus)) == 0) {
-			start += strlen(bonus);
-			bonus_funcs[count] = allocstr(buf + start, cur - start);
+		} else if (strncmp(talent, buf + start, strlen(talent)) == 0) {
+			start += strlen(talent);
+			talent_funcs[count] = allocstr(buf + start, cur - start);
+			dest = talent_impls + count;
+			multistart = cur + 1;
+
+		} else if (strncmp(gen, buf + start, strlen(gen)) == 0) {
+			start += strlen(gen);
+			gen_funcs[count] = allocstr(buf + start, cur - start);
+			dest = gen_impls + count;
 			multistart = cur + 1;
 
 		} else if (strncmp(end, buf + start, strlen(end)) == 0) {
 			// copy everything from i = multistart; i < start
-			bonus_impls[count] = allocstr(buf + multistart, start - multistart);
+			*dest = allocstr(buf + multistart, start - multistart);
 		}
 
 		start = cur + 1;
@@ -93,22 +104,28 @@ int main(void)
 	capacity = 1;
 	type_keys = calloc(capacity, sizeof(*type_keys));
 	str_names = calloc(capacity, sizeof(*str_names));
-	bonus_funcs = calloc(capacity, sizeof(*bonus_funcs));
-	bonus_impls = calloc(capacity, sizeof(*bonus_impls));
+	talent_funcs = calloc(capacity, sizeof(*talent_funcs));
+	talent_impls = calloc(capacity, sizeof(*talent_impls));
+	gen_funcs = calloc(capacity, sizeof(*gen_funcs));
+	gen_impls = calloc(capacity, sizeof(*gen_impls));
 
 	while (entry = readdir(directory)) {
 		if (count >= capacity) {
 			capacity *= 2;
 			type_keys = realloc(type_keys, capacity * sizeof(*type_keys));
 			str_names = realloc(str_names, capacity * sizeof(*str_names));
-			bonus_funcs = realloc(bonus_funcs, capacity * sizeof(*bonus_funcs));
-			bonus_impls = realloc(bonus_impls, capacity * sizeof(*bonus_impls));
+			talent_funcs = realloc(talent_funcs, capacity * sizeof(*talent_funcs));
+			talent_impls = realloc(talent_impls, capacity * sizeof(*talent_impls));
+			gen_funcs = realloc(gen_funcs, capacity * sizeof(*gen_funcs));
+			gen_impls = realloc(gen_impls, capacity * sizeof(*gen_impls));
 		}
 
 		type_keys[count] = NULL;
 		str_names[count] = NULL;
-		bonus_funcs[count] = NULL;
-		bonus_impls[count] = NULL;
+		talent_funcs[count] = NULL;
+		talent_impls[count] = NULL;
+		gen_funcs[count] = NULL;
+		gen_impls[count] = NULL;
 
 		if (entry->d_name[0] == '.') {
 			continue;
@@ -135,32 +152,13 @@ int main(void)
 
 	closedir(directory);
 
-	/*
-	printf("type_keys:\n");
-	for (int i = 0; i < count; i++)
-		if (type_keys[i] != NULL)
-			printf("start--%s--end\n", type_keys[i]);
-	printf("str_names:\n");
-	for (int i = 0; i < count; i++)
-		if (str_names[i] != NULL)
-			printf("start--%s--end\n", str_names[i]);
-	printf("bonus_funcs:\n");
-	for (int i = 0; i < count; i++)
-		if (bonus_funcs[i] != NULL)
-			printf("start--%s--end\n", bonus_funcs[i]);
-	printf("bonus_impls:\n");
-	for (int i = 0; i < count; i++)
-		if (bonus_impls[i] != NULL)
-			printf("start--%s--end\n", bonus_impls[i]);
-			*/
-
 	FILE * type_keys_file = fopen("build/include/characters_enum.h", "w");
 	if (!type_keys_file) {
 		printf("failed to create characters_enum.h");
 		exit(1);
 	}
 
-	fprintf(type_keys_file, "#ifdef CHARACTERS_ENUM_H\n"
+	fprintf(type_keys_file, "#ifndef CHARACTERS_ENUM_H\n"
 			"#define CHARACTERS_ENUM_H\n\n");
 	fprintf(type_keys_file, "typedef enum character_type {\n"
 			"\tCHARACTER_NOTHING,\n");
@@ -170,15 +168,64 @@ int main(void)
 		else
 			fprintf(type_keys_file, "\tNIL%d,\n", i);
 	}
-	fprintf(type_keys_file, "} CharacterType;\n\n");
-	fprintf(type_keys_file, "char const * const character2str[] = {\n"
+	fprintf(type_keys_file, "} CharacterType;\n");
+	fprintf(type_keys_file, "\n#endif");
+	fclose(type_keys_file);
+
+	FILE * arrays_file = fopen("build/include/characters_arrs.h", "w");
+	if (!arrays_file) {
+		printf("failed to create characters_arrs.h");
+		exit(1);
+	}
+
+	fprintf(arrays_file, "#ifndef CHARACTERS_ARRS_H\n"
+			"#define CHARACTERS_ARRS_H\n\n");
+	fprintf(arrays_file, "#include \"characters_impls.c\"\n\n");
+	fprintf(arrays_file, "char const * const character2str[] = {\n"
 			"\t[CHARACTER_NOTHING] = \"nil character\",\n");
 	for (int i = 0; i < count; i++) {
 		if (type_keys[i] != NULL && str_names[i] != NULL)
-			fprintf(type_keys_file, "\t[%s] = \"%s\",\n", type_keys[i], str_names[i]);
+			fprintf(arrays_file, "\t[%s] = \"%s\",\n", type_keys[i], str_names[i]);
 	}
-	fprintf(type_keys_file, "};\n");
-	fprintf(type_keys_file, "\n#endif");
+	fprintf(arrays_file, "};\n\n");
+
+	fprintf(arrays_file, "CharacterTalentFunc character2talent[] = {\n"
+			"\t[CHARACTER_NOTHING] = noop_talent_func,\n");
+	for (int i = 0; i < count; i++) {
+		if (type_keys[i] != NULL && talent_funcs[i] != NULL)
+			fprintf(arrays_file, "\t[%s] = %s,\n", type_keys[i], talent_funcs[i]);
+	}
+	fprintf(arrays_file, "};\n\n");
+
+	fprintf(arrays_file, "CharacterGeneratorFunc character2generator[] = {\n"
+			"\t[CHARACTER_NOTHING] = noop_character_generator_func,\n");
+	for (int i = 0; i < count; i++) {
+		if (type_keys[i] != NULL && gen_funcs[i] != NULL)
+			fprintf(arrays_file, "\t[%s] = %s,\n", type_keys[i], gen_funcs[i]);
+	}
+	fprintf(arrays_file, "};\n");
+
+	fprintf(arrays_file, "\n#endif");
+	fclose(arrays_file);
+
+	FILE * impls_file = fopen("build/include/characters_impls.c", "w");
+	if (!arrays_file) {
+		printf("failed to create characters_impls.c");
+		exit(1);
+	}
+
+	fprintf(arrays_file, "#ifndef CHARACTERS_IMPLS_H\n"
+			"#define CHARACTERS_IMPLS_H\n\n");
+	fprintf(arrays_file, "#include \"../../src/character_defs.h\"\n\n");
+	for (int i = 0; i < count; i++)
+		if (talent_impls[i] != NULL)
+			fprintf(arrays_file, "%s", talent_impls[i]);
+	for (int i = 0; i < count; i++)
+		if (gen_impls[i] != NULL)
+			fprintf(arrays_file, "%s", gen_impls[i]);
+	fprintf(arrays_file, "\n#endif");
+
+	fclose(impls_file);
 
 	return 0;
 }

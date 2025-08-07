@@ -22,6 +22,7 @@ typedef enum stattype {
 	HEALING_BONUS,
 	CRIT_RATE,
 	CRIT_DAMAGE,
+	STAT_COUNT,
 } StatType;
 
 typedef enum piece_type {
@@ -41,7 +42,7 @@ typedef enum artifact_set {
 	WANDERERS_TROUPE,
 } ArtifactSet;
 
-char const * const stat2str[] = {
+char const * const stat2str[STAT_COUNT] = {
 	[STAT_NOTHING] = "nil stat",
 	[HP_FLAT] = "HP",
 	[HP_PERCENT] = "HP%",
@@ -126,7 +127,5 @@ char const * const set2str[] = {
 	[MARECHAUSSEE_HUNTER] = "Marechaussee Hunter",
 	[WANDERERS_TROUPE] = "Wanderer's Troupe",
 };
-
-#include "../build/include/characters_enum.h"
 
 #endif

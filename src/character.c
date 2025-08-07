@@ -4,89 +4,28 @@
 #include "artifact.c"
 #include "weapon.h"
 
-typedef struct character_stats {
-	CharacterType type;
-	int level;
-	int constellation;
-	int talent[3];
-	char * name;
-
-	float hp;
-	float hp_percent;
-	float atk;
-	float atk_percent;
-	float def;
-	float def_percent;
-	float elemental_mastery;
-	// max stamina
-	
-	float crit_rate;
-	float crit_damage;
-	float healing_bonus;
-	// incoming healing bonus
-	float energy_recharge;
-	// cd reduction
-	// shield strength
-	
-	float pyro_bonus;
-	// pyro res
-	float hydro_bonus;
-	// hydro res
-	float dendro_bonus;
-	// dendro res
-	float electro_bonus;
-	// electro res
-	float anemo_bonus;
-	// anemo res
-	float cryo_bonus;
-	// cryo res
-	float geo_bonus;
-	// geo res
-	float physical_bonus;
-	// physical res
-} CharacterStats;
-
-#include "character_list.h"
+//#include "../build/include/characters_enum.h"
+//#include "character_defs.h"
+//#include "../build/include/characters_impls.h"
+#include "../build/include/characters_arrs.h"
 
 typedef struct character_build {
 	CharacterStats character;
 	Weapon weapon;
 
-/*
-	// keep section in sync with struct artifact_loadout in artifact.c
-	// this union is just for qol so that we can do .piece instead of
-	// .loadout.piece every time
-	// this may lead to some issues with compiler optimizations
-	union {
-		ArtifactLoadout loadout;
-		struct {
-*/
-			Artifact flower;
-			Artifact feather;
-			Artifact sands;
-			Artifact goblet;
-			Artifact circlet;
-/*
-		};
-	};
-*/
+	Artifact flower;
+	Artifact feather;
+	Artifact sands;
+	Artifact goblet;
+	Artifact circlet;
 } CharacterBuild;
 
-// compute all character stats from type, level, constellation, and talents
+// compute all character stats from:
+// type, level, ascension, talents, constellation
 #define CHARACTER_NEW(type, ...) character_new(type, (CharacterStats) {__VA_ARGS__})
 CharacterStats character_new(CharacterType type, CharacterStats in)
 {
-	//TODO: this sucks. redo this
-	switch (type) {
-		case AMBER:
-			return amber90;
-		case SKIRK:
-			return skirk90;
-		case YOIMIYA:
-			return yoimiya90;
-		default:
-			return in;
-	}
+	return character2generator[type](in);
 }
 
 // should match what is seen idle in-game as closely as possible.
