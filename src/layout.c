@@ -1,11 +1,12 @@
 // vim: ts=2 sw=2
+#include "artifact_defs.h"
 #include "common.h"
 #include "components.c"
-#include "artifact.c"
+// #include "artifact.c"
 #include <stdbool.h>
 #include <string.h>
 #include "weapon.h"
-#include "character.c"
+// #include "character.c"
 
 
 Interface_Data uiData_Initialize() {
@@ -119,7 +120,7 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 					.width = {2,2,2,2}
 				}
 			}){
-				text_sub_heading(CLAY_STR(yoimiya90.name), COLOR_WHITE);
+				// text_sub_heading(character2str[YOIMIYA], COLOR_WHITE);
 			};
 
 			CLAY({

@@ -2,6 +2,7 @@
 #define ARTIFACT_DEFS_H
 
 #include "common.h"
+#include "stddef.h"
 // include artifacts enum
 
 #define MAX_SUBSTATS 4
@@ -51,7 +52,7 @@ typedef struct artifact {
 	ArtifactSet set;
 	PieceType piece;
 	Affix mainstat;
-
+	
 	size_t num_substats;
 	Affix substat[MAX_SUBSTATS];
 	int num_upgrades[MAX_SUBSTATS];
