@@ -21,15 +21,15 @@ typedef struct {
 
 const int FONT_ID_HONCHOKOMONO = 0;
 
-Image yoimiya;
+Image yoimiya_img;
 
 Image Background_Item_5_Star;
-Image Thundering_Pulse;
+Image Thundering_Pulse_img;
 
-Texture2D yoimiya_tex;
+Texture2D yoimiya_img_tex;
 
 Texture2D Background_Item_5_Star_tex;
-Texture2D Thundering_Pulse_tex;
+Texture2D Thundering_Pulse_img_tex;
 
 Clay_Color COLOR_WHITE = { 255, 255, 255, 255};
 Clay_Color COLOR_BLACK = { 0, 0, 0, 255};

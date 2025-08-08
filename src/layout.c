@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "weapon.h"
+#include "character.c"
 
 
 Interface_Data uiData_Initialize() {
@@ -100,12 +101,9 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 					.color = COLOR_BUTTON_PRIMARY,
 					.width = {2,2,2,2}
 				},
-				.image = { .imageData = &yoimiya_tex },
-				.aspectRatio = (float) yoimiya.width / yoimiya.height,
-			}){
-				// text_sub_heading(CLAY_STRING("Character Image"), COLOR_BLACK);
-				// CLAY({ .image = { .imageData = &yoimiya_tex }, .aspectRatio = (float) yoimiya.width / yoimiya.height }){};
-			};
+				.image = { .imageData = &yoimiya_img_tex },
+				.aspectRatio = (float) yoimiya_img.width / yoimiya_img.height,
+			}){};
 
 			CLAY({
 				.id = CLAY_ID("Character Summary"),
@@ -121,7 +119,7 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 					.width = {2,2,2,2}
 				}
 			}){
-				text_sub_heading(CLAY_STRING("Character Summary"), COLOR_WHITE);
+				text_sub_heading(CLAY_STR(yoimiya90.name), COLOR_WHITE);
 			};
 
 			CLAY({
@@ -152,8 +150,8 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 								.sizing = { .width = CLAY_SIZING_GROW(), .height = CLAY_SIZING_GROW()},
 							},
 							.border = { .width = {2,2,2,2}, .color = COLOR_BUTTON_PRIMARY,  },
-							.image = { .imageData = &Thundering_Pulse_tex },
-							.aspectRatio = (float) Thundering_Pulse.width / Thundering_Pulse.height,
+							.image = { .imageData = &Thundering_Pulse_img_tex },
+							.aspectRatio = (float) Thundering_Pulse_img.width / Thundering_Pulse_img.height,
 						}){};
 					}
 	

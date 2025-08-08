@@ -63,19 +63,19 @@ int main(void)
 	SetTextureFilter(fonts[FONT_ID_HONCHOKOMONO].texture, TEXTURE_FILTER_BILINEAR);
 	Clay_SetMeasureTextFunction(Raylib_MeasureText, fonts);  
 
-	yoimiya = LoadImage("resources/images/characters/yoimiya.png");
+	yoimiya_img = LoadImage("resources/images/characters/yoimiya.png");
 
 	Background_Item_5_Star = LoadImage("resources/images/Background_Item_5_Star.png");
-	Thundering_Pulse = LoadImage("resources/images/weapons/Thundering_Pulse.png");
+	Thundering_Pulse_img = LoadImage("resources/images/weapons/Thundering_Pulse.png");
 
-	yoimiya_tex = LoadTextureFromImage(yoimiya);
+	yoimiya_img_tex = LoadTextureFromImage(yoimiya_img);
 
 	Background_Item_5_Star_tex = LoadTextureFromImage(Background_Item_5_Star);
-	Thundering_Pulse_tex = LoadTextureFromImage(Thundering_Pulse);
+	Thundering_Pulse_img_tex = LoadTextureFromImage(Thundering_Pulse_img);
 
-	UnloadImage(yoimiya);
+	UnloadImage(yoimiya_img);
 	UnloadImage(Background_Item_5_Star);
-	UnloadImage(Thundering_Pulse);
+	UnloadImage(Thundering_Pulse_img);
 
 	Interface_Data uiData = uiData_Initialize();
     
