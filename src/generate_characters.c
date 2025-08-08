@@ -235,7 +235,7 @@ int main(void)
 	ui_funcs = calloc(capacity, sizeof(*ui_funcs));
 	ui_impls = calloc(capacity, sizeof(*ui_impls));
 
-	while (entry == readdir(directory)) {
+	while ((entry = readdir(directory)) != NULL) {
 		if (count >= capacity) {
 			capacity *= 2;
 			type_keys = realloc(type_keys, capacity * sizeof(*type_keys));

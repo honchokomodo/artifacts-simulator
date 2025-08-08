@@ -5,7 +5,7 @@
 #include <stddef.h>
 #include <string.h>
 
-#define CLAY_STR(s) (CLAY__INIT(Clay_String) { .isStaticallyAllocated = true, .length = strlen(s), .chars = s} )
+#define CLAY_STR(s) (CLAY__INIT(Clay_String) {.length = strlen(s), .chars = s})
 
 typedef struct {
 	Clay_Dimensions windowSize;
@@ -180,7 +180,7 @@ void dropdown_button(Clay_ElementId id, Clay_ElementId menu_id, Clay_String butt
 
 }
 
-void toggle_switch_text(int * dest, char * maintext, char * subtext)
+void toggle_switch(int * dest)
 {
 	/*
 	 * *dest is the current state of the switch.
@@ -191,7 +191,51 @@ void toggle_switch_text(int * dest, char * maintext, char * subtext)
 	 * The switch will handle reading/writing the state to *dest
 	 * by doing *dest = value,
 	 * with the assumption that true == 1 and false == 0.
-	 *
+	 */
+
+	//TODO: un-hardcode these
+	Clay_Color enabledColor = {0x40, 0x80, 0x40, 0xFF};
+	Clay_Color disabledColor = {0x00, 0x00, 0x00, 0xFF};
+
+	Clay_Color toggleColor = *dest ?  enabledColor : disabledColor;
+	Clay_ChildAlignment toggleSide = {.x = *dest ?
+		CLAY_ALIGN_X_RIGHT : CLAY_ALIGN_X_LEFT,
+	};
+
+	CLAY({
+		.backgroundColor = toggleColor,
+		.layout = {
+			// TODO: un-hardcode these
+			.sizing = {
+				.width = CLAY_SIZING_FIXED(20),
+				.height = CLAY_SIZING_FIXED(10),
+			},
+			.childAlignment = toggleSide,
+		},
+	}) {
+		bool hovered = Clay_Hovered();
+		Clay_Context * context = Clay_GetCurrentContext();
+		bool left_click = context->pointerInfo.state == CLAY_POINTER_DATA_PRESSED_THIS_FRAME;
+
+		// user interaction
+		if (hovered && left_click) {
+			*dest = !*dest;
+		}
+
+		CLAY({
+			// TODO: un-hardcode these
+			.backgroundColor = {0xDD, 0xDD, 0xDD, 0xFF},
+			.layout.sizing = {
+				.width = CLAY_SIZING_FIXED(10),
+				.height = CLAY_SIZING_FIXED(10),
+			}
+		}) {}
+	}
+}
+
+void toggle_switch_text(int * dest, char * maintext, char * subtext)
+{
+	/*
 	 * char * is used instead of Clay_String to allow for null checking.
 	 * i.e, if maintext or subtext are NULL, just don't draw them.
 	 * this may possibly lead to performance issues later down the line,
@@ -228,68 +272,18 @@ void toggle_switch_text(int * dest, char * maintext, char * subtext)
 		}) {
 			if (maintext != NULL) {
 				// maintext
-				Clay_String processed_maintext = {
-					.length = strlen(maintext),
-					.chars = maintext,
-				};
-
-				text_p(processed_maintext, COLOR_WHITE);
-
+				text_p(CLAY_STR(maintext), COLOR_WHITE);
 				CLAY({
 					// spacer
 					.layout.sizing = widesize,
 				}) {}
 			}
 
-			//TODO: un-hardcode these
-			Clay_Color enabledColor = {0x40, 0x80, 0x40, 0xFF};
-			Clay_Color disabledColor = {0x00, 0x00, 0x00, 0xFF};
-
-			Clay_Color toggleColor = *dest ?
-				enabledColor : disabledColor;
-			Clay_ChildAlignment toggleSide = {.x = *dest ?
-				CLAY_ALIGN_X_RIGHT : CLAY_ALIGN_X_LEFT,
-			};
-
-			CLAY({
-				// the toggle itself
-				.backgroundColor = toggleColor,
-				.layout = {
-					// TODO: un-hardcode these
-					.sizing = {
-						.width = CLAY_SIZING_FIXED(20),
-						.height = CLAY_SIZING_FIXED(10),
-					},
-					.childAlignment = toggleSide,
-				},
-			}) {
-				bool hovered = Clay_Hovered();
-				bool left_click = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
-
-				// user interaction
-				if (hovered && left_click) {
-					*dest = !*dest;
-				}
-
-				CLAY({
-					// TODO: un-hardcode these
-					.backgroundColor = {0xDD, 0xDD, 0xDD, 0xFF},
-					.layout.sizing = {
-						.width = CLAY_SIZING_FIXED(10),
-						.height = CLAY_SIZING_FIXED(10),
-					}
-				}) {}
-			}
+			toggle_switch(dest);
 		}
 
 		if (subtext != NULL) {
-			// subtext
-			Clay_String processed_subtext = {
-				.length = strlen(subtext),
-				.chars = subtext,
-			};
-
-			text_desc(processed_subtext, COLOR_WHITE);
+			text_desc(CLAY_STR(subtext), COLOR_WHITE);
 		}
 	}
 }
