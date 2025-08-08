@@ -15,6 +15,7 @@ CharacterStats amber_generator_func(CharacterStats in)
 	CharacterStats amber90 = {
 		.name = "Amber",
 		.level = 90,
+		.constellation = 6,
 
 		// values obtained from wiki
 		.hp = 9461.18,
@@ -31,7 +32,13 @@ CharacterStats amber_generator_func(CharacterStats in)
 // AUTOGEN end
 
 // AUTOGEN character2ui amber_ui_func
-// something goes here
+void amber_ui_func(CharacterStats * in)
+{
+	char * c2title = "Bunny Triggered";
+	char * c2desc = "Baron Bunny, new and improved! Hitting Baron Bunny's foot with a fully-charged Aimed Shot manually detonates it.\n"
+"Explosion via manual detonation deals 200% additional DMG.";
+	toggle_switch_text(&in->c2data, c2title, c2desc);
+}
 // AUTOGEN end
 
 // trailing?

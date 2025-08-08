@@ -13,6 +13,19 @@ typedef struct character_stats {
 		int skill;
 		int burst;
 	} talent;
+	int normaldata;
+	int skilldata;
+	int burstdata;
+	int asc1data;
+	int asc4data;
+	int utildata;
+	int c1data;
+	int c2data;
+	int c3data;
+	int c4data;
+	int c5data;
+	int c6data;
+
 	char * name;
 
 	float hp;

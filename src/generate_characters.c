@@ -97,6 +97,121 @@ void process_file_contents(FILE * file)
 	free(buf);
 }
 
+void generate_characters_enum_h(void)
+{
+	FILE * type_keys_file = fopen("build/include/characters_enum.h", "w");
+	if (!type_keys_file) {
+		printf("failed to create characters_enum.h");
+		exit(1);
+	}
+
+	fprintf(type_keys_file, "#ifndef CHARACTERS_ENUM_H\n"
+			"#define CHARACTERS_ENUM_H\n\n");
+	fprintf(type_keys_file, "typedef enum character_type {\n"
+			"\tCHARACTER_NOTHING,\n");
+	for (int i = 0; i < count; i++) {
+		if (type_keys[i] != NULL)
+			fprintf(type_keys_file, "\t%s,\n", type_keys[i]);
+		else
+			fprintf(type_keys_file, "\tNIL%d,\n", i);
+	}
+	fprintf(type_keys_file, "} CharacterType;\n");
+	fprintf(type_keys_file, "\n#endif");
+	fclose(type_keys_file);
+}
+
+void generate_characters_arrs_h(void)
+{
+	FILE * arrays_file = fopen("build/include/characters_arrs.h", "w");
+	if (!arrays_file) {
+		printf("failed to create characters_arrs.h");
+		exit(1);
+	}
+
+	fprintf(arrays_file, "#ifndef CHARACTERS_ARRS_H\n"
+			"#define CHARACTERS_ARRS_H\n\n");
+	fprintf(arrays_file, "#include \"characters_impls.c\"\n\n");
+	fprintf(arrays_file, "char const * const character2str[] = {\n"
+			"\t[CHARACTER_NOTHING] = \"nil character\",\n");
+	for (int i = 0; i < count; i++) {
+		if (type_keys[i] != NULL && str_names[i] != NULL)
+			fprintf(arrays_file, "\t[%s] = \"%s\",\n", type_keys[i], str_names[i]);
+	}
+	fprintf(arrays_file, "};\n\n");
+
+	fprintf(arrays_file, "CharacterTalentFunc const character2talent[] = {\n"
+			"\t[CHARACTER_NOTHING] = noop_talent_func,\n");
+	for (int i = 0; i < count; i++) {
+		if (type_keys[i] != NULL && talent_funcs[i] != NULL)
+			fprintf(arrays_file, "\t[%s] = %s,\n", type_keys[i], talent_funcs[i]);
+	}
+	fprintf(arrays_file, "};\n\n");
+
+	fprintf(arrays_file, "CharacterGeneratorFunc const character2generator[] = {\n"
+			"\t[CHARACTER_NOTHING] = noop_character_generator_func,\n");
+	for (int i = 0; i < count; i++) {
+		if (type_keys[i] != NULL && gen_funcs[i] != NULL)
+			fprintf(arrays_file, "\t[%s] = %s,\n", type_keys[i], gen_funcs[i]);
+	}
+	fprintf(arrays_file, "};\n");
+
+	fprintf(arrays_file, "\n#endif");
+	fclose(arrays_file);
+}
+
+void generate_characters_impls_c(void)
+{
+	FILE * impls_file = fopen("build/include/characters_impls.c", "w");
+	if (!impls_file) {
+		printf("failed to create characters_impls.c");
+		exit(1);
+	}
+
+	fprintf(impls_file, "#ifndef CHARACTERS_IMPLS_H\n"
+			"#define CHARACTERS_IMPLS_H\n\n");
+	fprintf(impls_file, "#include \"../../src/character_defs.h\"\n\n");
+	for (int i = 0; i < count; i++)
+		if (talent_impls[i] != NULL)
+			fprintf(impls_file, "%s", talent_impls[i]);
+	for (int i = 0; i < count; i++)
+		if (gen_impls[i] != NULL)
+			fprintf(impls_file, "%s", gen_impls[i]);
+	fprintf(impls_file, "\n#endif");
+
+	fclose(impls_file);
+}
+
+void generate_characters_ui_c(void)
+{
+	FILE * ui_file = fopen("build/include/characters_ui.c", "w");
+	if (!ui_file) {
+		printf("failed to create characters_ui.c");
+		exit(1);
+	}
+
+	fprintf(ui_file, "#ifndef CHARACTERS_UI_H\n"
+			"#define CHARACTERS_UI_H\n\n");
+	fprintf(ui_file, "#include \"../../src/character.c\"\n"
+			"#include \"../../src/components.c\"\n\n");
+	fprintf(ui_file, "typedef void (*CharacterUIFunc)(CharacterStats *);\n\n");
+	fprintf(ui_file, "void noop_character_ui_func(CharacterStats *) {\n"
+			"\t// this function does nothing\n"
+			"}\n\n");
+	for (int i = 0; i < count; i++)
+		if (ui_impls[i] != NULL)
+			fprintf(ui_file, "%s", ui_impls[i]);
+	fprintf(ui_file, "\n");
+	fprintf(ui_file, "CharacterUIFunc const character2ui[] = {\n"
+			"\t[CHARACTER_NOTHING] = noop_character_ui_func,\n");
+	for (int i = 0; i < count; i++)
+		if (type_keys[i] != NULL && ui_funcs[i] != NULL)
+			fprintf(ui_file, "\t[%s] = %s,\n", type_keys[i], ui_funcs[i]);
+	fprintf(ui_file, "};\n");
+	fprintf(ui_file, "\n#endif");
+
+	fclose(ui_file);
+}
+
 int main(void)
 {
 	DIR * directory;
@@ -167,103 +282,10 @@ int main(void)
 
 	closedir(directory);
 
-	FILE * type_keys_file = fopen("build/include/characters_enum.h", "w");
-	if (!type_keys_file) {
-		printf("failed to create characters_enum.h");
-		exit(1);
-	}
-
-	fprintf(type_keys_file, "#ifndef CHARACTERS_ENUM_H\n"
-			"#define CHARACTERS_ENUM_H\n\n");
-	fprintf(type_keys_file, "typedef enum character_type {\n"
-			"\tCHARACTER_NOTHING,\n");
-	for (int i = 0; i < count; i++) {
-		if (type_keys[i] != NULL)
-			fprintf(type_keys_file, "\t%s,\n", type_keys[i]);
-		else
-			fprintf(type_keys_file, "\tNIL%d,\n", i);
-	}
-	fprintf(type_keys_file, "} CharacterType;\n");
-	fprintf(type_keys_file, "\n#endif");
-	fclose(type_keys_file);
-
-	FILE * arrays_file = fopen("build/include/characters_arrs.h", "w");
-	if (!arrays_file) {
-		printf("failed to create characters_arrs.h");
-		exit(1);
-	}
-
-	fprintf(arrays_file, "#ifndef CHARACTERS_ARRS_H\n"
-			"#define CHARACTERS_ARRS_H\n\n");
-	fprintf(arrays_file, "#include \"characters_impls.c\"\n\n");
-	fprintf(arrays_file, "char const * const character2str[] = {\n"
-			"\t[CHARACTER_NOTHING] = \"nil character\",\n");
-	for (int i = 0; i < count; i++) {
-		if (type_keys[i] != NULL && str_names[i] != NULL)
-			fprintf(arrays_file, "\t[%s] = \"%s\",\n", type_keys[i], str_names[i]);
-	}
-	fprintf(arrays_file, "};\n\n");
-
-	fprintf(arrays_file, "CharacterTalentFunc const character2talent[] = {\n"
-			"\t[CHARACTER_NOTHING] = noop_talent_func,\n");
-	for (int i = 0; i < count; i++) {
-		if (type_keys[i] != NULL && talent_funcs[i] != NULL)
-			fprintf(arrays_file, "\t[%s] = %s,\n", type_keys[i], talent_funcs[i]);
-	}
-	fprintf(arrays_file, "};\n\n");
-
-	fprintf(arrays_file, "CharacterGeneratorFunc const character2generator[] = {\n"
-			"\t[CHARACTER_NOTHING] = noop_character_generator_func,\n");
-	for (int i = 0; i < count; i++) {
-		if (type_keys[i] != NULL && gen_funcs[i] != NULL)
-			fprintf(arrays_file, "\t[%s] = %s,\n", type_keys[i], gen_funcs[i]);
-	}
-	fprintf(arrays_file, "};\n");
-
-	fprintf(arrays_file, "\n#endif");
-	fclose(arrays_file);
-
-	FILE * impls_file = fopen("build/include/characters_impls.c", "w");
-	if (!impls_file) {
-		printf("failed to create characters_impls.c");
-		exit(1);
-	}
-
-	fprintf(impls_file, "#ifndef CHARACTERS_IMPLS_H\n"
-			"#define CHARACTERS_IMPLS_H\n\n");
-	fprintf(impls_file, "#include \"../../src/character_defs.h\"\n\n");
-	for (int i = 0; i < count; i++)
-		if (talent_impls[i] != NULL)
-			fprintf(impls_file, "%s", talent_impls[i]);
-	for (int i = 0; i < count; i++)
-		if (gen_impls[i] != NULL)
-			fprintf(impls_file, "%s", gen_impls[i]);
-	fprintf(impls_file, "\n#endif");
-
-	fclose(impls_file);
-
-	FILE * ui_file = fopen("build/include/characters_ui.c", "w");
-	if (!ui_file) {
-		printf("failed to create characters_ui.c");
-		exit(1);
-	}
-
-	fprintf(ui_file, "#ifndef CHARACTERS_UI_H\n"
-			"#define CHARACTERS_UI_H\n\n");
-	fprintf(ui_file, "#include \"../../src/character.c\"\n\n");
-	for (int i = 0; i < count; i++)
-		if (ui_impls[i] != NULL)
-			fprintf(ui_file, "%s", ui_impls[i]);
-	fprintf(ui_file, "\n");
-	fprintf(ui_file, "something const character2ui[] = {\n"
-			"\t[CHARACTER_NOTHING] = something,\n");
-	for (int i = 0; i < count; i++)
-		if (type_keys[i] != NULL && ui_funcs[i] != NULL)
-			fprintf(impls_file, "\t[%s] = %s,\n", type_keys[i], ui_funcs[i]);
-	fprintf(arrays_file, "};\n");
-	fprintf(ui_file, "\n#endif");
-
-	fclose(ui_file);
+	generate_characters_enum_h();
+	generate_characters_arrs_h();
+	generate_characters_impls_c();
+	generate_characters_ui_c();
 
 	return 0;
 }

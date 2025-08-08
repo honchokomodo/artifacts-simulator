@@ -179,3 +179,117 @@ void dropdown_button(Clay_ElementId id, Clay_ElementId menu_id, Clay_String butt
 		}
 
 }
+
+void toggle_switch_text(int * dest, char * maintext, char * subtext)
+{
+	/*
+	 * *dest is the current state of the switch.
+	 * even though this is supposed to be a true/false value,
+	 * the location that the state is stored is sizeof(int) bytes big,
+	 * so we use int * instead of bool *.
+	 *
+	 * The switch will handle reading/writing the state to *dest
+	 * by doing *dest = value,
+	 * with the assumption that true == 1 and false == 0.
+	 *
+	 * char * is used instead of Clay_String to allow for null checking.
+	 * i.e, if maintext or subtext are NULL, just don't draw them.
+	 * this may possibly lead to performance issues later down the line,
+	 * but it shouldn't be too much as whatever function is rendering the
+	 * text will have to loop over every character anyway.
+	 */
+
+	//TODO: possibly make this file-scope instead of function-scope
+	Clay_Sizing widesize = {
+		.width = CLAY_SIZING_GROW(0),
+		.height = CLAY_SIZING_FIT(0),
+	};
+	
+	CLAY({
+		// The container for the switch element
+		.backgroundColor = COLOR_BUTTON_PRIMARY,
+		.layout = {
+			.layoutDirection = CLAY_TOP_TO_BOTTOM,
+			.sizing = widesize,
+			.padding = CLAY_PADDING_ALL(16), //TODO: un-hardcode
+			.childGap = 12, //TODO: un-hardcode this
+		},
+	}) {
+		CLAY({
+			// text and toggle
+			.backgroundColor = COLOR_BUTTON_PRIMARY,
+			.layout = {
+				.layoutDirection = CLAY_LEFT_TO_RIGHT,
+				.sizing = widesize,
+				// no padding
+				.childGap = 12, // TODO: un-hardcode this
+				.childAlignment = {.y = CLAY_ALIGN_Y_CENTER},
+			}
+		}) {
+			if (maintext != NULL) {
+				// maintext
+				Clay_String processed_maintext = {
+					.length = strlen(maintext),
+					.chars = maintext,
+				};
+
+				text_p(processed_maintext, COLOR_WHITE);
+
+				CLAY({
+					// spacer
+					.layout.sizing = widesize,
+				}) {}
+			}
+
+			//TODO: un-hardcode these
+			Clay_Color enabledColor = {0x40, 0x80, 0x40, 0xFF};
+			Clay_Color disabledColor = {0x00, 0x00, 0x00, 0xFF};
+
+			Clay_Color toggleColor = *dest ?
+				enabledColor : disabledColor;
+			Clay_ChildAlignment toggleSide = {.x = *dest ?
+				CLAY_ALIGN_X_RIGHT : CLAY_ALIGN_X_LEFT,
+			};
+
+			CLAY({
+				// the toggle itself
+				.backgroundColor = toggleColor,
+				.layout = {
+					// TODO: un-hardcode these
+					.sizing = {
+						.width = CLAY_SIZING_FIXED(20),
+						.height = CLAY_SIZING_FIXED(10),
+					},
+					.childAlignment = toggleSide,
+				},
+			}) {
+				bool hovered = Clay_Hovered();
+				bool left_click = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
+
+				// user interaction
+				if (hovered && left_click) {
+					*dest = !*dest;
+				}
+
+				CLAY({
+					// TODO: un-hardcode these
+					.backgroundColor = {0xDD, 0xDD, 0xDD, 0xFF},
+					.layout.sizing = {
+						.width = CLAY_SIZING_FIXED(10),
+						.height = CLAY_SIZING_FIXED(10),
+					}
+				}) {}
+			}
+		}
+
+		if (subtext != NULL) {
+			// subtext
+			Clay_String processed_subtext = {
+				.length = strlen(subtext),
+				.chars = subtext,
+			};
+
+			text_desc(processed_subtext, COLOR_WHITE);
+		}
+	}
+}
