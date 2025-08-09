@@ -7,6 +7,8 @@ size_t count;
 size_t capacity;
 char ** type_keys;
 char ** str_names;
+char ** icons;
+char ** portraits;
 char ** talent_funcs;
 char ** talent_impls;
 char ** gen_funcs;
@@ -47,6 +49,8 @@ void process_file_contents(FILE * file)
 
 	static char const key[] = "// AUTOGEN CharacterType ";
 	static char const name[] = "// AUTOGEN character2str ";
+	static char const icon[] = "// AUTOGEN character2icon ";
+	static char const portrait[] = "// AUTOGEN character2portrait ";
 	static char const talent[] = "// AUTOGEN character2talent ";
 	static char const gen[] = "// AUTOGEN character2generator ";
 	static char const ui[] = "// AUTOGEN character2ui ";
@@ -67,6 +71,14 @@ void process_file_contents(FILE * file)
 		} else if (strncmp(name, buf + start, strlen(name)) == 0) {
 			start += strlen(key);
 			str_names[count] = allocstr(buf + start, cur - start);
+
+		} else if (strncmp(icon, buf + start, strlen(icon)) == 0) {
+			start += strlen(key);
+			icons[count] = allocstr(buf + start, cur - start);
+
+		} else if (strncmp(portrait, buf + start, strlen(portrait)) == 0) {
+			start += strlen(key);
+			portraits[count] = allocstr(buf + start, cur - start);
 
 		} else if (strncmp(talent, buf + start, strlen(talent)) == 0) {
 			start += strlen(talent);
@@ -153,9 +165,25 @@ void generate_characters_arrs_h(void)
 		if (type_keys[i] != NULL && gen_funcs[i] != NULL)
 			fprintf(arrays_file, "\t[%s] = %s,\n", type_keys[i], gen_funcs[i]);
 	}
-	fprintf(arrays_file, "};\n");
+	fprintf(arrays_file, "};\n\n");
 
-	fprintf(arrays_file, "\n#endif");
+	fprintf(arrays_file, "char const * const character2icon[] = {\n"
+			"\t[CHARACTER_NOTHING] = \"resources/images/characters/character_nothing_icon.png\",\n");
+	for (int i = 0; i < count; i++) {
+		if (type_keys[i] != NULL && icons[i] != NULL)
+			fprintf(arrays_file, "\t[%s] = %s,\n", type_keys[i], icons[i]);
+	}
+	fprintf(arrays_file, "};\n\n");
+
+	fprintf(arrays_file, "char const * const character2portrait[] = {\n"
+			"\t[CHARACTER_NOTHING] = \"resources/images/characters/character_nothing_portrait.png\",\n");
+	for (int i = 0; i < count; i++) {
+		if (type_keys[i] != NULL && icons[i] != NULL)
+			fprintf(arrays_file, "\t[%s] = %s,\n", type_keys[i], icons[i]);
+	}
+	fprintf(arrays_file, "};\n\n");
+
+	fprintf(arrays_file, "#endif");
 	fclose(arrays_file);
 }
 
@@ -228,6 +256,8 @@ int main(void)
 	capacity = 1;
 	type_keys = calloc(capacity, sizeof(*type_keys));
 	str_names = calloc(capacity, sizeof(*str_names));
+	icons = calloc(capacity, sizeof(*icons));
+	portraits = calloc(capacity, sizeof(*portraits));
 	talent_funcs = calloc(capacity, sizeof(*talent_funcs));
 	talent_impls = calloc(capacity, sizeof(*talent_impls));
 	gen_funcs = calloc(capacity, sizeof(*gen_funcs));
@@ -246,10 +276,14 @@ int main(void)
 			gen_impls = realloc(gen_impls, capacity * sizeof(*gen_impls));
 			ui_funcs = realloc(ui_funcs, capacity * sizeof(*ui_funcs));
 			ui_impls = realloc(ui_impls, capacity * sizeof(*ui_impls));
+			icons = realloc(icons, capacity * sizeof(*icons));
+			portraits = realloc(portraits, capacity * sizeof(*portraits));
 		}
 
 		type_keys[count] = NULL;
 		str_names[count] = NULL;
+		icons[count] = NULL;
+		portraits[count] = NULL;
 		talent_funcs[count] = NULL;
 		talent_impls[count] = NULL;
 		gen_funcs[count] = NULL;

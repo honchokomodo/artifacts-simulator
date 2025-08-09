@@ -7,6 +7,7 @@
 typedef struct character_stats {
 	CharacterType type;
 	int level;
+	int ascension;
 	int constellation;
 	struct {
 		int normal;
@@ -16,8 +17,8 @@ typedef struct character_stats {
 	int normaldata;
 	int skilldata;
 	int burstdata;
-	int asc1data;
-	int asc4data;
+	int a1data;
+	int a4data;
 	int utildata;
 	int c1data;
 	int c2data;
@@ -82,6 +83,46 @@ typedef CharacterStats (*CharacterGeneratorFunc)(CharacterStats in);
 CharacterStats noop_character_generator_func(CharacterStats in)
 {
 	return in; // do nothing
+}
+
+float character_level_multiplier(int quality, int level)
+{
+	// simplified version of the formula on the wiki
+	float f = ((level * 272477) + 3027523) / 3300000.0;
+	f += (quality == 5) * (-0.000545558586118 + 0.000443691458696 * level + 0.0000433830491622 * level * level);
+	return f;
+}
+
+float character_ascension_multiplier(int ascension)
+{
+	static float const tbl[] = {
+		[0] = 0.0 / 182.0,
+		[1] = 38.0 / 182.0,
+		[2] = 65.0 / 182.0,
+		[3] = 101.0 / 182.0,
+		[4] = 128.0 / 182.0,
+		[5] = 155.0 / 182.0,
+		[6] = 182.0 / 182.0,
+	}
+
+	return tbl[ascension];
+}
+
+int character_check_ascension(int level, int ascension)
+{
+	int min = 0;
+	if (level <= 20) min = 0;
+	else if (level <= 40) min = 1;
+	else min = (level - 1) / 10 - 2;
+
+	int max = 0;
+	if (level < 20) max = 0;
+	else if (level < 40) max = 1;
+	else max = level / 10 - 2;
+
+	if (ascension <= min) return min;
+	if (ascension >= max) return max;
+	return ascension;
 }
 
 #endif
