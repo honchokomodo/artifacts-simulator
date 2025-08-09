@@ -16,25 +16,23 @@ void amber_talent_func(CharacterTalentArgs in)
 // AUTOGEN character2generator amber_generator_func
 CharacterStats amber_generator_func(CharacterStats in)
 {
-	/* important variables:
-	 * in.level
-	 */
-
 	int ascension = character_check_ascension(in.level, in.ascension);
 
+	// values obtained from wiki
+	// https://genshin-impact.fandom.com/wiki/Character/Level_Scaling
 	float base_hp = 793.2582;
 	float base_atk = 18.6984;
 	float base_def = 50.358;
-
-	float lvlfac = character_level_multiplier(4, in.level);
-
 	float asc_hp = 2838.2634;
 	float asc_atk = 66.90411;
 	float asc_def = 180.18;
 
+	float lvlfac = character_level_multiplier(4, in.level);
 	float ascfac = character_ascension_multiplier(ascension);
 
 	static float const bonusatk[] = {
+		// values obtained from wiki
+		// https://genshin-impact.fandom.com/wiki/Amber
 		[2] = 6.0,
 		[3] = 12.0,
 		[4] = 12.0,
@@ -59,23 +57,6 @@ CharacterStats amber_generator_func(CharacterStats in)
 		.atk_percent = bonusatk[ascension],
 	};
 
-	/*
-	CharacterStats amber90 = {
-		.name = "Amber",
-		.level = 90,
-		.constellation = 6,
-
-		// values obtained from wiki
-		.hp = 9461.18,
-		.atk = 223.02,
-		.atk_percent = 24.0,
-		.def = 600.62,
-		.crit_rate = 5.0,
-		.crit_damage = 50.0,
-		.energy_recharge = 100.0,
-	};
-	*/
-	
 	return out;
 }
 // AUTOGEN end
