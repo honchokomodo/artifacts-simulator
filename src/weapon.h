@@ -1,36 +1,8 @@
 #ifndef WEAPON_H
 #define WEAPON_H
 
-#include "common.h"
-
-/*
-typedef enum weapon_type {
-	WEAPON_NOTHING,
-	CALAMITY_OF_ESHU,
-	SKYWARD_HARP,
-	MISTSPLITTER_REFORGED,
-} WeaponType;
-*/
-
-typedef void (*WeaponBonusHandlerFunc)(
-		float accumulators[CRIT_DAMAGE + 1],
-		float * multiplicative_factor);
-
-void noop_weapon_bonus_func(
-		float accumulators[CRIT_DAMAGE + 1],
-		float * multiplicative_factor)
-{
-	// this function does nothing
-}
-
-typedef struct weapon {
-	char * name;
-	int refinement;
-	int level;
-	float atk;
-	Affix stat;
-	WeaponBonusHandlerFunc passive;
-} Weapon;
+#include "weapon_defs.h"
+//TODO: autogenerate these
 
 /* from wiki:
 Diffusing Boundary
@@ -107,5 +79,23 @@ stack's duration is calculated independently.
 	.stat = {CRIT_DAMAGE, 66.2},
 	.passive = noop_weapon_bonus_func, //TODO: implement this
 };
+
+#define WEAPON_NEW(type, ...) weapon_new(type, (Weapon) {__VA_ARGS__})
+Weapon weapon_new(WeaponType type, Weapon in)
+{
+	//TODO: un-hardcode this
+	switch (type) {
+		case CALAMITY_OF_ESHU:
+			return calamity_of_eshu_r5_90;
+		case SKYWARD_HARP:
+			return skyward_harp_r1_90;
+		case THUNDERING_PULSE:
+			return thundering_pulse_r1_90;
+		case MISTSPLITTER_REFORGED:
+			return mistsplitter_reforged_r1_90;
+		default:
+			return in;
+	}
+}
 
 #endif
