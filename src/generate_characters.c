@@ -69,15 +69,15 @@ void process_file_contents(FILE * file)
 			type_keys[count] = allocstr(buf + start, cur - start);
 
 		} else if (strncmp(name, buf + start, strlen(name)) == 0) {
-			start += strlen(key);
+			start += strlen(name);
 			str_names[count] = allocstr(buf + start, cur - start);
 
 		} else if (strncmp(icon, buf + start, strlen(icon)) == 0) {
-			start += strlen(key);
+			start += strlen(icon);
 			icons[count] = allocstr(buf + start, cur - start);
 
 		} else if (strncmp(portrait, buf + start, strlen(portrait)) == 0) {
-			start += strlen(key);
+			start += strlen(portrait);
 			portraits[count] = allocstr(buf + start, cur - start);
 
 		} else if (strncmp(talent, buf + start, strlen(talent)) == 0) {
@@ -111,6 +111,7 @@ void process_file_contents(FILE * file)
 
 void generate_characters_enum_h(void)
 {
+	printf("generating characters_enum.h\n");
 	FILE * type_keys_file = fopen("build/include/characters_enum.h", "w");
 	if (!type_keys_file) {
 		printf("failed to create characters_enum.h");
@@ -128,12 +129,13 @@ void generate_characters_enum_h(void)
 			fprintf(type_keys_file, "\tNIL%d,\n", i);
 	}
 	fprintf(type_keys_file, "} CharacterType;\n");
-	fprintf(type_keys_file, "\n#endif");
+	fprintf(type_keys_file, "\n#endif\n");
 	fclose(type_keys_file);
 }
 
 void generate_characters_arrs_h(void)
 {
+	printf("generating characters_arrs.h\n");
 	FILE * arrays_file = fopen("build/include/characters_arrs.h", "w");
 	if (!arrays_file) {
 		printf("failed to create characters_arrs.h");
@@ -183,12 +185,13 @@ void generate_characters_arrs_h(void)
 	}
 	fprintf(arrays_file, "};\n\n");
 
-	fprintf(arrays_file, "#endif");
+	fprintf(arrays_file, "#endif\n");
 	fclose(arrays_file);
 }
 
 void generate_characters_impls_c(void)
 {
+	printf("generating characters_impls.c\n");
 	FILE * impls_file = fopen("build/include/characters_impls.c", "w");
 	if (!impls_file) {
 		printf("failed to create characters_impls.c");
@@ -204,13 +207,14 @@ void generate_characters_impls_c(void)
 	for (int i = 0; i < count; i++)
 		if (gen_impls[i] != NULL)
 			fprintf(impls_file, "%s", gen_impls[i]);
-	fprintf(impls_file, "\n#endif");
+	fprintf(impls_file, "\n#endif\n");
 
 	fclose(impls_file);
 }
 
 void generate_characters_ui_c(void)
 {
+	printf("generating characters_ui.c\n");
 	FILE * ui_file = fopen("build/include/characters_ui.c", "w");
 	if (!ui_file) {
 		printf("failed to create characters_ui.c");
@@ -235,7 +239,7 @@ void generate_characters_ui_c(void)
 		if (type_keys[i] != NULL && ui_funcs[i] != NULL)
 			fprintf(ui_file, "\t[%s] = %s,\n", type_keys[i], ui_funcs[i]);
 	fprintf(ui_file, "};\n");
-	fprintf(ui_file, "\n#endif");
+	fprintf(ui_file, "\n#endif\n");
 
 	fclose(ui_file);
 }

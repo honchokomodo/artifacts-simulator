@@ -2,7 +2,7 @@
 #define SCENARIO_C
 
 #include "artifact.c"
-#include "weapon.h"
+#include "weapon.c"
 #include "character.c"
 
 typedef struct scenario {

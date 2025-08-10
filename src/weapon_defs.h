@@ -2,27 +2,7 @@
 #define WEAPON_DEFS_H
 
 #include "common.h"
-
-//TODO: autogenerate this
-typedef enum weapon_type {
-	WEAPON_NOTHING,
-	CALAMITY_OF_ESHU,
-	SKYWARD_HARP,
-	THUNDERING_PULSE,
-	MISTSPLITTER_REFORGED,
-} WeaponType;
-
-// TODO: autogenerate this
-typedef void (*WeaponBonusHandlerFunc)(
-		float accumulators[CRIT_DAMAGE + 1],
-		float * multiplicative_factor);
-
-void noop_weapon_bonus_func(
-		float accumulators[CRIT_DAMAGE + 1],
-		float * multiplicative_factor)
-{
-	// this function does nothing
-}
+#include "../build/include/weapons_enum.h"
 
 typedef struct weapon {
 	WeaponType weapon;
@@ -34,7 +14,25 @@ typedef struct weapon {
 	float atk;
 	Affix bonus;
 	int passivedata;
-	WeaponBonusHandlerFunc passive; //TODO: remove this
+	//WeaponBonusHandlerFunc passive; //TODO: remove this
 } Weapon;
+
+typedef struct weapon_passive_args {
+	Weapon weapon;
+	float * accumulators;
+	float * factor;
+} WeaponPassiveArgs;
+
+typedef void (*WeaponPassiveFunc)(WeaponPassiveArgs in);
+void noop_passive_func(WeaponPassiveArgs in)
+{
+	// this function is supposed to do nothing
+}
+
+typedef Weapon (*WeaponGeneratorFunc)(Weapon in);
+Weapon noop_weapon_generator_func(Weapon in)
+{
+	return in; // do nothing
+}
 
 #endif
