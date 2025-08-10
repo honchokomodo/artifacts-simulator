@@ -1,3 +1,6 @@
+#ifndef COMPONENTS_C
+#define COMPONENTS_C
+
 #include <clay.h>
 #include "clay_renderer_raylib.c"
 #include <raylib.h>
@@ -287,3 +290,5 @@ void toggle_switch_text(int * dest, char * maintext, char * subtext)
 		}
 	}
 }
+
+#endif

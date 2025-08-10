@@ -1,13 +1,12 @@
 // vim: ts=2 sw=2
-#include "artifact_defs.h"
-#include "common.h"
-#include "components.c"
-// #include "artifact.c"
 #include <stdbool.h>
 #include <string.h>
-#include "weapon.c"
-#include "character.c"
 
+#include "components.c"
+#include "scenario.c"
+#include "../build/include/artifacts_ui.c"
+#include "../build/include/characters_ui.c"
+#include "../build/include/weapons_ui.c"
 
 Interface_Data uiData_Initialize() {
 	Interface_Data data = {0};
