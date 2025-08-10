@@ -9,7 +9,7 @@ int main(void)
 
 	Scenario skirk = {
 		.character = CHARACTER_NEW(SKIRK, .level = 90),
-		.weapon = calamity_of_eshu_r5_90,
+		.weapon = WEAPON_NEW(CALAMITY_OF_ESHU, .level = 90, .refinement = 5),
 		.flower = {
 			.piece = FLOWER, 
 			.set = FINALE_OF_THE_DEEP_GALLERIES,

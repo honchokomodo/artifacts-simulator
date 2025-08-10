@@ -88,13 +88,10 @@ void scenario_print(Scenario in)
 
 	// step 4: handle weapon stats
 	atk_base += in.weapon.atk;
-	accumulators[in.weapon.stat.type] += in.weapon.stat.value;
+	accumulators[in.weapon.bonus.type] += in.weapon.bonus.value;
 
 	// step 5: handle weapon passives
-	in.weapon.passive(
-			accumulators,
-			&multiplicative_factor
-			);
+	// TODO
 	
 	// step 6: handle character passives and constellations
 	// this is going to be a total nightmare
@@ -140,7 +137,7 @@ void scenario_print(Scenario in)
 	printf("\n");
 	printf("%s - R%d\n", in.weapon.name, in.weapon.refinement);
 	printf("ATK - %g\n", in.weapon.atk);
-	printf("%s - %g%s\n", stat2str[in.weapon.stat.type], in.weapon.stat.value, stat2pct[in.weapon.stat.type]);
+	printf("%s - %g%s\n", stat2str[in.weapon.bonus.type], in.weapon.bonus.value, stat2pct[in.weapon.bonus.type]);
 
 	printf("\n");
 	artifact_print(in.flower);

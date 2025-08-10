@@ -42,6 +42,9 @@ int main(void)
 			.constellation = 6,
 			.talent = {9, 9, 9});
 
+	char something[2] = {'a', '\0'};
+	int val;
+
 	while (!WindowShouldClose()) {
 		windowSize.width = GetScreenWidth();
 		windowSize.height = GetScreenHeight();
@@ -52,6 +55,8 @@ int main(void)
 			(Clay_Vector2) {mousepos.x, mousepos.y},
 			IsMouseButtonDown(MOUSE_BUTTON_LEFT)
 		);
+
+		something[0] = 'a';
 
 		Clay_BeginLayout();
 
@@ -68,7 +73,10 @@ int main(void)
 			}
 		}) {
 			amber_ui_func(&amber);
+			toggle_switch_text(&val, something, NULL);
 		}
+
+		something[0] = 'b';
 
 		Clay_RenderCommandArray renderCommands = Clay_EndLayout();
 
