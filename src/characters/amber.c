@@ -27,9 +27,6 @@ CharacterStats amber_generator_func(CharacterStats in)
 	float asc_atk = 66.90411;
 	float asc_def = 180.18;
 
-	float lvlfac = character_level_multiplier(4, in.level);
-	float ascfac = character_ascension_multiplier(ascension);
-
 	static float const bonusatk[] = {
 		// values obtained from wiki
 		// https://genshin-impact.fandom.com/wiki/Amber
@@ -43,21 +40,15 @@ CharacterStats amber_generator_func(CharacterStats in)
 	CharacterStats out = {
 		.type = in.type,
 		.level = in.level,
+		.ascension = ascension,
 		.constellation = in.constellation,
 		.talent = in.talent,
 		.name = "Amber",
-
-		.hp = base_hp * lvlfac + asc_hp * ascfac,
-		.atk = base_atk * lvlfac + asc_atk * ascfac,
-		.def = base_def * lvlfac + asc_def * ascfac,
-
-		.crit_rate = 5.0,
-		.crit_damage = 50.0,
-		.energy_recharge = 100.0,
 		.atk_percent = bonusatk[ascension],
 	};
 
-	return out;
+	return character_base_stats(out, 4, in.level, ascension, base_hp,
+			base_atk, base_def, asc_hp, asc_atk, asc_def);
 }
 // AUTOGEN end
 

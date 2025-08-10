@@ -5,9 +5,10 @@ endif
 run: build/main
 	build/main
 
-build/main: src/*.c build build/generate_characters build/generate_weapons
+build/main: src/*.c build build/generate_characters build/generate_weapons build/generate_artifacts
 	build/generate_characters
 	build/generate_weapons
+	build/generate_artifacts
 	gcc -o build/main src/main.c -Llib -Iinclude -lm -lraylib $(CCFLAGS)
 
 build/generate_characters: src/generate_characters.c
@@ -15,6 +16,9 @@ build/generate_characters: src/generate_characters.c
 
 build/generate_weapons: src/generate_weapons.c
 	gcc -o build/generate_weapons src/generate_weapons.c
+
+build/generate_artifacts: src/generate_artifacts.c
+	gcc -o build/generate_artifacts src/generate_artifacts.c
 
 build/include:
 	mkdir -p build/include

@@ -14,4 +14,9 @@ CharacterStats character_new(CharacterType type, CharacterStats in)
 	return character2generator[type](in);
 }
 
+void character_talents(CharacterTalentArgs in)
+{
+	character2talent[in.character.type](in);
+}
+
 #endif

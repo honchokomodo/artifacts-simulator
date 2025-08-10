@@ -31,7 +31,7 @@ void generate_weapons_enum_h(void)
 	printf("generating weapons_enum.h\n");
 	FILE * file = fopen("build/include/weapons_enum.h", "w");
 	if (!file) {
-		printf("failed to create weapons_enum.h");
+		printf("failed to create weapons_enum.h\n");
 		exit(1);
 	}
 
@@ -59,7 +59,7 @@ void generate_weapons_arrs_h(void)
 	printf("generating weapons_arrs.h\n");
 	FILE * file = fopen("build/include/weapons_arrs.h", "w");
 	if (!file) {
-		printf("failed to create weapons_arrs.h");
+		printf("failed to create weapons_arrs.h\n");
 		exit(1);
 	}
 
@@ -117,7 +117,7 @@ void generate_weapons_impls_c(void)
 	printf("generating weapons_impls.c\n");
 	FILE * file = fopen("build/include/weapons_impls.c", "w");
 	if (!file) {
-		printf("failed to create weapons_impls.c");
+		printf("failed to create weapons_impls.c\n");
 		exit(1);
 	}
 
@@ -144,7 +144,7 @@ void generate_weapons_ui_c(void)
 	printf("generating weapons_ui.c\n");
 	FILE * file = fopen("build/include/weapons_ui.c", "w");
 	if (!file) {
-		printf("failed to create weapons_ui.c");
+		printf("failed to create weapons_ui.c\n");
 		exit(1);
 	}
 
@@ -154,7 +154,7 @@ void generate_weapons_ui_c(void)
 			"#include \"../../src/components.c\"\n\n");
 	fprintf(file, "typedef void (*WeaponUIFunc)(Weapon *);\n");
 	fprintf(file, "void noop_weapon_ui_func(Weapon *) {\n"
-			"\t//this function does nothing\n"
+			"\t// this function does nothing\n"
 			"}\n\n");
 
 	for (int i = 0; i < count; i++) {

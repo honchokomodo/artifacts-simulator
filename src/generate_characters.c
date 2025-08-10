@@ -114,7 +114,7 @@ void generate_characters_enum_h(void)
 	printf("generating characters_enum.h\n");
 	FILE * type_keys_file = fopen("build/include/characters_enum.h", "w");
 	if (!type_keys_file) {
-		printf("failed to create characters_enum.h");
+		printf("failed to create characters_enum.h\n");
 		exit(1);
 	}
 
@@ -138,7 +138,7 @@ void generate_characters_arrs_h(void)
 	printf("generating characters_arrs.h\n");
 	FILE * arrays_file = fopen("build/include/characters_arrs.h", "w");
 	if (!arrays_file) {
-		printf("failed to create characters_arrs.h");
+		printf("failed to create characters_arrs.h\n");
 		exit(1);
 	}
 
@@ -194,7 +194,7 @@ void generate_characters_impls_c(void)
 	printf("generating characters_impls.c\n");
 	FILE * impls_file = fopen("build/include/characters_impls.c", "w");
 	if (!impls_file) {
-		printf("failed to create characters_impls.c");
+		printf("failed to create characters_impls.c\n");
 		exit(1);
 	}
 
@@ -217,7 +217,7 @@ void generate_characters_ui_c(void)
 	printf("generating characters_ui.c\n");
 	FILE * ui_file = fopen("build/include/characters_ui.c", "w");
 	if (!ui_file) {
-		printf("failed to create characters_ui.c");
+		printf("failed to create characters_ui.c\n");
 		exit(1);
 	}
 

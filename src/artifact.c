@@ -5,9 +5,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#include "artifact_defs.h"
-
-#include "artifact_set_bonuses.c"
+#include "../build/include/artifacts_arrs.h"
 
 float const mainstat_values[][6] = {
 	// values obtained from wiki.
@@ -273,6 +271,11 @@ Artifact artifact_new_strongbox(ArtifactSet set)
 {
 	Artifact arti = {.set = set};
 	return artifact_new(rand() % 3 == 0, arti);
+}
+
+void artifact_set_bonus(SetBonusArgs in)
+{
+	set2bonus[in.set](in);
 }
 
 #endif

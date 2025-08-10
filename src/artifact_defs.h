@@ -2,8 +2,7 @@
 #define ARTIFACT_DEFS_H
 
 #include "common.h"
-#include "stddef.h"
-// include artifacts enum
+#include "../build/include/artifacts_enum.h"
 
 #define MAX_SUBSTATS 4
 #define MAX_UPGRADES 5
@@ -26,22 +25,6 @@ char const * const piece2str[] = {
 	[CIRCLET] = "Circlet",
 };
 
-// may need to be auto generated.
-typedef enum artifact_set {
-	SET_NOTHING,
-	FINALE_OF_THE_DEEP_GALLERIES,
-	MARECHAUSSEE_HUNTER,
-	WANDERERS_TROUPE,
-} ArtifactSet;
-
-// may need to be auto generated.
-char const * const set2str[] = {
-	[SET_NOTHING] = "nil set",
-	[FINALE_OF_THE_DEEP_GALLERIES] = "Finale of the Deep Galleries",
-	[MARECHAUSSEE_HUNTER] = "Marechaussee Hunter",
-	[WANDERERS_TROUPE] = "Wanderer's Troupe",
-};
-
 typedef struct affix {
 	StatType type;
 	float value;
@@ -57,5 +40,20 @@ typedef struct artifact {
 	Affix substat[MAX_SUBSTATS];
 	int num_upgrades[MAX_SUBSTATS];
 } Artifact;
+
+typedef struct set_bonus_args {
+	ArtifactSet set;
+	int num_pieces;
+	float * accumulators;
+	float * factor;
+	int * bonus1;
+	int * bonus2;
+} SetBonusArgs;
+
+typedef void (*SetBonusFunc)(SetBonusArgs in);
+void noop_set_bonus_func(SetBonusArgs in)
+{
+	// do nothing
+}
 
 #endif

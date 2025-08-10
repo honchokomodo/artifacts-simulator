@@ -14,6 +14,8 @@ typedef struct scenario {
 	Artifact sands;
 	Artifact goblet;
 	Artifact circlet;
+	int bonus1;
+	int bonus2;
 } Scenario;
 
 // should match what is seen idle in-game as closely as possible.
@@ -79,11 +81,16 @@ void scenario_print(Scenario in)
 	
 	// step 3: handle artifact set bonuses
 	for (int i = 0; i < 5; i++) {
-		handle_artifact_set_bonuses(
-				setcounters[i].set,
-				setcounters[i].count,
-				accumulators,
-				&multiplicative_factor);
+		SetBonusArgs set_bonus_args = {
+			.set = setcounters[i].set,
+			.num_pieces = setcounters[i].count,
+			.accumulators = accumulators,
+			.factor = &multiplicative_factor,
+			.bonus1 = &in.bonus1,
+			.bonus2 = &in.bonus2,
+		};
+
+		artifact_set_bonus(set_bonus_args);
 	}
 
 	// step 4: handle weapon stats
@@ -91,11 +98,24 @@ void scenario_print(Scenario in)
 	accumulators[in.weapon.bonus.type] += in.weapon.bonus.value;
 
 	// step 5: handle weapon passives
-	// TODO
+	WeaponPassiveArgs weapon_passive_args = {
+		.weapon = in.weapon,
+		.accumulators = accumulators,
+		.factor = &multiplicative_factor,
+	};
+	weapon_passive(weapon_passive_args);
 	
 	// step 6: handle character passives and constellations
-	// this is going to be a total nightmare
-	// TODO: implement this. use function pointers?
+	CharacterTalentArgs character_talent_args = {
+		.character = in.character,
+		.accumulators = accumulators,
+		.hp_base = &hp_base,
+		.atk_base = &atk_base,
+		.def_base = &def_base,
+		.factor = &multiplicative_factor,
+	};
+
+	character_talents(character_talent_args);
 
 	// step 7: combine base stats with aggregate stats
 	float hp_fac = 1 + accumulators[HP_PERCENT] / 100;

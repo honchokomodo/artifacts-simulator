@@ -11,4 +11,9 @@ Weapon weapon_new(WeaponType type, Weapon in)
 	return weapon2generator[type](in);
 }
 
+void weapon_passive(WeaponPassiveArgs in)
+{
+	weapon2passive[in.weapon.type](in);
+}
+
 #endif

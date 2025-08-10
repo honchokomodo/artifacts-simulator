@@ -85,17 +85,11 @@ CharacterStats noop_character_generator_func(CharacterStats in)
 	return in; // do nothing
 }
 
-float character_level_multiplier(int quality, int level)
+CharacterStats character_base_stats(CharacterStats in, int quality, int level,
+		int ascension, float base_hp, float base_atk, float base_def,
+		float asc_hp, float asc_atk, float asc_def)
 {
-	// simplified version of the formula on the wiki
-	float f = ((level * 272477) + 3027523) / 3300000.0;
-	f += (quality == 5) * (-0.000545558586118 + 0.000443691458696 * level + 0.0000433830491622 * level * level);
-	return f;
-}
-
-float character_ascension_multiplier(int ascension)
-{
-	static float const tbl[] = {
+	static float const asctbl[] = {
 		[0] = 0.0 / 182.0,
 		[1] = 38.0 / 182.0,
 		[2] = 65.0 / 182.0,
@@ -105,7 +99,22 @@ float character_ascension_multiplier(int ascension)
 		[6] = 182.0 / 182.0,
 	};
 
-	return tbl[ascension];
+	// simplified version of the formula on the wiki
+	float lvlmul = ((level * 272477) + 3027523) / 3300000.0 +
+		(quality == 5) *
+		(-0.000545558586118 + 0.000443691458696 * level +
+		0.0000433830491622 * level * level);
+
+	float ascmul = asctbl[ascension];
+
+	in.hp = base_hp * lvlmul + asc_hp * ascmul;
+	in.atk = base_atk * lvlmul + asc_atk * ascmul;
+	in.def = base_def * lvlmul + asc_def * ascmul;
+	in.crit_rate = 5.0;
+	in.crit_damage = 50.0;
+	in.energy_recharge = 100.0;
+
+	return in;
 }
 
 int character_check_ascension(int level, int ascension)
