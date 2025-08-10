@@ -5,13 +5,13 @@ endif
 run: build/main
 	build/main
 
-build/main: src/*.c build build/include/character_*.h
+build/main: src/*.c build build/include/characters_* build/include/weapons_*
 	gcc -o build/main src/main.c -Llib -Iinclude -lm -lraylib $(CCFLAGS)
 
-build/include/characters_*.h: build/generate_characters build/include
+build/include/characters_*: build/generate_characters build/include
 	build/generate_characters
 
-build/include/weapons_*.h: build/generate_weapons build/include
+build/include/weapons_*: build/generate_weapons build/include
 	build/generate_weapons
 
 build/generate_characters: src/generate_characters.c
