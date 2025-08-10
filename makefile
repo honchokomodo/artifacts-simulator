@@ -8,11 +8,17 @@ run: build/main
 build/main: src/*.c build build/include/character_*.h
 	gcc -o build/main src/main.c -Llib -Iinclude -lm -lraylib $(CCFLAGS)
 
-build/include/character_*.h: build/generate_characters
+build/include/characters_*.h: build/generate_characters
 	build/generate_characters
+
+build/include/weapons_*.h: build/generate_weapons
+	build/generate_weapons
 
 build/generate_characters: src/generate_characters.c
 	gcc -o build/generate_characters src/generate_characters.c
+
+build/generate_weapons: src/generate_weapons.c
+	gcc -o build/generate_weapons src/generate_weapons.c
 
 build/include:
 	mkdir -p build/include

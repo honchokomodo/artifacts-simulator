@@ -103,7 +103,7 @@ float character_ascension_multiplier(int ascension)
 		[4] = 128.0 / 182.0,
 		[5] = 155.0 / 182.0,
 		[6] = 182.0 / 182.0,
-	}
+	};
 
 	return tbl[ascension];
 }

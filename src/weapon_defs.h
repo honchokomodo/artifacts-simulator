@@ -5,7 +5,7 @@
 #include "../build/include/weapons_enum.h"
 
 typedef struct weapon {
-	WeaponType weapon;
+	WeaponType type;
 	int level;
 	int ascension;
 	int refinement;

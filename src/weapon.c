@@ -1,7 +1,7 @@
 #ifndef WEAPON_C
 #define WEAPON_C
 
-#include "../../build/include/weapons_arrs.h"
+#include "../build/include/weapons_arrs.h"
 
 // compute all weapon stats from:
 // type, level, ascension, refinement

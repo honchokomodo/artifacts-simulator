@@ -5,8 +5,8 @@
 // #include "artifact.c"
 #include <stdbool.h>
 #include <string.h>
-#include "weapon.h"
-// #include "character.c"
+#include "weapon.c"
+#include "character.c"
 
 
 Interface_Data uiData_Initialize() {
@@ -163,21 +163,21 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 							.childAlignment = CLAY_ALIGN_X_CENTER,
 						},
 					}){
-						text_sub_heading1(CLAY_STR(thundering_pulse_r1_90.name), COLOR_WHITE);
+						text_sub_heading1(CLAY_STR("HARDCODED STRING"), COLOR_WHITE);
 	
 						CLAY({ .layout = { .childAlignment = {CLAY_ALIGN_X_LEFT, CLAY_ALIGN_Y_BOTTOM}, .layoutDirection = CLAY_LEFT_TO_RIGHT } }){
 							text_p(CLAY_STRING("Lvl: "), COLOR_WHITE);
-							text_large(CLAY_STR(int_to_str(thundering_pulse_r1_90.level)), COLOR_WHITE);
+							text_large(CLAY_STR("HARDCODED STRING"), COLOR_WHITE);
 						}
 	
 						CLAY({ .layout = { .layoutDirection = CLAY_LEFT_TO_RIGHT, .childGap = 32}}){
 							CLAY({ .layout = { .childAlignment = CLAY_ALIGN_X_LEFT, .layoutDirection = CLAY_TOP_TO_BOTTOM,} } ){
 								text_p(CLAY_STR("ATK"), COLOR_WHITE);
-								text_p(CLAY_STR(stat2str[thundering_pulse_r1_90.stat.type]), COLOR_WHITE);
+								text_p(CLAY_STR("HARDCODED STRING"), COLOR_WHITE);
 							};
 							CLAY({ .layout = { .childAlignment = CLAY_ALIGN_X_RIGHT, .layoutDirection = CLAY_TOP_TO_BOTTOM,} } ){
-								text_p(CLAY_STR(int_to_str(thundering_pulse_r1_90.atk)), COLOR_WHITE);
-								text_p(CLAY_STR(int_to_str((int) thundering_pulse_r1_90.stat.value) ), COLOR_WHITE);
+								text_p(CLAY_STR("HARDCODED STRING"), COLOR_WHITE);
+								text_p(CLAY_STR("HARDCODED STRING"), COLOR_WHITE);
 							};
 						};
 					};
