@@ -37,7 +37,7 @@ CharacterStats skirk_generator_func(CharacterStats in)
 	};
 
 	CharacterStats out = {
-		.type = in.type,
+		.type = SKIRK,
 		.level = in.level,
 		.ascension = ascension,
 		.constellation = in.constellation,

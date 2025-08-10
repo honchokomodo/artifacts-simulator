@@ -38,7 +38,7 @@ CharacterStats amber_generator_func(CharacterStats in)
 	};
 
 	CharacterStats out = {
-		.type = in.type,
+		.type = AMBER,
 		.level = in.level,
 		.ascension = ascension,
 		.constellation = in.constellation,
