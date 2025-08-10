@@ -72,7 +72,7 @@ int main(void)
 				.childGap = 12,
 			}
 		}) {
-			amber_ui_func(&amber);
+			character2ui[amber.type](&amber);
 			toggle_switch_text(&val, something, NULL);
 		}
 
