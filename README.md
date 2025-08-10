@@ -6,8 +6,8 @@
 
 ## Art contribution guidelines
 If you want to help out and contribute art
-+ 512 pixels by 512 pixels
-+ front facing
++ icons are 128 pixels by 128 pixels and front facing
++ portraits are 512 pixels by 512 pixels meant to be more dynamic
 + currently we're keeping the scope at just amber, yoimiya, skirk.
 + to add your drawing, put it in `resources/images/characters`
 + add the file name of your drawing under the [**Artists**](#artists) section below and with your name (you can also add a link to bio)
