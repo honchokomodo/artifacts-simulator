@@ -42,7 +42,6 @@ CharacterStats skirk_generator_func(CharacterStats in)
 		.ascension = ascension,
 		.constellation = in.constellation,
 		.talent = in.talent,
-		.name = "Skirk",
 	};
 
 	out = character_base_stats(out, 5, in.level, ascension, base_hp, base_atk, base_def, asc_hp, asc_atk, asc_def);

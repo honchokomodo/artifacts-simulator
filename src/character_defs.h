@@ -27,8 +27,6 @@ typedef struct character_stats {
 	int c5data;
 	int c6data;
 
-	char * name;
-
 	float hp;
 	float hp_percent;
 	float atk;

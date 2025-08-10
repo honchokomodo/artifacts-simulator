@@ -43,7 +43,6 @@ CharacterStats amber_generator_func(CharacterStats in)
 		.ascension = ascension,
 		.constellation = in.constellation,
 		.talent = in.talent,
-		.name = "Amber",
 		.atk_percent = bonusatk[ascension],
 	};
 

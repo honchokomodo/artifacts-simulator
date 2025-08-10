@@ -12,7 +12,6 @@ void yoimiya_talent_func(CharacterTalentArgs in)
 CharacterStats yoimiya_generator_func(CharacterStats in)
 {
 	CharacterStats yoimiya90 = {
-		.name = "Yoimiya",
 		.level = 90,
 
 		//values obtained from wiki

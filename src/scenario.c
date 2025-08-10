@@ -133,7 +133,7 @@ void scenario_print(Scenario in)
 			printf(fmt, accumulators[key]); \
 	} while (0)
 
-	printf("%s - lv.%d\n", in.character.name, in.character.level);
+	printf("%s - lv.%d\n", character2str[in.character.type], in.character.level);
 	printf("HP - %g\n", hp);
 	printf("ATK - %g\n", atk);
 	printf("DEF - %g\n", def);
