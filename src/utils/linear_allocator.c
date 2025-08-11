@@ -37,7 +37,7 @@ void la_reset(la_Arena * arena);
  * int * ptr = la_alloc(&arena, sizeof(*ptr));
  *
  * // create some strings.
- * char * name = "World";
+ * char * name = "Amber";
  * char * s = la_strfmt(&arena, "Hello %s!\n", name);
  * char * numbers = la_strfmt(&arena, "numbers: %d, %d, %d", 1, 2, 3);
  *
