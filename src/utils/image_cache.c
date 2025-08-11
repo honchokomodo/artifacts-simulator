@@ -1,6 +1,14 @@
 #ifndef IMAGE_CACHE_C
 #define IMAGE_CACHE_C
 
+#include <raylib.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include <assert.h>
+#include <stdio.h>
+
 // initialize the cache, num_entries being the size of the hash table.
 void ic_initcache(int num_entries);
 
@@ -41,7 +49,7 @@ void ic_unload_all(void); // unload all textures in the cache.
 struct _ic_tbl_entry {
 	char * fpath;
 	uint32_t hash;
-	int nextidx;
+	int next;
 	Texture2D tex;
 };
 
@@ -78,6 +86,9 @@ void ic_destroycache(void)
 	}
 	free(_ic_arr);
 
+	_ic_table = NULL;
+	_ic_arr = NULL;
+
 	_ic_table_size = 0;
 	_ic_arr_cap = 0;
 	_ic_arr_len = 0;
@@ -105,7 +116,7 @@ char * _ic_strdup(char * s)
 	int len = strlen(s);
 	char * out = malloc(len + 1);
 	if (!out) return NULL;
-	memcpy(out, buf, len);
+	memcpy(out, s, len);
 	out[len] = '\0';
 	return out;
 }
@@ -113,13 +124,15 @@ char * _ic_strdup(char * s)
 int _ic_load_tex(char * path) {
 	char * fpath = _ic_strdup(path);
 	if (fpath == NULL)
-		goto bailout;
+		return 0;
 
 	uint32_t hash = _ic_strhash(path);
 
 	Texture2D tex = LoadTexture(path);
-	if (tex.format == 0)
-		goto bailout;
+	if (tex.format == 0) {
+		free(fpath);
+		return 0;
+	}
 
 	if (_ic_arr_next_free == 0) {
 		if (_ic_arr_len >= _ic_arr_cap) {
@@ -127,7 +140,11 @@ int _ic_load_tex(char * path) {
 			size_t newsize = _ic_arr_cap * sizeof(*_ic_arr);
 			void * newbuf = realloc(_ic_arr, newsize);
 			if (newbuf) _ic_arr = newbuf;
-			else goto bailout;
+			else {
+				free(fpath);
+				UnloadTexture(tex);
+				return 0;
+			}
 		}
 
 		_ic_arr_next_free = _ic_arr_len;
@@ -139,22 +156,13 @@ int _ic_load_tex(char * path) {
 		.fpath = fpath,
 		.hash = hash,
 		.tex = tex,
-	}
+	};
 
 	int next_free = _ic_arr_next_free;
 	_ic_arr_next_free = _ic_arr[next_free].next;
 	_ic_arr[next_free] = new;
 
 	return next_free;
-
-bailout:
-	if (fpath != NULL)
-		free(fpath);
-
-	if (tex.format != 0)
-		UnloadTexture(tex);
-
-	return 0;
 }
 
 Texture2D ic_get_tex(char * path)
@@ -162,19 +170,25 @@ Texture2D ic_get_tex(char * path)
 	uint32_t hash = _ic_strhash(path);
 	int index = hash % _ic_table_size;
 
-	int * ptr = _ic_table + index;
-	while (*ptr != 0) {
-		struct _ic_tbl_entry entry = _ic_arr[*ptr];
+	int prev = 0;
+	int pos = _ic_table[index];
+	while (pos != 0) {
+		struct _ic_tbl_entry entry = _ic_arr[pos];
 
 		if (entry.hash == hash && strcmp(path, entry.fpath) == 0) {
 			return entry.tex;
 		}
 
-		ptr = &_ic_arr[*ptr].next;
+		prev = pos;
+		pos = _ic_arr[pos].next;
 	}
+	
+	pos = _ic_load_tex(path);
 
-	*ptr = _ic_load_tex(path);
-	return _ic_arr[*ptr].tex;
+	if (prev == 0) _ic_table[index] = pos;
+	else _ic_arr[prev].next = pos;
+
+	return _ic_arr[pos].tex;
 }
 
 void ic_unload_tex(char * path)
@@ -187,10 +201,17 @@ void ic_unload_tex(char * path)
 		struct _ic_tbl_entry entry = _ic_arr[*ptr];
 
 		if (entry.hash == hash && strcmp(path, entry.fpath) == 0) {
-			UnloadTexture(entry.tex);
 			free(entry.fpath);
-			_ic_arr[*ptr].next = _ic_arr_next_free;
-			_ic_arr_next_free = *ptr;
+			UnloadTexture(entry.tex);
+
+			_ic_arr[*ptr].fpath = NULL;
+			_ic_arr[*ptr].hash = 0;
+			_ic_arr[*ptr].tex = (Texture2D) {0};
+
+			int found = *ptr;
+			*ptr = _ic_arr[found].next;
+			_ic_arr[found].next = _ic_arr_next_free;
+			_ic_arr_next_free = found;
 			return;
 		}
 
@@ -200,6 +221,9 @@ void ic_unload_tex(char * path)
 
 void ic_unload_all(void)
 {
+	for (int i = 0; i < _ic_table_size; i++)
+		_ic_table[i] = 0;
+
 	for (int i = 0; i < _ic_arr_len; i++) {
 		if (_ic_arr[i].fpath != NULL)
 			free(_ic_arr[i].fpath);
