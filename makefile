@@ -1,3 +1,5 @@
+CCFLAGS += -Llib -Iinclude -lm -lraylib
+
 ifeq ($(OS), Windows_NT)
 	CCFLAGS += -lgdi32 -lwinmm
 endif
@@ -5,11 +7,19 @@ endif
 run: build/main
 	build/main
 
-build/main: src/*.c build build/generate_characters build/generate_weapons build/generate_artifacts
+build/main: src/*.c build generate_headers
+	gcc -o build/main src/main.c $(CCFLAGS)
+
+basic: src/*.c build generate_headers
+	gcc -o build/basic src/examples/basic.c
+
+generated_ui: src/*.c build generate_headers
+	gcc -o build/generated_ui src/examples/generated_ui.c $(CCFLAGS)
+
+generate_headers: build/include build/generate_characters build/generate_weapons build/generate_artifacts
 	build/generate_characters
 	build/generate_weapons
 	build/generate_artifacts
-	gcc -o build/main src/main.c -Llib -Iinclude -lm -lraylib $(CCFLAGS)
 
 build/generate_characters: src/generate_characters.c
 	gcc -o build/generate_characters src/generate_characters.c

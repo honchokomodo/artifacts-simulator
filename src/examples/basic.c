@@ -10,7 +10,7 @@ int main(void)
 	Scenario skirk = {
 		.character = CHARACTER_NEW(SKIRK, .level = 90),
 		.weapon = WEAPON_NEW(CALAMITY_OF_ESHU, .level = 90, .refinement = 5),
-		.flower = {
+		.loadout.flower = {
 			.piece = FLOWER, 
 			.set = FINALE_OF_THE_DEEP_GALLERIES,
 			.level = 20, .num_substats = 4,
@@ -21,7 +21,7 @@ int main(void)
 			.substat[3] = {DEF_FLAT, 39},
 		},
 
-		.feather = {
+		.loadout.feather = {
 			.piece = FEATHER,
 			.set = FINALE_OF_THE_DEEP_GALLERIES,
 			.level = 20, .num_substats = 4,
@@ -32,7 +32,7 @@ int main(void)
 			.substat[3] = {HP_FLAT, 598},
 		},
 
-		.sands = {
+		.loadout.sands = {
 			.piece = SANDS,
 			.set = WANDERERS_TROUPE,
 			.level = 20, .num_substats = 4,
@@ -43,7 +43,7 @@ int main(void)
 			.substat[3] = {DEF_PERCENT, 5.1},
 		},
 
-		.goblet = {
+		.loadout.goblet = {
 			.piece = GOBLET,
 			.set = FINALE_OF_THE_DEEP_GALLERIES,
 			.level = 20, .num_substats = 4,
@@ -54,7 +54,7 @@ int main(void)
 			.substat[3] = {ATK_FLAT, 19},
 		},
 
-		.circlet = {
+		.loadout.circlet = {
 			.piece = CIRCLET,
 			.set = FINALE_OF_THE_DEEP_GALLERIES,
 			.level = 20, .num_substats = 4,

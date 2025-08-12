@@ -116,23 +116,22 @@ void scenario_print(Scenario in)
 	accumulators.def = accumulators.def_base * def_fac
 		+ accumulators.ar[DEF_FLAT];
 
-	/*
 	// step 8: print the stats
 #define COND_PRINT(fmt, key) \
 	do { \
-		if (accumulators[key] != 0) \
-			printf(fmt, accumulators[key]); \
+		if (accumulators.ar[key] != 0) \
+			printf(fmt, accumulators.ar[key]); \
 	} while (0)
 
 	printf("%s - lv.%d\n", character2str[in.character.type], in.character.level);
-	printf("HP - %g\n", hp);
-	printf("ATK - %g\n", atk);
-	printf("DEF - %g\n", def);
+	printf("HP - %g\n", accumulators.hp);
+	printf("ATK - %g\n", accumulators.atk);
+	printf("DEF - %g\n", accumulators.def);
 	COND_PRINT("Elemental Mastery - %g\n", ELEMENTAL_MASTERY);
-	printf("Crit RATE - %g%%\n", accumulators[CRIT_RATE]);
-	printf("Crit DMG - %g%%\n", accumulators[CRIT_DAMAGE]);
+	printf("Crit RATE - %g%%\n", accumulators.ar[CRIT_RATE]);
+	printf("Crit DMG - %g%%\n", accumulators.ar[CRIT_DAMAGE]);
 	COND_PRINT("Healing Bonus - %g%%\n", HEALING_BONUS);
-	printf("Energy Recharge - %g%%\n", accumulators[ENERGY_RECHARGE]);
+	printf("Energy Recharge - %g%%\n", accumulators.ar[ENERGY_RECHARGE]);
 	COND_PRINT("Pyro DMG Bonus - %g%%\n", PYRO_BONUS);
 	COND_PRINT("Hydro DMG Bonus - %g%%\n", HYDRO_BONUS);
 	COND_PRINT("Dendro DMG Bonus - %g%%\n", DENDRO_BONUS);
@@ -151,17 +150,16 @@ void scenario_print(Scenario in)
 	printf("%s - %g%s\n", stat2str[in.weapon.bonus.type], in.weapon.bonus.value, stat2pct[in.weapon.bonus.type]);
 
 	printf("\n");
-	artifact_print(in.flower);
+	artifact_print(in.loadout.flower);
 	printf("\n");
-	artifact_print(in.feather);
+	artifact_print(in.loadout.feather);
 	printf("\n");
-	artifact_print(in.sands);
+	artifact_print(in.loadout.sands);
 	printf("\n");
-	artifact_print(in.circlet);
+	artifact_print(in.loadout.circlet);
 	printf("\n");
-	artifact_print(in.goblet);
+	artifact_print(in.loadout.goblet);
 	printf("\n");
-	*/
 }
 
 #endif
