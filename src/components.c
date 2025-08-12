@@ -30,6 +30,12 @@ typedef struct {
 	// and artifact sets plus other useful values
 } Interface_Data;
 
+typedef struct k_opt_opt {
+	int value;
+	char * label;
+	char * image;
+} K_Opt;
+
 Interface_Data uiData_Initialize() {
 	Interface_Data data = {0};
 	return data;
@@ -191,6 +197,27 @@ void dropdown_button(Clay_ElementId id, Clay_ElementId menu_id, Clay_String butt
 
 }
 
+void assign_button(int * dest, int value, bool * sentinel)
+{
+	/* 
+	 * turns any element into a clickable button.
+	 * if the element is clicked, assign value to *dest and set *sentinel to true.
+	 * see toggle_switch for an example.
+	 */
+
+	bool hovered = Clay_Hovered();
+	Clay_Context * context = Clay_GetCurrentContext();
+	bool left_click = context->pointerInfo.state == CLAY_POINTER_DATA_PRESSED_THIS_FRAME;
+
+	if (hovered && left_click) {
+		*dest = value;
+
+		if (sentinel) {
+			*sentinel = true;
+		}
+	}
+}
+
 void toggle_switch(int * dest)
 {
 	/*
@@ -225,14 +252,9 @@ void toggle_switch(int * dest)
 			.childAlignment = toggleSide,
 		},
 	}) {
-		bool hovered = Clay_Hovered();
-		Clay_Context * context = Clay_GetCurrentContext();
-		bool left_click = context->pointerInfo.state == CLAY_POINTER_DATA_PRESSED_THIS_FRAME;
-
-		// user interaction
-		if (hovered && left_click) {
-			*dest = !*dest;
-		}
+		int inverse = !*dest;
+		// turn the switch into a clickable button
+		assign_button(dest, inverse, NULL);
 
 		CLAY({
 			// TODO: un-hardcode these
@@ -298,6 +320,11 @@ void toggle_switch_text(int * dest, char * maintext, char * subtext)
 			text_desc(CLAY_STR(subtext), COLOR_WHITE);
 		}
 	}
+}
+
+void k_opt_menu(int * dest, int k, K_Opt * opts, bool * sentinel)
+{
+	//TODO
 }
 
 #endif
