@@ -8,41 +8,37 @@
 typedef struct scenario {
 	CharacterStats character;
 	Weapon weapon;
-
-	Artifact flower;
-	Artifact feather;
-	Artifact sands;
-	Artifact goblet;
-	Artifact circlet;
-	int bonus1;
-	int bonus2;
+	ArtifactLoadout loadout;
+	StatAccumulators accumulators;
 } Scenario;
 
 // should match what is seen idle in-game as closely as possible.
 void scenario_print(Scenario in)
 {
 	// step 1: prepare accumulators
-	float accumulators[CRIT_DAMAGE + 1] = {0};
-
-	float hp_base = in.character.hp;
-	float atk_base = in.character.atk;
-	float def_base = in.character.def;
-	accumulators[HP_PERCENT] += in.character.hp_percent;
-	accumulators[ATK_PERCENT] += in.character.atk_percent;
-	accumulators[DEF_PERCENT] += in.character.def_percent;
-	accumulators[ELEMENTAL_MASTERY] += in.character.elemental_mastery;
-	accumulators[ENERGY_RECHARGE] += in.character.energy_recharge;
-	accumulators[PYRO_BONUS] += in.character.pyro_bonus;
-	accumulators[ELECTRO_BONUS] += in.character.electro_bonus;
-	accumulators[CRYO_BONUS] += in.character.cryo_bonus;
-	accumulators[HYDRO_BONUS] += in.character.hydro_bonus;
-	accumulators[DENDRO_BONUS] += in.character.dendro_bonus;
-	accumulators[ANEMO_BONUS] += in.character.anemo_bonus;
-	accumulators[GEO_BONUS] += in.character.geo_bonus;
-	accumulators[PHYSICAL_BONUS] += in.character.physical_bonus;
-	accumulators[HEALING_BONUS] += in.character.healing_bonus;
-	accumulators[CRIT_RATE] += in.character.crit_rate;
-	accumulators[CRIT_DAMAGE] += in.character.crit_damage;
+	StatAccumulators accumulators = {
+		.hp_base = in.character.hp,
+		.atk_base = in.character.atk,
+		.def_base = in.character.def,
+		.ar[HP_PERCENT] = in.character.hp_percent,
+		.ar[ATK_PERCENT] = in.character.atk_percent,
+		.ar[DEF_PERCENT] = in.character.def_percent,
+		.ar[ELEMENTAL_MASTERY] = in.character.elemental_mastery,
+		.ar[ENERGY_RECHARGE] = in.character.energy_recharge,
+		.ar[PYRO_BONUS] = in.character.pyro_bonus,
+		.ar[ELECTRO_BONUS] = in.character.electro_bonus,
+		.ar[CRYO_BONUS] = in.character.cryo_bonus,
+		.ar[HYDRO_BONUS] = in.character.hydro_bonus,
+		.ar[DENDRO_BONUS] = in.character.dendro_bonus,
+		.ar[ANEMO_BONUS] = in.character.anemo_bonus,
+		.ar[GEO_BONUS] = in.character.geo_bonus,
+		.ar[PHYSICAL_BONUS] = in.character.physical_bonus,
+		.ar[HEALING_BONUS] = in.character.healing_bonus,
+		.ar[CRIT_RATE] = in.character.crit_rate,
+		.ar[CRIT_DAMAGE] = in.character.crit_damage,
+		
+		.factor = 1,
+	};
 
 	typedef struct set_entry {
 		ArtifactSet set;
@@ -50,15 +46,13 @@ void scenario_print(Scenario in)
 	} Entry;
 	Entry setcounters[5] = {0};
 
-	float multiplicative_factor = 1;
-
 	// step 2: aggregate artifact stats and sets into accumulators
 #define AGGREGATE_ARTIFACT_STATS(arti) \
 	do { \
-		accumulators[arti.mainstat.type] += arti.mainstat.value; \
+		accumulators.ar[arti.mainstat.type] += arti.mainstat.value; \
 		for (int line = 0; line < 4; line++) { \
 			Affix substat = arti.substat[line]; \
-			accumulators[substat.type] += substat.value; \
+			accumulators.ar[substat.type] += substat.value; \
 		} \
 		for (int i = 0; i < 5; i++) { \
 			if (setcounters[i].set == SET_NOTHING) { \
@@ -71,11 +65,11 @@ void scenario_print(Scenario in)
 		} \
 	} while (0)
 
-	AGGREGATE_ARTIFACT_STATS(in.flower);
-	AGGREGATE_ARTIFACT_STATS(in.feather);
-	AGGREGATE_ARTIFACT_STATS(in.sands);
-	AGGREGATE_ARTIFACT_STATS(in.goblet);
-	AGGREGATE_ARTIFACT_STATS(in.circlet);
+	AGGREGATE_ARTIFACT_STATS(in.loadout.flower);
+	AGGREGATE_ARTIFACT_STATS(in.loadout.feather);
+	AGGREGATE_ARTIFACT_STATS(in.loadout.sands);
+	AGGREGATE_ARTIFACT_STATS(in.loadout.goblet);
+	AGGREGATE_ARTIFACT_STATS(in.loadout.circlet);
 
 #undef AGGREGATE_ARTIFACT_STATS
 	
@@ -84,48 +78,45 @@ void scenario_print(Scenario in)
 		SetBonusArgs set_bonus_args = {
 			.set = setcounters[i].set,
 			.num_pieces = setcounters[i].count,
-			.accumulators = accumulators,
-			.factor = &multiplicative_factor,
-			.bonus1 = &in.bonus1,
-			.bonus2 = &in.bonus2,
+			.loadout = &in.loadout,
+			.accumulators = &accumulators,
 		};
 
 		artifact_set_bonus(set_bonus_args);
 	}
 
 	// step 4: handle weapon stats
-	atk_base += in.weapon.atk;
-	accumulators[in.weapon.bonus.type] += in.weapon.bonus.value;
+	accumulators.atk_base += in.weapon.atk;
+	accumulators.ar[in.weapon.bonus.type] += in.weapon.bonus.value;
 
 	// step 5: handle weapon passives
 	WeaponPassiveArgs weapon_passive_args = {
 		.weapon = in.weapon,
-		.accumulators = accumulators,
-		.factor = &multiplicative_factor,
+		.accumulators = &accumulators,
 	};
 	weapon_passive(weapon_passive_args);
 	
 	// step 6: handle character passives and constellations
 	CharacterTalentArgs character_talent_args = {
 		.character = in.character,
-		.accumulators = accumulators,
-		.hp_base = &hp_base,
-		.atk_base = &atk_base,
-		.def_base = &def_base,
-		.factor = &multiplicative_factor,
+		.accumulators = &accumulators,
 	};
 
 	character_talents(character_talent_args);
 
 	// step 7: combine base stats with aggregate stats
-	float hp_fac = 1 + accumulators[HP_PERCENT] / 100;
-	float atk_fac = 1 + accumulators[ATK_PERCENT] / 100;
-	float def_fac = 1 + accumulators[DEF_PERCENT] / 100;
+	float hp_fac = 1 + accumulators.ar[HP_PERCENT] / 100;
+	float atk_fac = 1 + accumulators.ar[ATK_PERCENT] / 100;
+	float def_fac = 1 + accumulators.ar[DEF_PERCENT] / 100;
 
-	float hp = hp_base * hp_fac + accumulators[HP_FLAT];
-	float atk = atk_base * atk_fac + accumulators[ATK_FLAT];
-	float def = def_base * def_fac + accumulators[DEF_FLAT];
+	accumulators.hp = accumulators.hp_base * hp_fac
+		+ accumulators.ar[HP_FLAT];
+	accumulators.atk = accumulators.atk_base * atk_fac
+		+ accumulators.ar[ATK_FLAT];
+	accumulators.def = accumulators.def_base * def_fac
+		+ accumulators.ar[DEF_FLAT];
 
+	/*
 	// step 8: print the stats
 #define COND_PRINT(fmt, key) \
 	do { \
@@ -170,6 +161,7 @@ void scenario_print(Scenario in)
 	printf("\n");
 	artifact_print(in.goblet);
 	printf("\n");
+	*/
 }
 
 #endif

@@ -19,8 +19,7 @@ typedef struct weapon {
 
 typedef struct weapon_passive_args {
 	Weapon weapon;
-	float * accumulators;
-	float * factor;
+	StatAccumulators * accumulators;
 } WeaponPassiveArgs;
 
 typedef void (*WeaponPassiveFunc)(WeaponPassiveArgs in);

@@ -94,4 +94,15 @@ char const * const stat2pct[] = {
 	[CRIT_DAMAGE] = "%",
 };
  
+typedef struct stat_accumulators {
+	float hp_base;
+	float atk_base;
+	float def_base;
+	float hp;
+	float atk;
+	float def;
+	float factor;
+	float ar[STAT_COUNT];
+} StatAccumulators;
+
 #endif

@@ -1,35 +1,8 @@
-#include "raylib.h"
-#include <stdbool.h>
-#include <stdint.h>
-#define CLAY_IMPLEMENTATION
 #include "layout.c"
 
 void HandleClayErrors(Clay_ErrorData errorData)
 {
 	printf("%s", errorData.errorText.chars);
-}
-
-Clay_RenderCommandArray CreateLayout(Clay_Context * context, Interface_Data * data)
-{
-	Clay_SetCurrentContext(context);
-
-	Clay_SetDebugModeEnabled(data->showDebug);
-
-	// Run once per frame
-	Clay_SetLayoutDimensions(data->windowSize);
-
-	Clay_SetPointerState(
-		(Clay_Vector2) {data->mousePosition.x, data->mousePosition.y},
-		data->isLeftMouseDown
-	);
-
-	Clay_UpdateScrollContainers(
-		true,
-		(Clay_Vector2) {data->scrollDelta.x, data->scrollDelta.y},
-		data->frameTime
-	);
-
-	return Artifact_CreateLayout(data);
 }
 
 int main(void)
@@ -63,19 +36,21 @@ int main(void)
 	SetTextureFilter(fonts[FONT_ID_HONCHOKOMONO].texture, TEXTURE_FILTER_BILINEAR);
 	Clay_SetMeasureTextFunction(Raylib_MeasureText, fonts);  
 
-	yoimiya_img = LoadImage("resources/images/characters/yoimiya_portrait.png");
+	ic_initcache(599);
+	la_Arena arena = {
+		.buf = malloc(16384),
+		.bufsz = 16384,
+	};
 
-	Background_Item_5_Star = LoadImage("resources/images/Background_Item_5_Star.png");
-	Thundering_Pulse_img = LoadImage("resources/images/weapons/thundering_pulse_icon.png");
+	if (!arena.buf)
+		exit(1);
 
-	yoimiya_img_tex = LoadTextureFromImage(yoimiya_img);
+	// ======== this section is no longer necessary
+	yoimiya_img_tex = ic_get_tex("resources/images/characters/yoimiya_portrait.png");
 
-	Background_Item_5_Star_tex = LoadTextureFromImage(Background_Item_5_Star);
-	Thundering_Pulse_img_tex = LoadTextureFromImage(Thundering_Pulse_img);
-
-	UnloadImage(yoimiya_img);
-	UnloadImage(Background_Item_5_Star);
-	UnloadImage(Thundering_Pulse_img);
+	Background_Item_5_Star_tex = ic_get_tex("resources/images/Background_Item_5_Star.png");
+	Thundering_Pulse_img_tex = ic_get_tex("resources/images/weapons/thundering_pulse_icon.png");
+	// =========
 
 	Interface_Data uiData = uiData_Initialize();
     
@@ -89,10 +64,11 @@ int main(void)
 		uiData.isLeftMouseDown = IsMouseButtonDown(MOUSE_BUTTON_LEFT);
 		uiData.frameTime = GetFrameTime();
 
-		if(IsKeyPressed(KEY_D)){
+		if (IsKeyPressed(KEY_D)) {
 			uiData.showDebug = !uiData.showDebug;
 		}
 		
+		// ============ i think we can refactor this out
 		Clay_String dropdownIds[][2] = {
 			{CLAY_STRING("SANDS_Button"), CLAY_STRING("SANDS_Menu")},
 			{CLAY_STRING("GOBLET_Button"), CLAY_STRING("GOBLET_Menu")},
@@ -109,8 +85,23 @@ int main(void)
 				uiData.state[i] = false;
 			}
 		}
+		// ============
 
-		Clay_RenderCommandArray renderCommands = CreateLayout(clayContext, &uiData);
+		Clay_SetDebugModeEnabled(uiData.showDebug);
+		Clay_SetLayoutDimensions(uiData.windowSize);
+
+		Clay_SetPointerState(
+				(Clay_Vector2) {uiData.mousePosition.x, uiData.mousePosition.y},
+				uiData.isLeftMouseDown
+				);
+
+		Clay_UpdateScrollContainers(
+				true,
+				(Clay_Vector2) {uiData.scrollDelta.x, uiData.scrollDelta.y},
+				uiData.frameTime
+				);
+
+		Clay_RenderCommandArray renderCommands = create_layout(&uiData);
 
 		BeginDrawing();
 		ClearBackground(WHITE);
@@ -118,7 +109,11 @@ int main(void)
 		Clay_Raylib_Render(renderCommands, fonts);
 
 		EndDrawing();
+		la_reset(&arena);
 	}
+
+	ic_destroycache();
+	free(arena.buf);
 
 	Clay_Raylib_Close();
 	free(clayMemory.memory);

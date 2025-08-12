@@ -1,19 +1,11 @@
 // vim: ts=2 sw=2
-#include <stdbool.h>
-#include <string.h>
-
 #include "components.c"
 #include "scenario.c"
 #include "../build/include/artifacts_ui.c"
 #include "../build/include/characters_ui.c"
 #include "../build/include/weapons_ui.c"
 
-Interface_Data uiData_Initialize() {
-	Interface_Data data = {0};
-	return data;
-}
-
-Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
+Clay_RenderCommandArray create_layout(Interface_Data *data) {
 	Clay_String SANDS_select[] = {
 		CLAY_STRING("HP_PERCENT"),
 		CLAY_STRING("ATK_PERCENT"),
@@ -45,11 +37,6 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 		[SANDS] = sizeof(SANDS_select) / sizeof(SANDS_select[0]),
 		[GOBLET] = sizeof(GOBLET_select) / sizeof(GOBLET_select[0]),
 		[CIRCLET] = sizeof(CIRCLET_select) / sizeof(CIRCLET_select[0])
-	};
-
-	Clay_Sizing layoutExpand = {
-		.width = CLAY_SIZING_GROW(0),
-		.height = CLAY_SIZING_GROW(0)
 	};
 
 	Clay_BeginLayout();
@@ -102,7 +89,7 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 					.width = {2,2,2,2}
 				},
 				.image = { .imageData = &yoimiya_img_tex },
-				.aspectRatio = (float) yoimiya_img.width / yoimiya_img.height,
+				.aspectRatio = (float) yoimiya_img_tex.width / yoimiya_img_tex.height,
 			}){};
 
 			CLAY({
@@ -143,7 +130,7 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 						},
 						.border = { .width = {2,2,2,2}, .color = COLOR_BUTTON_PRIMARY,  },
 						.image = { .imageData = &Background_Item_5_Star_tex },
-						.aspectRatio = (float) Background_Item_5_Star.width / Background_Item_5_Star.height,
+						.aspectRatio = (float) Background_Item_5_Star_tex.width / Background_Item_5_Star_tex.height,
 					}){
 						CLAY({
 							.layout = { 
@@ -151,7 +138,7 @@ Clay_RenderCommandArray Artifact_CreateLayout(Interface_Data *data) {
 							},
 							.border = { .width = {2,2,2,2}, .color = COLOR_BUTTON_PRIMARY,  },
 							.image = { .imageData = &Thundering_Pulse_img_tex },
-							.aspectRatio = (float) Thundering_Pulse_img.width / Thundering_Pulse_img.height,
+							.aspectRatio = (float) Thundering_Pulse_img_tex.width / Thundering_Pulse_img_tex.height,
 						}){};
 					}
 	

@@ -262,8 +262,8 @@ void generate_artifacts_ui_c(void)
 	fprintf(file, "#include \"../../src/artifact.c\"\n"
 			"#include \"../../src/components.c\"\n\n");
 
-	fprintf(file, "typedef void (*ArtifactUIFunc)(int *, int *);\n");
-	fprintf(file, "void noop_artifact_ui_func(int * bonus1, int * bonus2) {\n"
+	fprintf(file, "typedef void (*ArtifactUIFunc)(ArtifactLoadout *);\n");
+	fprintf(file, "void noop_artifact_ui_func(ArtifactLoadout * in) {\n"
 			"\t// this function does nothing\n"
 			"}\n\n");
 

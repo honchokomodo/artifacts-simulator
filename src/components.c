@@ -1,6 +1,8 @@
+// vim: ts=2 sw=2
 #ifndef COMPONENTS_C
 #define COMPONENTS_C
 
+#define CLAY_IMPLEMENTATION
 #include <clay.h>
 #include "clay_renderer_raylib.c"
 #include <raylib.h>
@@ -8,6 +10,10 @@
 #include <stddef.h>
 #include <string.h>
 
+#include "utils/linear_allocator.c"
+#include "utils/image_cache.c"
+
+// TODO: make this a function instead of a macro
 #define CLAY_STR(s) (CLAY__INIT(Clay_String) {.length = strlen(s), .chars = s})
 
 typedef struct {
@@ -17,22 +23,28 @@ typedef struct {
 	bool isLeftMouseDown;
 	float frameTime;
 	bool showDebug;
-	bool state[3];
+	bool state[3]; // this doesn't feel right
+         // we should find a way to remove the bools array
+         // but if we find that we have to keep them its fine
 	// we will need more stuff here later like character builds
 	// and artifact sets plus other useful values
 } Interface_Data;
 
+Interface_Data uiData_Initialize() {
+	Interface_Data data = {0};
+	return data;
+}
+
+// TODO perhaps use different font ids for text formatting
+// like boldface, italic, etc?
 const int FONT_ID_HONCHOKOMONO = 0;
 
-Image yoimiya_img;
-
-Image Background_Item_5_Star;
-Image Thundering_Pulse_img;
-
+// ========= TODO should not be global, use ic_get_tex(filename) instead
 Texture2D yoimiya_img_tex;
 
 Texture2D Background_Item_5_Star_tex;
 Texture2D Thundering_Pulse_img_tex;
+// =========
 
 Clay_Color COLOR_WHITE = { 255, 255, 255, 255};
 Clay_Color COLOR_BLACK = { 0, 0, 0, 255};
@@ -43,14 +55,10 @@ Clay_Color COLOR_COMPLEMENT = {255, 190, 2, 255}; // orange-ish color
 
 Clay_Color COLOR_BUTTON_PRIMARY = {238, 185, 36, 255}; // dark blue
 
-char* int_to_str(int integer){
-	char* buffer = malloc(12);
-    if (!buffer) {
-        return NULL; // allocation failed
-    }
-    sprintf(buffer, "%d", integer);
-    return buffer;
-}
+Clay_Sizing layoutExpand = {
+	.width = CLAY_SIZING_GROW(0),
+	.height = CLAY_SIZING_GROW(0)
+};
 
 void text_large(Clay_String text, Clay_Color color){
 	CLAY_TEXT(text,
@@ -201,8 +209,9 @@ void toggle_switch(int * dest)
 	Clay_Color disabledColor = {0x00, 0x00, 0x00, 0xFF};
 
 	Clay_Color toggleColor = *dest ?  enabledColor : disabledColor;
-	Clay_ChildAlignment toggleSide = {.x = *dest ?
-		CLAY_ALIGN_X_RIGHT : CLAY_ALIGN_X_LEFT,
+	Clay_ChildAlignment toggleSide = {
+		.x = *dest ? CLAY_ALIGN_X_RIGHT : CLAY_ALIGN_X_LEFT,
+		.y = CLAY_ALIGN_Y_CENTER,
 	};
 
 	CLAY({

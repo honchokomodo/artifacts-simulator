@@ -64,11 +64,7 @@ typedef struct character_stats {
 
 typedef struct character_talent_args {
 	CharacterStats character;
-	float * accumulators;
-	float * hp_base;
-	float * atk_base;
-	float * def_base;
-	float * factor;
+	StatAccumulators * accumulators;
 } CharacterTalentArgs;
 
 typedef void (*CharacterTalentFunc)(CharacterTalentArgs in);

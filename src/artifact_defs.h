@@ -41,13 +41,21 @@ typedef struct artifact {
 	int num_upgrades[MAX_SUBSTATS];
 } Artifact;
 
+typedef struct artifact_loadout {
+	Artifact flower;
+	Artifact feather;
+	Artifact sands;
+	Artifact goblet;
+	Artifact circlet;
+	int bonus1;
+	int bonus2;
+} ArtifactLoadout;
+
 typedef struct set_bonus_args {
 	ArtifactSet set;
 	int num_pieces;
-	float * accumulators;
-	float * factor;
-	int * bonus1;
-	int * bonus2;
+	ArtifactLoadout * loadout;
+	StatAccumulators * accumulators;
 } SetBonusArgs;
 
 typedef void (*SetBonusFunc)(SetBonusArgs in);

@@ -11,15 +11,16 @@
 void finale_of_the_deep_galleries_bonus_func(SetBonusArgs in)
 {
 	if (in.num_pieces < 2) return;
-	in.accumulators[CRYO_BONUS] += 15.0;
+	in.accumulators->ar[CRYO_BONUS] += 15.0;
 
+	// TODO: handle whether the player is using their burst or normal
 	if (in.num_pieces < 4) return;
-	*(in.factor) *= 1.6;
+	in.accumulators->factor *= 1.6;
 }
 // AUTOGEN end
 
 // AUTOGEN set2ui finale_of_the_deep_galleries_ui_func
-void finale_of_the_deep_galleries_ui_func(int * bonus1, int * bonus2)
+void finale_of_the_deep_galleries_ui_func(ArtifactLoadout * in)
 {
 	// does nothing for now
 }
