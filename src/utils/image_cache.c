@@ -134,20 +134,11 @@ int _ic_load_tex(char * path) {
 		free(fpath);
 		return 0;
 	}
+	GenTextureMipmaps(&tex);
+	SetTextureFilter(tex, TEXTURE_FILTER_TRILINEAR);
 
 	if (_ic_arr_next_free == 0) {
 		if (_ic_arr_len >= _ic_arr_cap) {
-			/*
-			_ic_arr_cap *= 2;
-			size_t newsize = _ic_arr_cap * sizeof(*_ic_arr);
-			void * newbuf = realloc(_ic_arr, newsize);
-			if (newbuf) _ic_arr = newbuf;
-			else {
-				free(fpath);
-				UnloadTexture(tex);
-				return 0;
-			}
-			*/
 			free(fpath);
 			UnloadTexture(tex);
 			return 0;

@@ -40,8 +40,9 @@ int main(void)
 		.bufsz = 16384,
 	};
 
-	int state;
-	bool sentinel;
+	int state = 0;
+	bool dropdowndown = 0;
+	bool sentinel = 0;
 
 	while (!WindowShouldClose()) {
 		windowSize.width = GetScreenWidth();
@@ -103,7 +104,26 @@ int main(void)
 				opts[i].label = la_strfmt(&arena, "option %d", i);
 				opts[i].image = "resources/images/characters/character_nothing_icon.png";
 			}
-			k_opt_list(&state, k, opts, &sentinel);
+
+			Clay_Color press = {0xFF, 0xFF, 0xFF, 0x20};
+			Clay_Color hover = {0xFF, 0xFF, 0xFF, 0x40};
+
+			CLAY({
+				.backgroundColor = !Clay_Hovered() ? COLOR_BG :
+					left_hold() ? press : hover,
+				.layout = {
+					.layoutDirection = CLAY_LEFT_TO_RIGHT,
+					.padding = CLAY_PADDING_ALL(3),
+					.childGap = 3,
+					.childAlignment.y = CLAY_ALIGN_Y_CENTER,
+				},
+			}) {
+				k_opt_list_item_graphics(opts[state]);
+				k_opt_list(&state, k, opts, &dropdowndown, &sentinel);
+			}
+
+			CLAY({.layout.sizing = layoutExpand}) {}
+
 			text_large(ch2str(la_strfmt(&arena, "%zu", arena.offset)), sentinel ? green : red);
 		}
 

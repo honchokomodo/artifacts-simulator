@@ -270,9 +270,8 @@ void toggle_switch(int * dest, bool * sentinel)
 			.childAlignment = toggleSide,
 		},
 	}) {
-		int inverse = !*dest;
 		// turn the switch into a clickable button
-		assign_button(dest, inverse, sentinel);
+		assign_button(dest, !*dest, sentinel);
 
 		CLAY({
 			// TODO: un-hardcode these
@@ -334,34 +333,57 @@ void toggle_switch_text(int * dest, char * maintext, char * subtext, bool * sent
 	}
 }
 
-void k_opt_list(int * dest, int k, K_Opt * opts, bool * sentinel)
+void k_opt_list(int * dest, int k, K_Opt * opts, bool * drop, bool * sentinel)
 {
 	Clay_Color nothing = {0};
 	Clay_Color hover = {0xFF, 0xFF, 0xFF, 0x40};
 	Clay_Color press = {0xFF, 0xFF, 0xFF, 0x20};
+	bool just_dropped = 0;
+
+	if (Clay_Hovered() && left_down()) {
+		*drop = !*drop;
+		just_dropped = true;
+	}
+
+	if (!*drop) {
+		return;
+	}
 
 	CLAY({ // main container config
 		.backgroundColor = COLOR_BG,
 		.layout = {
 			.layoutDirection = CLAY_TOP_TO_BOTTOM,
-			.padding = CLAY_PADDING_ALL(16), //TODO: un-hardcode
-			.childGap = 12, //TODO: un-hardcode this
+			.childGap = 1,
+		},
+		.floating = {
+			.attachTo = CLAY_ATTACH_TO_PARENT,
+			.attachPoints = {
+				.parent = CLAY_ATTACH_POINT_CENTER_BOTTOM,
+				.element = CLAY_ATTACH_POINT_CENTER_TOP,
+			},
 		},
 	}) {
+		if (!Clay_Hovered() && left_down() && !just_dropped) {
+			*drop = false;
+		}
+
 		for (int i = 0; i < k; i++) {
 			CLAY({ // opt element config
 				.backgroundColor = !Clay_Hovered() ? nothing :
 					left_hold() ? press : hover,
 				.layout = {
 					.layoutDirection = CLAY_LEFT_TO_RIGHT,
-					.childGap = 12, // TODO: un-hardcode
+					.padding = CLAY_PADDING_ALL(3),
+					.childGap = 3, // TODO: un-hardcode
 					.childAlignment.y = CLAY_ALIGN_Y_CENTER,
-				}
+				},
 			}) {
 				assign_button(dest, opts[i].value, sentinel);
-
-				if (opts[i].image != NULL) {
-					Texture2D * tex = ic_get_tex(opts[i].image);
+				if (*sentinel) {
+					*drop = false;
+				}
+				if (opt.image != NULL) {
+					Texture2D * tex = ic_get_tex(opt.image);
 					CLAY({
 						.layout.sizing = {
 							.width = CLAY_SIZING_FIXED(30),
@@ -372,9 +394,9 @@ void k_opt_list(int * dest, int k, K_Opt * opts, bool * sentinel)
 					}) {}
 				}
 
-				if (opts[i].label != NULL) {
+				if (opt.label != NULL) {
 					// assume that the strings are saved
-					text_p(ch2str(opts[i].label), COLOR_WHITE);
+					text_p(ch2str(opt.label), COLOR_WHITE);
 				}
 			}
 		}
