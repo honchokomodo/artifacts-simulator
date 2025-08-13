@@ -36,13 +36,13 @@ int main(void)
 	SetTextureFilter(fonts[FONT_ID_HONCHOKOMONO].texture, TEXTURE_FILTER_BILINEAR);
 	Clay_SetMeasureTextFunction(Raylib_MeasureText, fonts);  
 
-	ic_initcache(599);
+	ic_initcache(599, 1024);
 	la_Arena arena = {
 		.buf = malloc(16384),
 		.bufsz = 16384,
 	};
 
-	if (!arena.buf)
+	if (!_ic_table && !_ic_arr && !arena.buf)
 		exit(1);
 
 	Interface_Data uiData = uiData_Initialize();

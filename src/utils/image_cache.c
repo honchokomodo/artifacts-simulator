@@ -10,7 +10,7 @@
 #include <stdio.h>
 
 // initialize the cache, num_entries being the size of the hash table.
-void ic_initcache(int num_entries);
+void ic_initcache(int num_entries, int max_images);
 
 // deinitialize the cache and free all memory.
 void ic_destroycache(void);

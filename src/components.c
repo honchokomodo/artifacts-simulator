@@ -68,6 +68,21 @@ Clay_String ch2str(char * s)
 	};
 }
 
+bool left_down() {
+	Clay_Context * context = Clay_GetCurrentContext();
+	return context->pointerInfo.state == CLAY_POINTER_DATA_PRESSED_THIS_FRAME;
+}
+
+bool left_hold() {
+	Clay_Context * context = Clay_GetCurrentContext();
+	return context->pointerInfo.state == CLAY_POINTER_DATA_PRESSED;
+}
+
+bool left_up() {
+	Clay_Context * context = Clay_GetCurrentContext();
+	return context->pointerInfo.state == CLAY_POINTER_DATA_RELEASED_THIS_FRAME;
+}
+
 void text_large(Clay_String text, Clay_Color color)
 {
 	CLAY_TEXT(text,
@@ -210,7 +225,7 @@ void assign_button(int * dest, int value, bool * sentinel)
 
 	bool hovered = Clay_Hovered();
 	Clay_Context * context = Clay_GetCurrentContext();
-	bool left_click = context->pointerInfo.state == CLAY_POINTER_DATA_PRESSED_THIS_FRAME;
+	bool left_click = context->pointerInfo.state == CLAY_POINTER_DATA_RELEASED_THIS_FRAME;
 
 	if (hovered && left_click) {
 		*dest = value;
@@ -321,6 +336,10 @@ void toggle_switch_text(int * dest, char * maintext, char * subtext, bool * sent
 
 void k_opt_list(int * dest, int k, K_Opt * opts, bool * sentinel)
 {
+	Clay_Color nothing = {0};
+	Clay_Color hover = {0xFF, 0xFF, 0xFF, 0x40};
+	Clay_Color press = {0xFF, 0xFF, 0xFF, 0x20};
+
 	CLAY({ // main container config
 		.backgroundColor = COLOR_BG,
 		.layout = {
@@ -331,6 +350,8 @@ void k_opt_list(int * dest, int k, K_Opt * opts, bool * sentinel)
 	}) {
 		for (int i = 0; i < k; i++) {
 			CLAY({ // opt element config
+				.backgroundColor = !Clay_Hovered() ? nothing :
+					left_hold() ? press : hover,
 				.layout = {
 					.layoutDirection = CLAY_LEFT_TO_RIGHT,
 					.childGap = 12, // TODO: un-hardcode

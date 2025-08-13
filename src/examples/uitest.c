@@ -34,7 +34,7 @@ int main(void)
 	SetTextureFilter(font.texture, TEXTURE_FILTER_BILINEAR);
 	Clay_SetMeasureTextFunction(Raylib_MeasureText, &font);  
 
-	ic_initcache(7);
+	ic_initcache(7, 100);
 	la_Arena arena = {
 		.buf = malloc(16384),
 		.bufsz = 16384,
@@ -100,7 +100,7 @@ int main(void)
 			K_Opt opts[5];
 			for (int i = 0; i < k; i++) {
 				opts[i].value = i;
-				opts[i].label = la_strfmt(&arena, "%d", i);
+				opts[i].label = la_strfmt(&arena, "option %d", i);
 				opts[i].image = "resources/images/characters/character_nothing_icon.png";
 			}
 			k_opt_list(&state, k, opts, &sentinel);
