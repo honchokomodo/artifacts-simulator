@@ -15,24 +15,25 @@ void ic_initcache(int num_entries);
 // deinitialize the cache and free all memory.
 void ic_destroycache(void);
 
-Texture2D ic_get_tex(char * path); // get a texture from a filepath.
+Texture2D * ic_get_tex(char * path); // get a texture from a filepath.
 void ic_unload_tex(char * path); // unload a texture from the cache.
 void ic_unload_all(void); // unload all textures in the cache.
 
 /* usage:
  *
- * // initialize the cache. 599 is chosen here because it is a prime number.
- * // expecting to load roughly 300 images, so this is much more than enough.
- * // the size does not have to be larger than the expected amount of images
- * // though
+ * // initialize the cache. 599 is chosen here for the tablesize because it is a
+ * // prime number. expecting to load roughly 300 images, so this is much more
+ * // than enough. the size does not have to be larger than the expected amount
+ * // of images though
+ * // 1024 is chosen for max images because we definitely won't get that far.
  * ic_initcache(599);
  *
  * // load some textures.
- * Texture2D tex = ic_get_tex("cute-yoimiya.png");
- * Texture2D tex2 = ic_get_tex("thundering_pulse_icon.png");
+ * Texture2D * tex = ic_get_tex("cute-yoimiya.png");
+ * Texture2D * tex2 = ic_get_tex("thundering_pulse_icon.png");
  *
  * // load it again. This time, it fetched the texture from the cache.
- * Texture2D tex3 = ic_get_tex("cute-yoimiya.png");
+ * Texture2D * tex3 = ic_get_tex("cute-yoimiya.png");
  *
  * // unload a texture.
  * ic_unload_tex("cute-yoimiya.png");
@@ -62,12 +63,12 @@ size_t _ic_arr_len;
 int _ic_arr_next_free;
 struct _ic_tbl_entry * _ic_arr;
 
-void ic_initcache(int num_entries)
+void ic_initcache(int num_entries, int max_images)
 {
 	_ic_table_size = num_entries;
 	_ic_table = calloc(num_entries, sizeof(*_ic_table));
 
-	_ic_arr_cap = 2;
+	_ic_arr_cap = max_images;
 	_ic_arr_len = 1;
 	_ic_arr_next_free = 0;
 	_ic_arr = calloc(_ic_arr_cap, sizeof(*_ic_arr));
@@ -136,6 +137,7 @@ int _ic_load_tex(char * path) {
 
 	if (_ic_arr_next_free == 0) {
 		if (_ic_arr_len >= _ic_arr_cap) {
+			/*
 			_ic_arr_cap *= 2;
 			size_t newsize = _ic_arr_cap * sizeof(*_ic_arr);
 			void * newbuf = realloc(_ic_arr, newsize);
@@ -145,6 +147,10 @@ int _ic_load_tex(char * path) {
 				UnloadTexture(tex);
 				return 0;
 			}
+			*/
+			free(fpath);
+			UnloadTexture(tex);
+			return 0;
 		}
 
 		_ic_arr_next_free = _ic_arr_len;
@@ -165,7 +171,7 @@ int _ic_load_tex(char * path) {
 	return next_free;
 }
 
-Texture2D ic_get_tex(char * path)
+Texture2D * ic_get_tex(char * path)
 {
 	uint32_t hash = _ic_strhash(path);
 	int index = hash % _ic_table_size;
@@ -176,7 +182,7 @@ Texture2D ic_get_tex(char * path)
 		struct _ic_tbl_entry entry = _ic_arr[pos];
 
 		if (entry.hash == hash && strcmp(path, entry.fpath) == 0) {
-			return entry.tex;
+			return &_ic_arr[pos].tex;
 		}
 
 		prev = pos;
@@ -188,7 +194,7 @@ Texture2D ic_get_tex(char * path)
 	if (prev == 0) _ic_table[index] = pos;
 	else _ic_arr[prev].next = pos;
 
-	return _ic_arr[pos].tex;
+	return &_ic_arr[pos].tex;
 }
 
 void ic_unload_tex(char * path)

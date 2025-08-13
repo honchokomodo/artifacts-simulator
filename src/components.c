@@ -340,14 +340,14 @@ void k_opt_list(int * dest, int k, K_Opt * opts, bool * sentinel)
 				assign_button(dest, opts[i].value, sentinel);
 
 				if (opts[i].image != NULL) {
-					Texture2D tex = ic_get_tex(opts[i].image);
+					Texture2D * tex = ic_get_tex(opts[i].image);
 					CLAY({
 						.layout.sizing = {
 							.width = CLAY_SIZING_FIXED(30),
 							.height = CLAY_SIZING_FIXED(30),
 						},
-						.image.imageData = &tex,
-						.aspectRatio = tex.width / (float) tex.height,
+						.image.imageData = tex,
+						.aspectRatio = tex->width / (float) tex->height,
 					}) {}
 				}
 

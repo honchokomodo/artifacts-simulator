@@ -73,14 +73,14 @@ int main(void)
 
 			text_large(ch2str(la_strfmt(&arena, "%d", state)), sentinel ? green : red);
 
-			Texture2D icon = ic_get_tex("resources/images/characters/character_nothing_icon.png");
+			Texture2D * icon = ic_get_tex("resources/images/characters/character_nothing_icon.png");
 			CLAY({
 				.layout.sizing = {
 					.width = CLAY_SIZING_FIXED(100),
 					.height = CLAY_SIZING_FIXED(100),
 				},
-				.image.imageData = &icon,
-				.aspectRatio = icon.width / (float) icon.height,
+				.image.imageData = icon,
+				.aspectRatio = icon->width / (float) icon->height,
 			}) {}
 
 			CLAY({
@@ -119,6 +119,10 @@ int main(void)
 		sentinel = 0;
 	}
 
+	ic_destroycache();
+	free(arena.buf);
+
+	UnloadFont(font);
 	Clay_Raylib_Close();
 	free(clayMemory.memory);
 	return 0;

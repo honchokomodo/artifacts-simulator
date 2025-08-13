@@ -39,10 +39,10 @@ Clay_RenderCommandArray create_layout(Interface_Data *data) {
 		[CIRCLET] = sizeof(CIRCLET_select) / sizeof(CIRCLET_select[0])
 	};
 
-	Texture2D yoimiya_img_tex = ic_get_tex("resources/images/characters/yoimiya_portrait.png");
+	Texture2D * yoimiya_img_tex = ic_get_tex("resources/images/characters/yoimiya_portrait.png");
 
-	Texture2D Background_Item_5_Star_tex = ic_get_tex("resources/images/Background_Item_5_Star.png");
-	Texture2D Thundering_Pulse_img_tex = ic_get_tex("resources/images/weapons/thundering_pulse_icon.png");
+	Texture2D * Background_Item_5_Star_tex = ic_get_tex("resources/images/Background_Item_5_Star.png");
+	Texture2D * Thundering_Pulse_img_tex = ic_get_tex("resources/images/weapons/thundering_pulse_icon.png");
 
 	Clay_BeginLayout();
 
@@ -93,8 +93,8 @@ Clay_RenderCommandArray create_layout(Interface_Data *data) {
 					.color = COLOR_BUTTON_PRIMARY,
 					.width = {2,2,2,2}
 				},
-				.image = { .imageData = &yoimiya_img_tex },
-				.aspectRatio = (float) yoimiya_img_tex.width / yoimiya_img_tex.height,
+				.image = { .imageData = yoimiya_img_tex },
+				.aspectRatio = (float) yoimiya_img_tex->width / yoimiya_img_tex->height,
 			}){};
 
 			CLAY({
@@ -134,16 +134,16 @@ Clay_RenderCommandArray create_layout(Interface_Data *data) {
 							.sizing = { .width = CLAY_SIZING_PERCENT(0.33), .height = CLAY_SIZING_GROW()},
 						},
 						.border = { .width = {2,2,2,2}, .color = COLOR_BUTTON_PRIMARY,  },
-						.image = { .imageData = &Background_Item_5_Star_tex },
-						.aspectRatio = (float) Background_Item_5_Star_tex.width / Background_Item_5_Star_tex.height,
+						.image = { .imageData = Background_Item_5_Star_tex },
+						.aspectRatio = (float) Background_Item_5_Star_tex->width / Background_Item_5_Star_tex->height,
 					}){
 						CLAY({
 							.layout = { 
 								.sizing = { .width = CLAY_SIZING_GROW(), .height = CLAY_SIZING_GROW()},
 							},
 							.border = { .width = {2,2,2,2}, .color = COLOR_BUTTON_PRIMARY,  },
-							.image = { .imageData = &Thundering_Pulse_img_tex },
-							.aspectRatio = (float) Thundering_Pulse_img_tex.width / Thundering_Pulse_img_tex.height,
+							.image = { .imageData = Thundering_Pulse_img_tex },
+							.aspectRatio = (float) Thundering_Pulse_img_tex->width / Thundering_Pulse_img_tex->height,
 						}){};
 					}
 	
