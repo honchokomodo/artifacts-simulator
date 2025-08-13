@@ -45,13 +45,6 @@ int main(void)
 	if (!arena.buf)
 		exit(1);
 
-	// ======== this section is no longer necessary
-	yoimiya_img_tex = ic_get_tex("resources/images/characters/yoimiya_portrait.png");
-
-	Background_Item_5_Star_tex = ic_get_tex("resources/images/Background_Item_5_Star.png");
-	Thundering_Pulse_img_tex = ic_get_tex("resources/images/weapons/thundering_pulse_icon.png");
-	// =========
-
 	Interface_Data uiData = uiData_Initialize();
     
 	while(!WindowShouldClose())

@@ -57,20 +57,20 @@ void amber_ui_func(CharacterStats * in)
 	char * a4title = "Ascension 4: Every Arrow Finds Its Target";
 	char * a4desc = "Aimed Shot hits on weak spots increase ATK by 15% for 10 s.";
 	if (in->ascension >= 4) {
-		toggle_switch_text(&in->a4data, a4title, a4desc);
+		toggle_switch_text(&in->a4data, a4title, a4desc, NULL);
 	}
 
 	char * c2title = "Constellation 2: Bunny Triggered";
 	char * c2desc = "Baron Bunny, new and improved! Hitting Baron Bunny's foot with a fully-charged Aimed Shot manually detonates it.\n"
 		"Explosion via manual detonation deals 200% additional DMG.";
 	if (in->constellation >= 2) {
-		toggle_switch_text(&in->c2data, c2title, c2desc);
+		toggle_switch_text(&in->c2data, c2title, c2desc, NULL);
 	}
 
 	char * c6title = "Constellation 6: Wildfire";
 	char * c6desc = "Fiery Rain increases all party members' Movement SPD by 15% and ATK by 15% for 10s.";
 	if (in->constellation >= 6) {
-		toggle_switch_text(&in->c6data, c6title, c6desc);
+		toggle_switch_text(&in->c6data, c6title, c6desc, NULL);
 	}
 }
 // AUTOGEN end

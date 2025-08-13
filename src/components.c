@@ -13,9 +13,6 @@
 #include "utils/linear_allocator.c"
 #include "utils/image_cache.c"
 
-// TODO: make this a function instead of a macro
-#define CLAY_STR(s) (CLAY__INIT(Clay_String) {.length = strlen(s), .chars = s})
-
 typedef struct {
 	Clay_Dimensions windowSize;
 	Vector2 mousePosition;
@@ -45,13 +42,6 @@ Interface_Data uiData_Initialize() {
 // like boldface, italic, etc?
 const int FONT_ID_HONCHOKOMONO = 0;
 
-// ========= TODO should not be global, use ic_get_tex(filename) instead
-Texture2D yoimiya_img_tex;
-
-Texture2D Background_Item_5_Star_tex;
-Texture2D Thundering_Pulse_img_tex;
-// =========
-
 Clay_Color COLOR_WHITE = { 255, 255, 255, 255};
 Clay_Color COLOR_BLACK = { 0, 0, 0, 255};
 Clay_Color COLOR_PRIMARY = {46, 46, 78, 255}; // blue
@@ -66,7 +56,20 @@ Clay_Sizing layoutExpand = {
 	.height = CLAY_SIZING_GROW(0)
 };
 
-void text_large(Clay_String text, Clay_Color color){
+Clay_Sizing layoutWide = {
+	.width = CLAY_SIZING_GROW(0),
+};
+
+Clay_String ch2str(char * s)
+{
+	return (Clay_String) {
+		.chars = s,
+		.length = strlen(s),
+	};
+}
+
+void text_large(Clay_String text, Clay_Color color)
+{
 	CLAY_TEXT(text,
 		CLAY_TEXT_CONFIG({
 			.fontId = FONT_ID_HONCHOKOMONO,
@@ -123,8 +126,8 @@ static void dropdown_menu(Clay_ElementId menu_id, Clay_String items_text[], size
 		.id = menu_id,
 		.floating = {
 			.attachTo = CLAY_ATTACH_TO_PARENT,
-            .attachPoints = {
-                .parent = CLAY_ATTACH_POINT_CENTER_BOTTOM,
+			.attachPoints = {
+				.parent = CLAY_ATTACH_POINT_CENTER_BOTTOM,
 				.element = CLAY_ATTACH_POINT_CENTER_TOP
 			},
 		}
@@ -218,7 +221,7 @@ void assign_button(int * dest, int value, bool * sentinel)
 	}
 }
 
-void toggle_switch(int * dest)
+void toggle_switch(int * dest, bool * sentinel)
 {
 	/*
 	 * *dest is the current state of the switch.
@@ -254,11 +257,11 @@ void toggle_switch(int * dest)
 	}) {
 		int inverse = !*dest;
 		// turn the switch into a clickable button
-		assign_button(dest, inverse, NULL);
+		assign_button(dest, inverse, sentinel);
 
 		CLAY({
 			// TODO: un-hardcode these
-			.backgroundColor = {0xDD, 0xDD, 0xDD, 0xFF},
+			.backgroundColor = COLOR_BUTTON_PRIMARY,
 			.layout.sizing = {
 				.width = CLAY_SIZING_FIXED(10),
 				.height = CLAY_SIZING_FIXED(10),
@@ -267,7 +270,7 @@ void toggle_switch(int * dest)
 	}
 }
 
-void toggle_switch_text(int * dest, char * maintext, char * subtext)
+void toggle_switch_text(int * dest, char * maintext, char * subtext, bool * sentinel)
 {
 	/*
 	 * char * is used instead of Clay_String to allow for null checking.
@@ -278,53 +281,83 @@ void toggle_switch_text(int * dest, char * maintext, char * subtext)
 	 */
 
 	//TODO: possibly make this file-scope instead of function-scope
-	Clay_Sizing widesize = {
-		.width = CLAY_SIZING_GROW(0),
-		.height = CLAY_SIZING_FIT(0),
-	};
 	
 	CLAY({
 		// The container for the switch element
-		.backgroundColor = COLOR_BUTTON_PRIMARY,
 		.layout = {
 			.layoutDirection = CLAY_TOP_TO_BOTTOM,
-			.sizing = widesize,
+			.sizing = layoutWide,
 			.padding = CLAY_PADDING_ALL(16), //TODO: un-hardcode
 			.childGap = 12, //TODO: un-hardcode this
 		},
 	}) {
 		CLAY({
 			// text and toggle
-			.backgroundColor = COLOR_BUTTON_PRIMARY,
 			.layout = {
 				.layoutDirection = CLAY_LEFT_TO_RIGHT,
-				.sizing = widesize,
+				.sizing = layoutWide,
 				// no padding
 				.childGap = 12, // TODO: un-hardcode this
-				.childAlignment = {.y = CLAY_ALIGN_Y_CENTER},
+				.childAlignment.y = CLAY_ALIGN_Y_CENTER,
 			}
 		}) {
 			if (maintext != NULL) {
 				// maintext
-				text_p(CLAY_STR(maintext), COLOR_WHITE);
+				text_p(ch2str(maintext), COLOR_WHITE);
 				CLAY({
 					// spacer
-					.layout.sizing = widesize,
+					.layout.sizing = layoutWide,
 				}) {}
 			}
 
-			toggle_switch(dest);
+			toggle_switch(dest, NULL);
 		}
 
 		if (subtext != NULL) {
-			text_desc(CLAY_STR(subtext), COLOR_WHITE);
+			text_desc(ch2str(subtext), COLOR_WHITE);
 		}
 	}
 }
 
-void k_opt_menu(int * dest, int k, K_Opt * opts, bool * sentinel)
+void k_opt_list(int * dest, int k, K_Opt * opts, bool * sentinel)
 {
-	//TODO
+	CLAY({ // main container config
+		.backgroundColor = COLOR_BG,
+		.layout = {
+			.layoutDirection = CLAY_TOP_TO_BOTTOM,
+			.padding = CLAY_PADDING_ALL(16), //TODO: un-hardcode
+			.childGap = 12, //TODO: un-hardcode this
+		},
+	}) {
+		for (int i = 0; i < k; i++) {
+			CLAY({ // opt element config
+				.layout = {
+					.layoutDirection = CLAY_LEFT_TO_RIGHT,
+					.childGap = 12, // TODO: un-hardcode
+					.childAlignment.y = CLAY_ALIGN_Y_CENTER,
+				}
+			}) {
+				assign_button(dest, opts[i].value, sentinel);
+
+				if (opts[i].image != NULL) {
+					Texture2D tex = ic_get_tex(opts[i].image);
+					CLAY({
+						.layout.sizing = {
+							.width = CLAY_SIZING_FIXED(30),
+							.height = CLAY_SIZING_FIXED(30),
+						},
+						.image.imageData = &tex,
+						.aspectRatio = tex.width / (float) tex.height,
+					}) {}
+				}
+
+				if (opts[i].label != NULL) {
+					// assume that the strings are saved
+					text_p(ch2str(opts[i].label), COLOR_WHITE);
+				}
+			}
+		}
+	}
 }
 
 #endif

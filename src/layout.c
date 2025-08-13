@@ -39,6 +39,11 @@ Clay_RenderCommandArray create_layout(Interface_Data *data) {
 		[CIRCLET] = sizeof(CIRCLET_select) / sizeof(CIRCLET_select[0])
 	};
 
+	Texture2D yoimiya_img_tex = ic_get_tex("resources/images/characters/yoimiya_portrait.png");
+
+	Texture2D Background_Item_5_Star_tex = ic_get_tex("resources/images/Background_Item_5_Star.png");
+	Texture2D Thundering_Pulse_img_tex = ic_get_tex("resources/images/weapons/thundering_pulse_icon.png");
+
 	Clay_BeginLayout();
 
 	//Build UI here
@@ -149,21 +154,21 @@ Clay_RenderCommandArray create_layout(Interface_Data *data) {
 							.childAlignment = CLAY_ALIGN_X_CENTER,
 						},
 					}){
-						text_sub_heading1(CLAY_STR("HARDCODED STRING"), COLOR_WHITE);
+						text_sub_heading1(ch2str("HARDCODED STRING"), COLOR_WHITE);
 	
 						CLAY({ .layout = { .childAlignment = {CLAY_ALIGN_X_LEFT, CLAY_ALIGN_Y_BOTTOM}, .layoutDirection = CLAY_LEFT_TO_RIGHT } }){
 							text_p(CLAY_STRING("Lvl: "), COLOR_WHITE);
-							text_large(CLAY_STR("HARDCODED STRING"), COLOR_WHITE);
+							text_large(ch2str("HARDCODED STRING"), COLOR_WHITE);
 						}
 	
 						CLAY({ .layout = { .layoutDirection = CLAY_LEFT_TO_RIGHT, .childGap = 32}}){
 							CLAY({ .layout = { .childAlignment = CLAY_ALIGN_X_LEFT, .layoutDirection = CLAY_TOP_TO_BOTTOM,} } ){
-								text_p(CLAY_STR("ATK"), COLOR_WHITE);
-								text_p(CLAY_STR("HARDCODED STRING"), COLOR_WHITE);
+								text_p(ch2str("ATK"), COLOR_WHITE);
+								text_p(ch2str("HARDCODED STRING"), COLOR_WHITE);
 							};
 							CLAY({ .layout = { .childAlignment = CLAY_ALIGN_X_RIGHT, .layoutDirection = CLAY_TOP_TO_BOTTOM,} } ){
-								text_p(CLAY_STR("HARDCODED STRING"), COLOR_WHITE);
-								text_p(CLAY_STR("HARDCODED STRING"), COLOR_WHITE);
+								text_p(ch2str("HARDCODED STRING"), COLOR_WHITE);
+								text_p(ch2str("HARDCODED STRING"), COLOR_WHITE);
 							};
 						};
 					};
@@ -177,9 +182,9 @@ Clay_RenderCommandArray create_layout(Interface_Data *data) {
 						.padding = {0,0,4,0}
 					},
 				}){
-					text_sub_heading1(CLAY_STR("Rule By Thunder"), COLOR_WHITE);
+					text_sub_heading1(ch2str("Rule By Thunder"), COLOR_WHITE);
 					CLAY({ .clip = { .vertical = true, .childOffset = Clay_GetScrollOffset() },}){
-						text_desc(CLAY_STR("Increases ATK by 20~40% and grants the might of the Thunder Emblem. At stack levels 1/2/3, the Thunder Emblem increases Normal Attack DMG by 12/24/40~24/48/80%. The character will obtain 1 stack of Thunder Emblem in each of the following scenarios: Normal Attack deals DMG (stack lasts 5s), casting Elemental Skill (stack lasts 10s); Energy is less than 100% (stack disappears when Energy is full). Each stack's duration is calculated independently."), COLOR_WHITE);
+						text_desc(ch2str("Increases ATK by 20~40% and grants the might of the Thunder Emblem. At stack levels 1/2/3, the Thunder Emblem increases Normal Attack DMG by 12/24/40~24/48/80%. The character will obtain 1 stack of Thunder Emblem in each of the following scenarios: Normal Attack deals DMG (stack lasts 5s), casting Elemental Skill (stack lasts 10s); Energy is less than 100% (stack disappears when Energy is full). Each stack's duration is calculated independently."), COLOR_WHITE);
 					}
 				};
 
