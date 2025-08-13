@@ -75,7 +75,7 @@ char * la_strfmt(la_Arena * arena, char * fmt, ...)
 	int max_len = arena->bufsz - arena->offset;
 	if (max_len <= 0) return NULL;
 
-	char * out = arena->buf + arena->offset;
+	char * out = (char *) (arena->buf + arena->offset);
 
 	va_list args;
 	va_start(args, fmt);
