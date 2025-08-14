@@ -72,7 +72,7 @@ int main(void)
 			Clay_Color green = {0x00, 0xff, 0x00, 0xff};
 			Clay_Color red = {0xff, 0x00, 0x00, 0xff};
 
-			text_large(ch2str(la_strfmt(&arena, "%d", state)), sentinel ? green : red);
+			text_large(ch2str(la_strfmt(&arena, "%d", state)));
 
 			Texture2D * icon = ic_get_tex("resources/images/characters/character_nothing_icon.png");
 			CLAY({
@@ -124,7 +124,7 @@ int main(void)
 
 			CLAY({.layout.sizing = layoutExpand}) {}
 
-			text_large(ch2str(la_strfmt(&arena, "%zu", arena.offset)), sentinel ? green : red);
+			text_large(ch2str(la_strfmt(&arena, "%zu", arena.offset)));
 		}
 
 		Clay_RenderCommandArray renderCommands = Clay_EndLayout();

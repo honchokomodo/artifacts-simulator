@@ -42,14 +42,12 @@ Interface_Data uiData_Initialize() {
 // like boldface, italic, etc?
 const int FONT_ID_HONCHOKOMONO = 0;
 
-Clay_Color COLOR_WHITE = { 255, 255, 255, 255};
-Clay_Color COLOR_BLACK = { 0, 0, 0, 255};
-Clay_Color COLOR_PRIMARY = {46, 46, 78, 255}; // blue
-Clay_Color COLOR_ACCENT = {215, 182, 91, 255}; 
-Clay_Color COLOR_BG = {63, 63, 87, 255}; 
-Clay_Color COLOR_COMPLEMENT = {255, 190, 2, 255}; // orange-ish color
-
-Clay_Color COLOR_BUTTON_PRIMARY = {238, 185, 36, 255}; // dark blue
+Clay_Color COLOR_TEXT = { 0xff, 0xff, 0xff, 0xff };
+Clay_Color COLOR_BG = {63, 63, 87, 255};
+Clay_Color COLOR_BG_ALT = {46, 46, 78, 255}; //primary
+Clay_Color COLOR_BORDER = {215, 182, 91, 255};   // accent
+Clay_Color COLOR_BORDER_ACCENT = {255, 190, 2, 255}; 
+Clay_Color COLOR_BUTTON = {238, 185, 36, 255}; // button-primary
 
 Clay_Sizing layoutExpand = {
 	.width = CLAY_SIZING_GROW(0),
@@ -98,53 +96,53 @@ Clay_Color interactable_color(void)
 	return hover;
 }
 
-void text_large(Clay_String text, Clay_Color color)
+void text_large(Clay_String text)
 {
 	CLAY_TEXT(text,
 		CLAY_TEXT_CONFIG({
 			.fontId = FONT_ID_HONCHOKOMONO,
 			.fontSize = 24,
-			.textColor = color
+			.textColor = COLOR_TEXT,
 		})
 	);
 }
 
-void text_sub_heading(Clay_String text, Clay_Color color){
+void text_sub_heading(Clay_String text){
 	CLAY_TEXT(text,
 		CLAY_TEXT_CONFIG({
 			.fontId = FONT_ID_HONCHOKOMONO,
 			.fontSize = 22,
-			.textColor = color
+			.textColor = COLOR_TEXT,
 		})
 	);
 }
 
-void text_sub_heading1(Clay_String text, Clay_Color color){
+void text_sub_heading1(Clay_String text){
 	CLAY_TEXT(text,
 		CLAY_TEXT_CONFIG({
 			.fontId = FONT_ID_HONCHOKOMONO,
 			.fontSize = 20,
-			.textColor = color,
+			.textColor = COLOR_TEXT,
 		})
 	);
 }
 
-void text_p(Clay_String text, Clay_Color color){
+void text_p(Clay_String text){
 	CLAY_TEXT(text,
 		CLAY_TEXT_CONFIG({
 			.fontId = FONT_ID_HONCHOKOMONO,
 			.fontSize = 18, 
-			.textColor = color
+			.textColor = COLOR_TEXT,
 		})
 	);
 }
 
-void text_desc(Clay_String text, Clay_Color color){
+void text_desc(Clay_String text){
 	CLAY_TEXT(text,
 		CLAY_TEXT_CONFIG({
 			.fontId = FONT_ID_HONCHOKOMONO,
 			.fontSize = 15, 
-			.textColor = color,
+			.textColor = COLOR_TEXT,
 			.textAlignment = CLAY_TEXT_ALIGN_LEFT,
 		})
 	);
@@ -165,27 +163,27 @@ static void dropdown_menu(Clay_ElementId menu_id, Clay_String items_text[], size
 		CLAY({
 			.layout = {
 				.layoutDirection = CLAY_TOP_TO_BOTTOM,
-				.sizing = {
-						.width = CLAY_SIZING_FIXED(135)
-				},
+				.sizing.width = CLAY_SIZING_FIXED(135),
 			},
-			.backgroundColor = {40, 40, 40, 255 },
 			.cornerRadius = CLAY_CORNER_RADIUS(8)
 		}) {
 			for(int i=0; i < items_text_len; i++ ){
 
 				Clay_CornerRadius cornerRadius;
-				Clay_BorderWidth borderWidth;
+				Clay_Color bg_color;
 		
 				if (i == 0) {
 					cornerRadius = (Clay_CornerRadius){4, 4, 0, 0};
-					borderWidth = (Clay_BorderWidth){2,2,2,1};
 				} else if (i == items_text_len - 1) {
 					cornerRadius = (Clay_CornerRadius){0, 0, 4, 4};
-					borderWidth = (Clay_BorderWidth){2,2,1,2};
 				} else {
 					cornerRadius = (Clay_CornerRadius){0, 0, 0, 0};
-					borderWidth = (Clay_BorderWidth){2,2,1,1};
+				}
+
+				if ( !(i % 2) ) { 
+					bg_color = (Clay_Color) { 0xf8, 0xf8, 0xd4, 0xff };
+				} else {
+					bg_color = (Clay_Color) { 0xd2, 0xb2, 0x78, 0xff };
 				}
 	
 				CLAY({
@@ -196,14 +194,11 @@ static void dropdown_menu(Clay_ElementId menu_id, Clay_String items_text[], size
 							.width = CLAY_SIZING_PERCENT(1)
 						}
 					},
-					.cornerRadius = cornerRadius,
-					.backgroundColor = COLOR_ACCENT,
-					.border = {
-						.width = borderWidth,
-						.color = COLOR_WHITE
-					}
+					.backgroundColor = bg_color,
 				}){
-					text_p(items_text[i], COLOR_BLACK);
+					COLOR_TEXT = (Clay_Color) { 0x16, 0x15, 0x29, 0xff };
+					text_p(items_text[i]);
+					COLOR_TEXT = (Clay_Color) { 0xff, 0xff, 0xff, 0xff };
 				}
 			}
 		}
@@ -218,10 +213,10 @@ void dropdown_button(Clay_ElementId id, Clay_ElementId menu_id, Clay_String butt
 			.layout = {
 				.padding = {4,4,4,4},
 			},
-			.backgroundColor = COLOR_BUTTON_PRIMARY,
+			.backgroundColor = COLOR_BUTTON,
 			.cornerRadius = CLAY_CORNER_RADIUS(8),
 		}){
-			text_p(button_text, COLOR_WHITE);
+			text_p(button_text);
 
 			if(state){
 				dropdown_menu(menu_id, items_text, items_text_len);	
@@ -290,7 +285,7 @@ void toggle_switch(int * dest, bool * sentinel)
 
 		CLAY({
 			// TODO: un-hardcode these
-			.backgroundColor = COLOR_BUTTON_PRIMARY,
+			.backgroundColor = COLOR_BUTTON,
 			.layout.sizing = {
 				.width = CLAY_SIZING_FIXED(10),
 				.height = CLAY_SIZING_FIXED(10),
@@ -332,7 +327,7 @@ void toggle_switch_text(int * dest, char * maintext, char * subtext, bool * sent
 		}) {
 			if (maintext != NULL) {
 				// maintext
-				text_p(ch2str(maintext), COLOR_WHITE);
+				text_p(ch2str(maintext));
 				CLAY({
 					// spacer
 					.layout.sizing = layoutWide,
@@ -343,7 +338,7 @@ void toggle_switch_text(int * dest, char * maintext, char * subtext, bool * sent
 		}
 
 		if (subtext != NULL) {
-			text_desc(ch2str(subtext), COLOR_WHITE);
+			text_desc(ch2str(subtext));
 		}
 	}
 }
@@ -407,7 +402,7 @@ void k_opt_list(int * dest, int k, K_Opt * opts, bool * drop, bool * sentinel)
 
 				if (opts[i].label != NULL) {
 					// assume that the strings are saved
-					text_p(ch2str(opts[i].label), COLOR_WHITE);
+					text_p(ch2str(opts[i].label));
 				}
 			}
 		}

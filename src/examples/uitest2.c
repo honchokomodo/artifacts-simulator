@@ -24,7 +24,7 @@ int global_gap = 12;
 void vline(void)
 {
 	CLAY({
-		.backgroundColor = COLOR_WHITE,
+		.backgroundColor = COLOR_BG_ALT,
 		.layout.sizing = {
 			.width = CLAY_SIZING_FIXED(2),
 			.height = CLAY_SIZING_GROW(0),
@@ -35,7 +35,7 @@ void vline(void)
 void hline(void)
 {
 	CLAY({
-		.backgroundColor = COLOR_WHITE,
+		.backgroundColor = COLOR_BG_ALT,
 		.layout.sizing = {
 			.width = CLAY_SIZING_GROW(0),
 			.height = CLAY_SIZING_FIXED(2),
@@ -63,12 +63,12 @@ void left_side_bar(UI_Data uiData)
 				.padding = CLAY_PADDING_ALL(6),
 			},
 			.border = {
-				.color = COLOR_ACCENT,
+				.color = COLOR_BORDER,
 				.width = {2 * (*uiData.currentTabIndex == TAB_BENCHMARK)},
 			},
 		}) {
 			assign_button(uiData.currentTabIndex, TAB_BENCHMARK, NULL);
-			text_large(ch2str("Benchmark"), COLOR_WHITE);
+			text_large(ch2str("Benchmark"));
 		}
 
 		CLAY({
@@ -78,12 +78,12 @@ void left_side_bar(UI_Data uiData)
 				.padding = CLAY_PADDING_ALL(6),
 			},
 			.border = {
-				.color = COLOR_ACCENT,
+				.color = COLOR_BORDER,
 				.width = {2 * (*uiData.currentTabIndex == TAB_EQUIPMENT)},
 			},
 		}) {
 			assign_button(uiData.currentTabIndex, TAB_EQUIPMENT, NULL);
-			text_large(ch2str("Equipment"), COLOR_WHITE);
+			text_large(ch2str("Equipment"));
 		}
 
 		CLAY({
@@ -93,12 +93,12 @@ void left_side_bar(UI_Data uiData)
 				.padding = CLAY_PADDING_ALL(6),
 			},
 			.border = {
-				.color = COLOR_ACCENT,
+				.color = COLOR_BORDER,
 				.width = {2 * (*uiData.currentTabIndex == TAB_BUFFS)},
 			},
 		}) {
 			assign_button(uiData.currentTabIndex, TAB_BUFFS, NULL);
-			text_large(ch2str("Buffs"), COLOR_WHITE);
+			text_large(ch2str("Buffs"));
 		}
 	}
 }
@@ -123,7 +123,7 @@ void right_side_bar(UI_Data uiData)
 			.aspectRatio = tex->width / (float) tex->height,
 		}) {}
 
-		text_large(ch2str((char *) character2str[uiData.scenario->character.type]), COLOR_WHITE);
+		text_large(ch2str((char *) character2str[uiData.scenario->character.type]));
 	}
 }
 
@@ -160,7 +160,7 @@ void tab_equipment(UI_Data uiData)
 				.childGap = global_gap,
 			},
 		}) {
-			text_large(ch2str((char *) weapon2str[weapon.type]), COLOR_WHITE);
+			text_large(ch2str((char *) weapon2str[weapon.type]));
 		}
 	}
 
