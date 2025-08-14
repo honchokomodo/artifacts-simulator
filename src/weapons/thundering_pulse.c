@@ -1,7 +1,8 @@
 // AUTOGEN WeaponType THUNDERING_PULSE
 // AUTOGEN weapon2str Thundering Pulse
-// AUTOGEN weapon2icon "resources/images/weapons/weapon_nothing_icon.png"
-// AUTOGEN weapon2icon_asc "resources/images/weapons/weapon_nothing_asc_icon.png"
+// AUTOGEN weapon2icon "resources/images/weapons/thundering_pulse_icon.png"
+// TODO: get the ascended version of the weapon icon
+// AUTOGEN weapon2icon_asc "resources/images/weapons/thundering_pulse_icon.png"
 
 // AUTOGEN weapon2passive thundering_pulse_passive_func
 void thundering_pulse_passive_func(WeaponPassiveArgs in)

@@ -1,5 +1,7 @@
 // AUTOGEN CharacterType YOIMIYA
 // AUTOGEN character2str Yoimiya
+// TODO: possibly replace pics with smaller sizes because holy crap this one is enormous
+// AUTOGEN character2portrait "resources/images/characters/yoimiya_portrait.png"
 
 // AUTOGEN character2talent yoimiya_talent_func
 void yoimiya_talent_func(CharacterTalentArgs in)
@@ -12,6 +14,7 @@ void yoimiya_talent_func(CharacterTalentArgs in)
 CharacterStats yoimiya_generator_func(CharacterStats in)
 {
 	CharacterStats yoimiya90 = {
+		.type = YOIMIYA,
 		.level = 90,
 
 		//values obtained from wiki

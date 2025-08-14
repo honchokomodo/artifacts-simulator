@@ -19,6 +19,9 @@ generated_ui: src/*.c build generate_headers
 uitest: src/*.c build generate_headers
 	gcc -o build/uitest src/examples/uitest.c $(CCFLAGS)
 
+uitest2: src/*.c build generate_headers
+	gcc -o build/uitest2 src/examples/uitest2.c $(CCFLAGS)
+
 generate_headers: build/include build/generate_characters build/generate_weapons build/generate_artifacts
 	build/generate_characters
 	build/generate_weapons

@@ -152,8 +152,8 @@ void generate_weapons_ui_c(void)
 			"#define WEAPONS_UI_C\n\n");
 	fprintf(file, "#include \"../../src/weapon.c\"\n"
 			"#include \"../../src/components.c\"\n\n");
-	fprintf(file, "typedef void (*WeaponUIFunc)(Weapon * in);\n");
-	fprintf(file, "void noop_weapon_ui_func(Weapon *) {\n"
+	fprintf(file, "typedef void (*WeaponUIFunc)(Weapon *);\n");
+	fprintf(file, "void noop_weapon_ui_func(Weapon * in) {\n"
 			"\t// this function does nothing\n"
 			"}\n\n");
 

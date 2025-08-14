@@ -83,6 +83,21 @@ bool left_up() {
 	return context->pointerInfo.state == CLAY_POINTER_DATA_RELEASED_THIS_FRAME;
 }
 
+Clay_Color interactable_color(void)
+{
+	Clay_Color nothing = {0};
+	Clay_Color press = {0xFF, 0xFF, 0xFF, 0x20};
+	Clay_Color hover = {0xFF, 0xFF, 0xFF, 0x40};
+
+	if (!Clay_Hovered())
+		return nothing;
+
+	if (left_hold())
+		return press;
+
+	return hover;
+}
+
 void text_large(Clay_String text, Clay_Color color)
 {
 	CLAY_TEXT(text,
@@ -335,9 +350,6 @@ void toggle_switch_text(int * dest, char * maintext, char * subtext, bool * sent
 
 void k_opt_list(int * dest, int k, K_Opt * opts, bool * drop, bool * sentinel)
 {
-	Clay_Color nothing = {0};
-	Clay_Color hover = {0xFF, 0xFF, 0xFF, 0x40};
-	Clay_Color press = {0xFF, 0xFF, 0xFF, 0x20};
 	bool just_dropped = 0;
 
 	if (Clay_Hovered() && left_down()) {
@@ -369,8 +381,7 @@ void k_opt_list(int * dest, int k, K_Opt * opts, bool * drop, bool * sentinel)
 
 		for (int i = 0; i < k; i++) {
 			CLAY({ // opt element config
-				.backgroundColor = !Clay_Hovered() ? nothing :
-					left_hold() ? press : hover,
+				.backgroundColor = interactable_color(),
 				.layout = {
 					.layoutDirection = CLAY_LEFT_TO_RIGHT,
 					.padding = CLAY_PADDING_ALL(3),
@@ -382,8 +393,8 @@ void k_opt_list(int * dest, int k, K_Opt * opts, bool * drop, bool * sentinel)
 				if (*sentinel) {
 					*drop = false;
 				}
-				if (opt.image != NULL) {
-					Texture2D * tex = ic_get_tex(opt.image);
+				if (opts[i].image != NULL) {
+					Texture2D * tex = ic_get_tex(opts[i].image);
 					CLAY({
 						.layout.sizing = {
 							.width = CLAY_SIZING_FIXED(30),
@@ -394,9 +405,9 @@ void k_opt_list(int * dest, int k, K_Opt * opts, bool * drop, bool * sentinel)
 					}) {}
 				}
 
-				if (opt.label != NULL) {
+				if (opts[i].label != NULL) {
 					// assume that the strings are saved
-					text_p(ch2str(opt.label), COLOR_WHITE);
+					text_p(ch2str(opts[i].label), COLOR_WHITE);
 				}
 			}
 		}

@@ -180,8 +180,8 @@ void generate_characters_arrs_h(void)
 	fprintf(arrays_file, "char const * const character2portrait[] = {\n"
 			"\t[CHARACTER_NOTHING] = \"resources/images/characters/character_nothing_portrait.png\",\n");
 	for (int i = 0; i < count; i++) {
-		if (type_keys[i] != NULL && icons[i] != NULL)
-			fprintf(arrays_file, "\t[%s] = %s,\n", type_keys[i], icons[i]);
+		if (type_keys[i] != NULL && portraits[i] != NULL)
+			fprintf(arrays_file, "\t[%s] = %s,\n", type_keys[i], portraits[i]);
 	}
 	fprintf(arrays_file, "};\n\n");
 
