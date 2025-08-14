@@ -105,12 +105,8 @@ int main(void)
 				opts[i].image = "resources/images/characters/character_nothing_icon.png";
 			}
 
-			Clay_Color press = {0xFF, 0xFF, 0xFF, 0x20};
-			Clay_Color hover = {0xFF, 0xFF, 0xFF, 0x40};
-
 			CLAY({
-				.backgroundColor = !Clay_Hovered() ? COLOR_BG :
-					left_hold() ? press : hover,
+				.backgroundColor = interactable_color(),
 				.layout = {
 					.layoutDirection = CLAY_LEFT_TO_RIGHT,
 					.padding = CLAY_PADDING_ALL(3),
@@ -118,7 +114,22 @@ int main(void)
 					.childAlignment.y = CLAY_ALIGN_Y_CENTER,
 				},
 			}) {
-				k_opt_list_item_graphics(opts[state]);
+				if (opts[state].image != NULL) {
+					Texture2D * tex = ic_get_tex(opts[state].image);
+					CLAY({
+						.layout.sizing = {
+							.width = CLAY_SIZING_FIXED(30),
+							.height = CLAY_SIZING_FIXED(30),
+						},
+						.image.imageData = tex,
+						.aspectRatio = tex->width / (float) tex->height,
+					}) {}
+				}
+
+				if (opts[state].label != NULL) {
+					// assume that the strings are saved
+					text_p(ch2str(opts[state].label));
+				}
 				k_opt_list(&state, k, opts, &dropdowndown, &sentinel);
 			}
 

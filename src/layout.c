@@ -154,7 +154,7 @@ Clay_RenderCommandArray create_layout(Interface_Data *data) {
 							.childAlignment = CLAY_ALIGN_X_CENTER,
 						},
 					}){
-						text_sub_heading1(ch2str(weapon2str[THUNDERING_PULSE]));
+						text_sub_heading1(ch2str((char *) weapon2str[THUNDERING_PULSE]));
 	
 						CLAY({ .layout = { .childAlignment = {CLAY_ALIGN_X_LEFT, CLAY_ALIGN_Y_BOTTOM}, .layoutDirection = CLAY_LEFT_TO_RIGHT } }){
 							text_p(CLAY_STRING("Lvl: ") );
