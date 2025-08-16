@@ -13,7 +13,7 @@ void amber_talent_func(CharacterTalentArgs in)
 	}
 
 	if (in.character.c2data) {
-		//in.accumulators->factor *= 3;
+		in.accumulators->all_bonus += 200.0;
 	}
 
 	if (in.character.c6data) {

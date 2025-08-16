@@ -64,21 +64,4 @@ void noop_set_bonus_func(SetBonusArgs in)
 	// do nothing
 }
 
-int weapon_check_ascension(int level, int ascension)
-{
-	int min = 0;
-	if (level <= 20) min = 0;
-	else if (level <= 40) min = 1;
-	else min = (level - 1) / 10 - 2;
-
-	int max = 0;
-	if (level < 20) max = 0;
-	else if (level < 40) max = 1;
-	else max = level / 10 - 2;
-
-	if (ascension <= min) return min;
-	if (ascension >= max) return max;
-	return ascension;
-}
-
 #endif

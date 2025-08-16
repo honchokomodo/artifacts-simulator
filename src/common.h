@@ -101,6 +101,7 @@ typedef struct stat_accumulators {
 	float hp;
 	float atk;
 	float def;
+	float all_bonus; // TO BE ADDED TO ELEMENTAL DAMAGE BONUS
 	float factor;
 	float ar[STAT_COUNT];
 } StatAccumulators;

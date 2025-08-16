@@ -15,7 +15,7 @@ void finale_of_the_deep_galleries_bonus_func(SetBonusArgs in)
 
 	// TODO: handle whether the player is using their burst or normal
 	if (in.num_pieces < 4) return;
-	in.accumulators->factor *= 1.6;
+	in.accumulators->all_bonus += 60.0;
 }
 // AUTOGEN end
 

@@ -115,7 +115,7 @@ void right_side_bar(UI_Data uiData)
 			.childGap = global_gap,
 		},
 	}) {
-		Texture2D * tex = ic_get_tex((char *) character2portrait[uiData.scenario->character.type]);
+		Texture2D * tex = ic_get_tex(character2portrait[uiData.scenario->character.type]);
 
 		CLAY({
 			.layout.sizing = layoutExpand,
@@ -123,7 +123,7 @@ void right_side_bar(UI_Data uiData)
 			.aspectRatio = tex->width / (float) tex->height,
 		}) {}
 
-		text_large(ch2str((char *) character2str[uiData.scenario->character.type]));
+		text_large(ch2str(character2str[uiData.scenario->character.type]));
 	}
 }
 
@@ -142,7 +142,7 @@ void tab_equipment(UI_Data uiData)
 		},
 	}) {
 		Weapon weapon = uiData.scenario->weapon;
-		Texture2D * tex = ic_get_tex((char *) weapon2icon[weapon.type]);
+		Texture2D * tex = ic_get_tex(weapon2icon[weapon.type]);
 		CLAY({
 			.layout.sizing = {
 				.height = CLAY_SIZING_FIXED(300),
@@ -160,7 +160,7 @@ void tab_equipment(UI_Data uiData)
 				.childGap = global_gap,
 			},
 		}) {
-			text_large(ch2str((char *) weapon2str[weapon.type]));
+			text_large(ch2str(weapon2str[weapon.type]));
 		}
 	}
 

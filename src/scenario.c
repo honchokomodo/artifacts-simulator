@@ -12,11 +12,10 @@ typedef struct scenario {
 	StatAccumulators accumulators;
 } Scenario;
 
-// should match what is seen idle in-game as closely as possible.
-void scenario_print(Scenario in)
+StatAccumulators aggregate_stats(Scenario in)
 {
 	// step 1: prepare accumulators
-	StatAccumulators accumulators = {
+	StatAccumulators sto = {
 		.hp_base = in.character.hp,
 		.atk_base = in.character.atk,
 		.def_base = in.character.def,
@@ -46,13 +45,13 @@ void scenario_print(Scenario in)
 	} Entry;
 	Entry setcounters[5] = {0};
 
-	// step 2: aggregate artifact stats and sets into accumulators
+	// step 2: aggregate artifact stats and sets into accumulator
 #define AGGREGATE_ARTIFACT_STATS(arti) \
 	do { \
-		accumulators.ar[arti.mainstat.type] += arti.mainstat.value; \
+		sto.ar[arti.mainstat.type] += arti.mainstat.value; \
 		for (int line = 0; line < 4; line++) { \
 			Affix substat = arti.substat[line]; \
-			accumulators.ar[substat.type] += substat.value; \
+			sto.ar[substat.type] += substat.value; \
 		} \
 		for (int i = 0; i < 5; i++) { \
 			if (setcounters[i].set == SET_NOTHING) { \
@@ -73,65 +72,71 @@ void scenario_print(Scenario in)
 
 #undef AGGREGATE_ARTIFACT_STATS
 	
-	// step 3: handle artifact set bonuses
+	// step 3: handle weapon stats
+	sto.atk_base += in.weapon.atk;
+	sto.ar[in.weapon.bonus.type] += in.weapon.bonus.value;
+
+	// ======== TODO make buff handling less bad
+	// step 4: handle artifact set bonuses
 	for (int i = 0; i < 5; i++) {
 		SetBonusArgs set_bonus_args = {
 			.set = setcounters[i].set,
 			.num_pieces = setcounters[i].count,
 			.loadout = &in.loadout,
-			.accumulators = &accumulators,
+			.accumulators = &sto,
 		};
 
 		artifact_set_bonus(set_bonus_args);
 	}
 
-	// step 4: handle weapon stats
-	accumulators.atk_base += in.weapon.atk;
-	accumulators.ar[in.weapon.bonus.type] += in.weapon.bonus.value;
-
 	// step 5: handle weapon passives
 	WeaponPassiveArgs weapon_passive_args = {
 		.weapon = in.weapon,
-		.accumulators = &accumulators,
+		.accumulators = &sto,
 	};
 	weapon_passive(weapon_passive_args);
 	
 	// step 6: handle character passives and constellations
 	CharacterTalentArgs character_talent_args = {
 		.character = in.character,
-		.accumulators = &accumulators,
+		.accumulators = &sto,
 	};
 
 	character_talents(character_talent_args);
+	// ========
 
-	// step 7: combine base stats with aggregate stats
-	float hp_fac = 1 + accumulators.ar[HP_PERCENT] / 100;
-	float atk_fac = 1 + accumulators.ar[ATK_PERCENT] / 100;
-	float def_fac = 1 + accumulators.ar[DEF_PERCENT] / 100;
+	// step 7: combine base stats with aggregate stats and elemental bonuses
+	float hp_fac = 1 + sto.ar[HP_PERCENT] / 100;
+	float atk_fac = 1 + sto.ar[ATK_PERCENT] / 100;
+	float def_fac = 1 + sto.ar[DEF_PERCENT] / 100;
 
-	accumulators.hp = accumulators.hp_base * hp_fac
-		+ accumulators.ar[HP_FLAT];
-	accumulators.atk = accumulators.atk_base * atk_fac
-		+ accumulators.ar[ATK_FLAT];
-	accumulators.def = accumulators.def_base * def_fac
-		+ accumulators.ar[DEF_FLAT];
+	sto.hp = sto.hp_base * hp_fac + sto.ar[HP_FLAT];
+	sto.atk = sto.atk_base * atk_fac + sto.ar[ATK_FLAT];
+	sto.def = sto.def_base * def_fac + sto.ar[DEF_FLAT];
 
-	// step 8: print the stats
+	return sto;
+}
+
+// should match what is seen idle in-game as closely as possible.
+void scenario_print(Scenario in)
+{
+	StatAccumulators sto = aggregate_stats(in);
+
 #define COND_PRINT(fmt, key) \
 	do { \
-		if (accumulators.ar[key] != 0) \
-			printf(fmt, accumulators.ar[key]); \
+		if (sto.ar[key] != 0) \
+			printf(fmt, sto.ar[key]); \
 	} while (0)
 
 	printf("%s - lv.%d\n", character2str[in.character.type], in.character.level);
-	printf("HP - %g\n", accumulators.hp);
-	printf("ATK - %g\n", accumulators.atk);
-	printf("DEF - %g\n", accumulators.def);
+	printf("HP - %g\n", sto.hp);
+	printf("ATK - %g\n", sto.atk);
+	printf("DEF - %g\n", sto.def);
 	COND_PRINT("Elemental Mastery - %g\n", ELEMENTAL_MASTERY);
-	printf("Crit RATE - %g%%\n", accumulators.ar[CRIT_RATE]);
-	printf("Crit DMG - %g%%\n", accumulators.ar[CRIT_DAMAGE]);
+	printf("Crit RATE - %g%%\n", sto.ar[CRIT_RATE]);
+	printf("Crit DMG - %g%%\n", sto.ar[CRIT_DAMAGE]);
 	COND_PRINT("Healing Bonus - %g%%\n", HEALING_BONUS);
-	printf("Energy Recharge - %g%%\n", accumulators.ar[ENERGY_RECHARGE]);
+	printf("Energy Recharge - %g%%\n", sto.ar[ENERGY_RECHARGE]);
 	COND_PRINT("Pyro DMG Bonus - %g%%\n", PYRO_BONUS);
 	COND_PRINT("Hydro DMG Bonus - %g%%\n", HYDRO_BONUS);
 	COND_PRINT("Dendro DMG Bonus - %g%%\n", DENDRO_BONUS);
@@ -143,9 +148,8 @@ void scenario_print(Scenario in)
 
 #undef COND_PRINT
 
-	// step 9: print the weapon and artifacts
 	printf("\n");
-	printf("%s - R%d\n", in.weapon.name, in.weapon.refinement);
+	printf("%s - R%d\n", weapon2str[in.weapon.type], in.weapon.refinement);
 	printf("ATK - %g\n", in.weapon.atk);
 	printf("%s - %g%s\n", stat2str[in.weapon.bonus.type], in.weapon.bonus.value, stat2pct[in.weapon.bonus.type]);
 

@@ -19,7 +19,7 @@ void * la_alloc(la_Arena * arena, size_t bufsz);
 // Format a string like printf, then store it in arena, and return the
 // null-terminated formatted string.
 // returns NULL if out of memory.
-char * la_strfmt(la_Arena * arena, char * fmt, ...);
+char * la_strfmt(la_Arena * arena, char const * const fmt, ...);
 
 // Free all memory stored in arena.
 void la_reset(la_Arena * arena);
@@ -70,7 +70,7 @@ void * la_alloc(la_Arena * arena, size_t bufsz)
 	return out;
 }
 
-char * la_strfmt(la_Arena * arena, char * fmt, ...)
+char * la_strfmt(la_Arena * arena, char const * const fmt, ...)
 {
 	int max_len = arena->bufsz - arena->offset;
 	if (max_len <= 0) return NULL;

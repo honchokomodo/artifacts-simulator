@@ -20,17 +20,43 @@ void skyward_harp_passive_func(WeaponPassiveArgs in)
 // AUTOGEN weapon2generator skyward_harp_generator_func
 Weapon skyward_harp_generator_func(Weapon in)
 {
-	//TODO: un-hardcode this
-	Weapon skyward_harp_r1_90 = {
-		.type = SKYWARD_HARP,
-		.name = "Skyward Harp",
-		.refinement = 1,
-		.level = 90,
-		.atk = 674,
-		.bonus = {CRIT_RATE, 22.1},
+	int ascension = weapon_check_ascension(in.level, in.ascension);
+
+	static int const table[] = {
+		// values obtained from wiki
+		// https://genshin-impact.fandom.com/wiki/Skyward_Harp
+		// ascension 0: lv 1-20
+		48, 133,
+		// ascension 1: lv 20-40
+		164, 261,
+		// ascension 2: lv 40-50
+		292, 341,
+		// ascension 3: lv 50-60
+		373, 423,
+		// ascension 4: lv 60-70
+		455, 506,
+		// ascension 5: lv 70-80
+		537, 590,
+		// ascension 6: lv 80-90
+		621, 674,
 	};
 
-	return skyward_harp_r1_90;
+	float base_atk = weapon_base_atk(in.level, ascension, table);
+
+	// from wiki: CRIT RATE += 4.8% at level 1
+	float bonus_value = 4.8 * weapon_bonus_factor(in.level);
+
+	Weapon out = {
+		.type = SKYWARD_HARP,
+		.level = in.level,
+		.ascension = ascension,
+		.refinement = in.refinement,
+
+		.atk = base_atk,
+		.bonus = {CRIT_RATE, bonus_value},
+	};
+
+	return out;
 }
 // AUTOGEN end
 

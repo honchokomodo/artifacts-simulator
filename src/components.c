@@ -58,7 +58,7 @@ Clay_Sizing layoutWide = {
 	.width = CLAY_SIZING_GROW(0),
 };
 
-Clay_String ch2str(char * s)
+Clay_String ch2str(char const * const s)
 {
 	return (Clay_String) {
 		.chars = s,

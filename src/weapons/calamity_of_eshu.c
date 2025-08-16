@@ -20,17 +20,43 @@ void calamity_of_eshu_passive_func(WeaponPassiveArgs in)
 // AUTOGEN weapon2generator calamity_of_eshu_generator_func
 Weapon calamity_of_eshu_generator_func(Weapon in)
 {
-	//TODO: un-hardcode this
-	Weapon calamity_of_eshu_r5_90 = {
-		.type = CALAMITY_OF_ESHU,
-		.name = "Calamity of Eshu",
-		.refinement = 5,
-		.level = 90,
-		.atk = 565,
-		.bonus = {ATK_PERCENT, 27.6},
+	int ascension = weapon_check_ascension(in.level, in.ascension);
+
+	static int const table[] = {
+		// values obtained from wiki
+		// https://genshin-impact.fandom.com/wiki/Calamity_of_Eshu
+		// ascension 0: lv 1-20
+		44, 119,
+		// ascension 1: lv 20-40
+		144, 226,
+		// ascension 2: lv 40-50
+		252, 293,
+		// ascension 3: lv 50-60
+		319, 361,
+		// ascension 4: lv 60-70
+		387, 429,
+		// ascension 5: lv 70-80
+		455, 497,
+		// ascension 6: lv 80-90
+		523, 565,
 	};
 
-	return calamity_of_eshu_r5_90;
+	float base_atk = weapon_base_atk(in.level, ascension, table);
+
+	// from wiki: ATK% += 6% at level 1
+	float bonus_value = 6.0 * weapon_bonus_factor(in.level);
+
+	Weapon out = {
+		.type = CALAMITY_OF_ESHU,
+		.level = in.level,
+		.ascension = ascension,
+		.refinement = in.refinement,
+
+		.atk = base_atk,
+		.bonus = {ATK_PERCENT, bonus_value},
+	};
+
+	return out;
 }
 // AUTOGEN end
 

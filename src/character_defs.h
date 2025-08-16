@@ -111,6 +111,8 @@ CharacterStats character_base_stats(CharacterStats in, int quality, int level,
 	return in;
 }
 
+// identical to weapon_check_ascension
+// possibly move this to common.h?
 int character_check_ascension(int level, int ascension)
 {
 	int min = 0;

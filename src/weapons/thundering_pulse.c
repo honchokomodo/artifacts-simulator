@@ -25,17 +25,43 @@ void thundering_pulse_passive_func(WeaponPassiveArgs in)
 // AUTOGEN weapon2generator thundering_pulse_generator_func
 Weapon thundering_pulse_generator_func(Weapon in)
 {
-	// TODO: un-hardcode this
-	Weapon thundering_pulse_r1_90 = {
-		.type = THUNDERING_PULSE,
-		.name = "Thundering Pulse",
-		.refinement = 1,
-		.level = 90,
-		.atk = 608,
-		.bonus = {CRIT_DAMAGE, 66.2},
+	int ascension = weapon_check_ascension(in.level, in.ascension);
+
+	static int const table[] = {
+		// values obtained from wiki
+		// https://genshin-impact.fandom.com/wiki/Thundering_Pulse
+		// ascension 0: lv 1-20
+		46, 122,
+		// ascension 1: lv 20-40
+		153, 235,
+		// ascension 2: lv 40-50
+		266, 308,
+		// ascension 3: lv 50-60
+		340, 382,
+		// ascension 4: lv 60-70
+		414, 457,
+		// ascension 5: lv 70-80
+		488, 552,
+		// ascension 6: lv 80-90
+		563, 608,
 	};
 
-	return thundering_pulse_r1_90;
+	float base_atk = weapon_base_atk(in.level, ascension, table);
+
+	// from wiki: CRIT DMG += 14.4% at level 1
+	float bonus_value = 14.4 * weapon_bonus_factor(in.level);
+
+	Weapon out = {
+		.type = THUNDERING_PULSE,
+		.level = in.level,
+		.ascension = ascension,
+		.refinement = in.refinement,
+
+		.atk = base_atk,
+		.bonus = {CRIT_DAMAGE, bonus_value},
+	};
+
+	return out;
 }
 // AUTOGEN end
 

@@ -10,11 +10,9 @@ typedef struct weapon {
 	int ascension;
 	int refinement;
 
-	char * name;
 	float atk;
 	Affix bonus;
 	int passivedata;
-	//WeaponBonusHandlerFunc passive; //TODO: remove this
 } Weapon;
 
 typedef struct weapon_passive_args {
@@ -34,7 +32,7 @@ Weapon noop_weapon_generator_func(Weapon in)
 	return in; // do nothing
 }
 
-float weapon_base_atk(int level, int ascension, int table[14])
+float weapon_base_atk(int level, int ascension, int const table[14])
 {
 	static int const tarr[] = {
 		[0] = 0,
@@ -66,6 +64,8 @@ float weapon_bonus_factor(int level)
 	return 0.040383 * level + 0.959588;
 }
 
+// identical to character_check_ascension
+// possibly move this to common.h?
 int weapon_check_ascension(int level, int ascension)
 {
 	int min = 0;

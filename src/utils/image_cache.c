@@ -15,8 +15,8 @@ void ic_initcache(int num_entries, int max_images);
 // deinitialize the cache and free all memory.
 void ic_destroycache(void);
 
-Texture2D * ic_get_tex(char * path); // get a texture from a filepath.
-void ic_unload_tex(char * path); // unload a texture from the cache.
+Texture2D * ic_get_tex(char const * const path); // get a texture from a filepath.
+void ic_unload_tex(char const * const path); // unload a texture from the cache.
 void ic_unload_all(void); // unload all textures in the cache.
 
 /* usage:
@@ -96,7 +96,7 @@ void ic_destroycache(void)
 	_ic_arr_next_free = 0;
 }
 
-uint32_t _ic_strhash(char * s)
+uint32_t _ic_strhash(char const * s)
 {
 	// these two could be anything really
 	uint32_t big = 2654435761;
@@ -112,7 +112,7 @@ uint32_t _ic_strhash(char * s)
 }
 
 // can be removed after compilers update to c23
-char * _ic_strdup(char * s)
+char * _ic_strdup(char const * s)
 {
 	int len = strlen(s);
 	char * out = malloc(len + 1);
@@ -122,7 +122,7 @@ char * _ic_strdup(char * s)
 	return out;
 }
 
-int _ic_load_tex(char * path) {
+int _ic_load_tex(char const * const path) {
 	char * fpath = _ic_strdup(path);
 	if (fpath == NULL)
 		return 0;
@@ -162,7 +162,7 @@ int _ic_load_tex(char * path) {
 	return next_free;
 }
 
-Texture2D * ic_get_tex(char * path)
+Texture2D * ic_get_tex(char const * const path)
 {
 	uint32_t hash = _ic_strhash(path);
 	int index = hash % _ic_table_size;
@@ -188,7 +188,7 @@ Texture2D * ic_get_tex(char * path)
 	return &_ic_arr[pos].tex;
 }
 
-void ic_unload_tex(char * path)
+void ic_unload_tex(char const * const path)
 {
 	uint32_t hash = _ic_strhash(path);
 	int index = hash % _ic_table_size;

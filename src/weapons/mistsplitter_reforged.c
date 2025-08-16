@@ -26,17 +26,43 @@ void mistsplitter_reforged_passive_func(WeaponPassiveArgs in)
 // AUTOGEN weapon2generator mistsplitter_reforged_generator_func
 Weapon mistsplitter_reforged_generator_func(Weapon in)
 {
-	// TODO: un-hardcode this
-	Weapon mistsplitter_reforged_r1_90 = {
-		.type = MISTSPLITTER_REFORGED,
-		.name = "Mistsplitter Reforged",
-		.refinement = 1,
-		.level = 90,
-		.atk = 674,
-		.bonus = {CRIT_DAMAGE, 44.1},
+	int ascension = weapon_check_ascension(in.level, in.ascension);
+
+	static int const table[] = {
+		// values obtained from wiki
+		// https://genshin-impact.fandom.com/wiki/Mistsplitter_Reforged
+		// ascension 0: lv 1-20
+		48, 133,
+		// ascension 1: lv 20-40
+		164, 261,
+		// ascension 2: lv 40-50
+		292, 341,
+		// ascension 3: lv 50-60
+		373, 423,
+		// ascension 4: lv 60-70
+		455, 506,
+		// ascension 5: lv 70-80
+		537, 590,
+		// ascension 6: lv 80-90
+		621, 674,
 	};
 
-	return mistsplitter_reforged_r1_90;
+	float base_atk = weapon_base_atk(in.level, ascension, table);
+
+	// from wiki: CRIT DMG += 9.6% at level 1
+	float bonus_value = 9.6 * weapon_bonus_factor(in.level);
+
+	Weapon out = {
+		.type = MISTSPLITTER_REFORGED,
+		.level = in.level,
+		.ascension = ascension,
+		.refinement = in.refinement,
+
+		.atk = base_atk,
+		.bonus = {CRIT_DAMAGE, bonus_value},
+	};
+
+	return out;
 }
 // AUTOGEN end
 
