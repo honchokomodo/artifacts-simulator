@@ -2,7 +2,10 @@
 ***Artifact Simulator*** is a tool to generate and calculate when your artifacts in Genshin Impact are *good enough*.
 
 ## To Do
-- [ ] WIP
+- [ ] make a ui
+- [ ] abstract weapon buffs, character passives, and artifact set bonuses out to structs
+- [ ] get more art
+- [ ] enter data for characters, weapons, and artifact sets
 
 ## Art contribution guidelines
 If you want to help out and contribute art
