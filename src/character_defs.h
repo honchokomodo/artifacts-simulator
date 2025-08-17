@@ -130,4 +130,10 @@ int character_check_ascension(int level, int ascension)
 	return ascension;
 }
 
+int character_max_level(int ascension)
+{
+	if (ascension <= 0) return 20;
+	return (ascension + 3) * 10;
+}
+
 #endif

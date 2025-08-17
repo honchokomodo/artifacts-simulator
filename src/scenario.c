@@ -9,7 +9,11 @@ typedef struct scenario {
 	CharacterStats character;
 	Weapon weapon;
 	ArtifactLoadout loadout;
+
 	StatAccumulators accumulators;
+
+	size_t buffs_len;
+	BuffElement buffs[MAX_BUFFS];
 } Scenario;
 
 StatAccumulators aggregate_stats(Scenario in)
@@ -76,6 +80,7 @@ StatAccumulators aggregate_stats(Scenario in)
 	sto.atk_base += in.weapon.atk;
 	sto.ar[in.weapon.bonus.type] += in.weapon.bonus.value;
 
+	/*
 	// ======== TODO make buff handling less bad
 	// step 4: handle artifact set bonuses
 	for (int i = 0; i < 5; i++) {
@@ -104,6 +109,12 @@ StatAccumulators aggregate_stats(Scenario in)
 
 	character_talents(character_talent_args);
 	// ========
+	*/
+
+	// step 4: handle buffs
+	for (int i = 0; i < in.buffs_len; i++) {
+		sto = accumulator_combine(sto, in.buffs[i].buff);
+	}
 
 	// step 7: combine base stats with aggregate stats and elemental bonuses
 	float hp_fac = 1 + sto.ar[HP_PERCENT] / 100;

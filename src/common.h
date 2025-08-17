@@ -1,6 +1,8 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#define MAX_BUFFS 20
+
 typedef enum stattype {
 	STAT_NOTHING,
 	HP_FLAT,
@@ -105,5 +107,44 @@ typedef struct stat_accumulators {
 	float factor;
 	float ar[STAT_COUNT];
 } StatAccumulators;
+
+typedef struct buff_element {
+	StatAccumulators buff;
+	char * label;
+} BuffElement;
+
+StatAccumulators accumulator_combine(StatAccumulators lhs, StatAccumulators rhs)
+{
+	lhs.hp_base += rhs.hp_base;
+	lhs.atk_base += rhs.atk_base;
+	lhs.def_base += rhs.def_base;
+	lhs.all_bonus += rhs.all_bonus;
+
+	lhs.factor *= rhs.factor;
+
+	for (int stat = 0; stat < STAT_COUNT; stat++) {
+		lhs.ar[stat] += rhs.ar[stat];
+	}
+
+	return lhs;
+}
+
+void buff_append(BuffElement * list, size_t * len, BuffElement buff)
+{
+	if (*len >= MAX_BUFFS) return;
+	list[*len++] = buff;
+}
+
+void buff_remove(BuffElement * list, size_t * len, int idx)
+{
+	if (*len <= 0) return;
+	if (idx < 0 || idx >= *len) return;
+
+	// just shift everything over
+	for (int i = idx + 1; i < *len; i++)
+		list[i - 1] = list[i];
+
+	*len -= 1;
+}
 
 #endif

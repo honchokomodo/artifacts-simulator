@@ -10,6 +10,7 @@ int main(void)
 	Scenario skirk = {
 		.character = CHARACTER_NEW(SKIRK, .level = 90),
 		.weapon = WEAPON_NEW(CALAMITY_OF_ESHU, .level = 90, .refinement = 5),
+		/*
 		.loadout.flower = {
 			.piece = FLOWER, 
 			.set = FINALE_OF_THE_DEEP_GALLERIES,
@@ -64,31 +65,30 @@ int main(void)
 			.substat[2] = {ATK_PERCENT, 5.3},
 			.substat[3] = {HP_FLAT, 478},
 		},
-/*
-		.flower = ARTIFACT_NEW(rand() % 5 == 0,
+		*/
+		.loadout.flower = ARTIFACT_NEW(rand() % 5 == 0,
 				.level = 20,
 				.set = FINALE_OF_THE_DEEP_GALLERIES,
 				.piece = FLOWER),
-		.feather = ARTIFACT_NEW(rand() % 5 == 0,
+		.loadout.feather = ARTIFACT_NEW(rand() % 5 == 0,
 				.level = 20,
 				.set = FINALE_OF_THE_DEEP_GALLERIES,
 				.piece = FEATHER),
-		.sands = ARTIFACT_NEW(rand() % 5 == 0,
+		.loadout.sands = ARTIFACT_NEW(rand() % 5 == 0,
 				.level = 20,
 				.set = FINALE_OF_THE_DEEP_GALLERIES,
 				.piece = SANDS,
 				.mainstat.type = ATK_PERCENT),
-		.goblet = ARTIFACT_NEW(rand() % 5 == 0,
+		.loadout.goblet = ARTIFACT_NEW(rand() % 5 == 0,
 				.level = 20,
 				.set = FINALE_OF_THE_DEEP_GALLERIES,
 				.piece = GOBLET,
 				.mainstat.type = CRYO_BONUS),
-		.circlet = ARTIFACT_NEW(rand() % 5 == 0,
+		.loadout.circlet = ARTIFACT_NEW(rand() % 5 == 0,
 				.level = 20,
 				.set = FINALE_OF_THE_DEEP_GALLERIES,
 				.piece = CIRCLET,
 				.mainstat.type = CRIT_DAMAGE),
-*/
 	};
 
 	scenario_print(skirk);

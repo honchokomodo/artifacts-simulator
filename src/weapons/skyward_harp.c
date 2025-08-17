@@ -12,6 +12,7 @@ void skyward_harp_passive_func(WeaponPassiveArgs in)
 	   occur once every 4s.
 	   */
 
+	in.accumulators->ar[CRIT_DAMAGE] += 15.0 + 5 * in.weapon.refinement;
 	// do nothing for now
 	// TODO: implement this
 }

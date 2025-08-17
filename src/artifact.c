@@ -156,12 +156,12 @@ StatType _artifact_getmainstat(PieceType piece)
 
 	static Choice const flower_weights[] = {
 		// only 1 possible choice.
-		{HP_FLAT, max},
+		{HP_FLAT, 10000},
 	};
 
 	static Choice const feather_weights[] = {
 		// only 1 possible choice.
-		{ATK_FLAT, max},
+		{ATK_FLAT, 10000},
 	};
 
 	static Choice const sands_weights[] = {

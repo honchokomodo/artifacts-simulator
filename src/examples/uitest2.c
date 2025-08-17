@@ -16,187 +16,130 @@ enum tab_index {
 
 typedef struct ui_data {
 	Scenario * scenario;
-	int * currentTabIndex;
 } UI_Data;
 
 int global_gap = 12;
+Clay_Padding global_padding = {16, 16, 16, 16};
+Clay_BorderElementConfig easy_border = {
+	.color = {0xFF, 0xFF, 0xFF, 0xFF},
+	.width = {1, 1, 1, 1},
+};
 
-void vline(void)
+Clay_ElementDeclaration hcontainer()
 {
-	CLAY({
-		.backgroundColor = COLOR_BG_ALT,
-		.layout.sizing = {
-			.width = CLAY_SIZING_FIXED(2),
-			.height = CLAY_SIZING_GROW(0),
-		},
-	}) {}
-}
-
-void hline(void)
-{
-	CLAY({
-		.backgroundColor = COLOR_BG_ALT,
-		.layout.sizing = {
-			.width = CLAY_SIZING_GROW(0),
-			.height = CLAY_SIZING_FIXED(2),
-		},
-	}) {}
-}
-
-void left_side_bar(UI_Data uiData)
-{
-	CLAY({
-		.layout = {
-			.layoutDirection = CLAY_TOP_TO_BOTTOM,
-			.sizing = {
-				.width = CLAY_SIZING_FIXED(200),
-				.height = CLAY_SIZING_GROW(0),
-			},
-			.childGap = global_gap,
-		},
-	}) {
-		
-		CLAY({
-			.backgroundColor = interactable_color(),
-			.layout = {
-				.sizing = layoutWide,
-				.padding = CLAY_PADDING_ALL(6),
-			},
-			.border = {
-				.color = COLOR_BORDER,
-				.width = {2 * (*uiData.currentTabIndex == TAB_BENCHMARK)},
-			},
-		}) {
-			assign_button(uiData.currentTabIndex, TAB_BENCHMARK, NULL);
-			text_large(ch2str("Benchmark"));
-		}
-
-		CLAY({
-			.backgroundColor = interactable_color(),
-			.layout = {
-				.sizing = layoutWide,
-				.padding = CLAY_PADDING_ALL(6),
-			},
-			.border = {
-				.color = COLOR_BORDER,
-				.width = {2 * (*uiData.currentTabIndex == TAB_EQUIPMENT)},
-			},
-		}) {
-			assign_button(uiData.currentTabIndex, TAB_EQUIPMENT, NULL);
-			text_large(ch2str("Equipment"));
-		}
-
-		CLAY({
-			.backgroundColor = interactable_color(),
-			.layout = {
-				.sizing = layoutWide,
-				.padding = CLAY_PADDING_ALL(6),
-			},
-			.border = {
-				.color = COLOR_BORDER,
-				.width = {2 * (*uiData.currentTabIndex == TAB_BUFFS)},
-			},
-		}) {
-			assign_button(uiData.currentTabIndex, TAB_BUFFS, NULL);
-			text_large(ch2str("Buffs"));
-		}
-	}
-}
-
-void right_side_bar(UI_Data uiData)
-{
-	CLAY({
-		.layout = {
-			.layoutDirection = CLAY_TOP_TO_BOTTOM,
-			.sizing = {
-				.width = CLAY_SIZING_FIXED(400),
-				.height = CLAY_SIZING_GROW(0),
-			},
-			.childGap = global_gap,
-		},
-	}) {
-		Texture2D * tex = ic_get_tex(character2portrait[uiData.scenario->character.type]);
-
-		CLAY({
-			.layout.sizing = layoutExpand,
-			.image.imageData = tex,
-			.aspectRatio = tex->width / (float) tex->height,
-		}) {}
-
-		text_large(ch2str(character2str[uiData.scenario->character.type]));
-	}
-}
-
-void tab_benchmark(UI_Data uiData)
-{
-	// TODO
-}
-
-void tab_equipment(UI_Data uiData)
-{
-	CLAY({
+	Clay_ElementDeclaration out = {
 		.layout = {
 			.layoutDirection = CLAY_LEFT_TO_RIGHT,
-			.sizing = layoutWide,
-			.childGap = global_gap,
+			.sizing.width = CLAY_SIZING_GROW(0),
 		},
+		.border = easy_border,
+	};
+	
+	return out;
+}
+
+void display_character_attributes(la_Arena * arena, Scenario * scenario)
+{
+#define STAT_DISPLAY(str, fmt, val) \
+	do { \
+		CLAY(hcontainer()) { \
+			text_p(ch2str(str)); \
+			CLAY({.layout.sizing = layoutExpand}) {} \
+			text_p(ch2str(la_strfmt(arena, fmt, val))); \
+		} \
+	} while (0)
+
+#define COND_DISPLAY(str, fmt, val) \
+	do { \
+		if (val != 0) { \
+			STAT_DISPLAY(str, fmt, val); \
+		} \
+	} while (0)
+
+	CLAY({
+		.layout = {
+			.layoutDirection = CLAY_TOP_TO_BOTTOM,
+			.padding = global_padding, 
+		},
+		.border = easy_border,
 	}) {
-		Weapon weapon = uiData.scenario->weapon;
-		Texture2D * tex = ic_get_tex(weapon2icon[weapon.type]);
+		CharacterStats character = scenario->character;
+		Texture2D * tex = ic_get_tex(character2portrait[character.type]);
 		CLAY({
-			.layout.sizing = {
-				.height = CLAY_SIZING_FIXED(300),
+			.layout = {
+				.sizing = {
+					.width = CLAY_SIZING_FIXED(300),
+					.height = CLAY_SIZING_FIXED(300),
+				},
+				.padding = global_padding,
+				//.childGap = global_gap,
+				.layoutDirection = CLAY_TOP_TO_BOTTOM,
 			},
 			.image.imageData = tex,
 			.aspectRatio = tex->width / (float) tex->height,
-		}) {}
+			.border = easy_border,
+		}) {
+			CLAY(hcontainer()) {
+				text_large(ch2str(character2str[character.type]));
+				CLAY({.layout.sizing = layoutExpand}) {}
+				text_p(ch2str(la_strfmt(arena, "lv. %d/%d", character.level, character_max_level(character.ascension))));
+			}
 
-		vline();
+			CLAY({.layout.sizing = layoutExpand}) {}
+
+			STAT_DISPLAY("Constellation", "%d", character.constellation);
+
+			CLAY(hcontainer()) {
+				text_p(ch2str("Talents"));
+				CLAY({.layout.sizing = layoutExpand}) {}
+				text_p(ch2str(la_strfmt(arena, "%d, %d, %d", character.talent.normal, character.talent.skill, character.talent.burst)));
+			}
+		}
 
 		CLAY({
 			.layout = {
+				.sizing.width = CLAY_SIZING_GROW(0),
+				.padding = global_padding,
+				//.childGap = global_gap,
 				.layoutDirection = CLAY_TOP_TO_BOTTOM,
-				.sizing = layoutExpand,
-				.childGap = global_gap,
 			},
+			.border = easy_border,
 		}) {
-			text_large(ch2str(weapon2str[weapon.type]));
+
+			StatAccumulators stats = scenario->accumulators;
+
+			STAT_DISPLAY("HP", "%g", stats.hp);
+			STAT_DISPLAY("ATK", "%g", stats.atk);
+			STAT_DISPLAY("DEF", "%g", stats.def);
+			COND_DISPLAY("Elemental Mastery", "%g", stats.ar[ELEMENTAL_MASTERY]);
+			STAT_DISPLAY("Crit RATE", "%g%%", stats.ar[CRIT_RATE]);
+			STAT_DISPLAY("Crit DMG", "%g%%", stats.ar[CRIT_DAMAGE]);
+			COND_DISPLAY("Healing Bonus", "%g%%", stats.ar[HEALING_BONUS]);
+			STAT_DISPLAY("Energy Recharge", "%g%%", stats.ar[ENERGY_RECHARGE]);
+			COND_DISPLAY("Pyro DMG Bonus", "%g%%", stats.ar[PYRO_BONUS]);
+			COND_DISPLAY("Hydro DMG Bonus", "%g%%", stats.ar[HYDRO_BONUS]);
+			COND_DISPLAY("Dendro DMG Bonus", "%g%%", stats.ar[DENDRO_BONUS]);
+			COND_DISPLAY("Electro DMG Bonus", "%g%%", stats.ar[ELECTRO_BONUS]);
+			COND_DISPLAY("Anemo DMG Bonus", "%g%%", stats.ar[ANEMO_BONUS]);
+			COND_DISPLAY("Cryo DMG Bonus", "%g%%", stats.ar[CRYO_BONUS]);
+			COND_DISPLAY("Geo DMG Bonus", "%g%%", stats.ar[GEO_BONUS]);
+			COND_DISPLAY("Physical DMG Bonus", "%g%%", stats.ar[PHYSICAL_BONUS]);
+
+#undef COND_DISPLAY
+#undef STAT_DISPLAY
 		}
 	}
-
-	hline();
-	
-	// TODO: draw artifacts
 }
 
-void tab_buffs(UI_Data uiData)
-{
-	// TODO
-}
-
-void main_content(UI_Data uiData)
+void display_weapon_attributes(la_Arena * arena, Scenario * scenario)
 {
 	CLAY({
 		.layout = {
 			.layoutDirection = CLAY_TOP_TO_BOTTOM,
-			.sizing = layoutExpand,
-			.childGap = global_gap,
+			.padding = global_padding, 
 		},
+		.border = easy_border,
 	}) {
-		switch (*uiData.currentTabIndex)
-		{
-			case TAB_BENCHMARK:
-				tab_benchmark(uiData);
-				break;
-			case TAB_EQUIPMENT:
-				tab_equipment(uiData);
-				break;
-			case TAB_BUFFS:
-				tab_buffs(uiData);
-				break;
-			default:
-				 // do nothing
-		}
 	}
 }
 
@@ -238,15 +181,21 @@ int main(void)
 	};
 
 	Scenario scenario = {
-		.character = CHARACTER_NEW(YOIMIYA, 0),
-		.weapon = WEAPON_NEW(THUNDERING_PULSE, 0),
+		.character = CHARACTER_NEW(AMBER,
+				.level = 90,
+				.constellation = 6,
+				.talent = {10, 10, 10}),
+		.weapon = WEAPON_NEW(SKYWARD_HARP,
+				.level = 90,
+				.refinement = 1),
 	};
-	int currentTabIndex = 0;
+	scenario.accumulators = aggregate_stats(scenario);
 
 	UI_Data uiData = {
 		.scenario = &scenario,
-		.currentTabIndex = &currentTabIndex,
 	};
+
+	Clay_SetDebugModeEnabled(true);
 
 	while (!WindowShouldClose()) {
 		windowSize.width = GetScreenWidth();
@@ -264,24 +213,17 @@ int main(void)
 		CLAY({
 			.backgroundColor = COLOR_BG,
 			.layout = {
-				.layoutDirection = CLAY_LEFT_TO_RIGHT,
+				.layoutDirection = CLAY_TOP_TO_BOTTOM,
 				.sizing = layoutExpand,
-				.padding = CLAY_PADDING_ALL(16),
+				.padding = global_padding,
 				.childGap = global_gap,
 			},
+			.clip = {
+				.vertical = true,
+				.childOffset = Clay_GetScrollOffset(),
+			},
 		}) {
-			// left side bar
-			left_side_bar(uiData);
-
-			vline();
-
-			// main content
-			main_content(uiData);
-
-			vline();
-
-			// right side bar
-			right_side_bar(uiData);
+			display_character_attributes(&arena, &scenario);
 		}
 
 		Clay_RenderCommandArray renderCommands = Clay_EndLayout();

@@ -344,12 +344,17 @@ int main(void)
 		}
 
 		char fname[300]; // hope that this is enough
-		if (strlen(dirname) + strlen(entry->d_name) >= sizeof(fname)) {
+		size_t len = snprintf(fname, sizeof(fname), "%s%s", dirname, entry->d_name);
+		if (len >= sizeof(fname)) {
 			printf("the file name is too long. skipping\n");
 			continue;
 		}
 
-		snprintf(fname, sizeof(fname), "%s%s", dirname, entry->d_name);
+		if (fname[len - 2] != '.' && fname[len - 1] != 'c') {
+			printf("the file \"%s\" is not a .c file. skipping\n", fname);
+			continue;
+		}
+
 		FILE * file = fopen(fname, "r");
 		if (!file) {
 			printf("failed to open file %s. bruh\n", fname);
