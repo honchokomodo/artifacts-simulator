@@ -59,6 +59,7 @@ void display_character_attributes(la_Arena * arena, Scenario * scenario)
 	CLAY({
 		.layout = {
 			.layoutDirection = CLAY_TOP_TO_BOTTOM,
+			//.childGap = global_gap,
 			.padding = global_padding, 
 		},
 		.border = easy_border,
@@ -82,7 +83,7 @@ void display_character_attributes(la_Arena * arena, Scenario * scenario)
 			CLAY(hcontainer()) {
 				text_large(ch2str(character2str[character.type]));
 				CLAY({.layout.sizing = layoutExpand}) {}
-				text_p(ch2str(la_strfmt(arena, "lv. %d/%d", character.level, character_max_level(character.ascension))));
+				text_p(ch2str(la_strfmt(arena, "lv. %d/%d", character.level, ascension_max_level(character.ascension))));
 			}
 
 			CLAY({.layout.sizing = layoutExpand}) {}
@@ -135,11 +136,62 @@ void display_weapon_attributes(la_Arena * arena, Scenario * scenario)
 {
 	CLAY({
 		.layout = {
-			.layoutDirection = CLAY_TOP_TO_BOTTOM,
+			.layoutDirection = CLAY_LEFT_TO_RIGHT,
+			//.childGap = global_gap,
 			.padding = global_padding, 
 		},
 		.border = easy_border,
 	}) {
+		Weapon weapon = scenario->weapon;
+
+		Texture2D * tex = ic_get_tex(weapon_icon(weapon));
+		CLAY({
+			.layout = {
+				.sizing = {
+					.width = CLAY_SIZING_FIXED(200),
+					.height = CLAY_SIZING_FIXED(200),
+				},
+			},
+			.image.imageData = tex,
+			.aspectRatio = tex->width / (float) tex->height,
+			.border = easy_border,
+		}) {}
+
+		CLAY({
+			.layout = {
+				.sizing.width = CLAY_SIZING_GROW(0),
+				.padding = global_padding,
+				//.childGap = global_gap,
+				.layoutDirection = CLAY_TOP_TO_BOTTOM,
+			},
+			.border = easy_border,
+		}) {
+			int min_spacer = 10;
+
+			CLAY(hcontainer()) {
+				text_large(ch2str(weapon2str[weapon.type]));
+				CLAY({.layout.sizing.width = CLAY_SIZING_GROW(min_spacer)}) {}
+				text_p(ch2str(la_strfmt(arena, "lv. %d/%d", weapon.level, ascension_max_level(weapon.ascension))));
+			}
+
+			CLAY(hcontainer()) {
+				text_p(ch2str("Refinement"));
+				CLAY({.layout.sizing.width = CLAY_SIZING_GROW(min_spacer)}) {}
+				text_p(ch2str(la_strfmt(arena, "%d", weapon.refinement)));
+			}
+
+			CLAY(hcontainer()) {
+				text_p(ch2str("Base ATK"));
+				CLAY({.layout.sizing.width = CLAY_SIZING_GROW(min_spacer)}) {}
+				text_p(ch2str(la_strfmt(arena, "%g", weapon.atk)));
+			}
+
+			CLAY(hcontainer()) {
+				text_p(ch2str(stat2str[weapon.bonus.type]));
+				CLAY({.layout.sizing.width = CLAY_SIZING_GROW(min_spacer)}) {}
+				text_p(ch2str(la_strfmt(arena, "%g%s", weapon.bonus.value, stat2pct[weapon.bonus.type])));
+			}
+		}
 	}
 }
 
@@ -154,7 +206,8 @@ int main(void)
 		| FLAG_WINDOW_RESIZABLE
 	;
 	Clay_Raylib_Initialize(1024, 768, "ui test", WINDOW_CONFIG_FLAGS);
-	SetTargetFPS(30);
+	SetTargetFPS(60);
+	//EnableEventWaiting();
 
 	uint64_t clayRequiredMemory = Clay_MinMemorySize();
 	Clay_Arena clayMemory = {
@@ -205,8 +258,13 @@ int main(void)
 		Vector2 mousepos = GetMousePosition();
 		Clay_SetPointerState(
 			(Clay_Vector2) {mousepos.x, mousepos.y},
-			IsMouseButtonDown(MOUSE_BUTTON_LEFT)
-		);
+			IsMouseButtonDown(MOUSE_BUTTON_LEFT));
+
+		Vector2 scroll = GetMouseWheelMoveV();
+		Clay_UpdateScrollContainers(
+				true,
+				(Clay_Vector2) {scroll.x, scroll.y},
+				GetFrameTime());
 
 		Clay_BeginLayout();
 
@@ -224,6 +282,7 @@ int main(void)
 			},
 		}) {
 			display_character_attributes(&arena, &scenario);
+			display_weapon_attributes(&arena, &scenario);
 		}
 
 		Clay_RenderCommandArray renderCommands = Clay_EndLayout();

@@ -16,4 +16,11 @@ void weapon_passive(WeaponPassiveArgs in)
 	weapon2passive[in.weapon.type](in);
 }
 
+char const * weapon_icon(Weapon in)
+{
+	if (in.ascension >= 2)
+		return weapon2icon_asc[in.type];
+	return weapon2icon[in.type];
+}
+
 #endif

@@ -111,29 +111,4 @@ CharacterStats character_base_stats(CharacterStats in, int quality, int level,
 	return in;
 }
 
-// identical to weapon_check_ascension
-// possibly move this to common.h?
-int character_check_ascension(int level, int ascension)
-{
-	int min = 0;
-	if (level <= 20) min = 0;
-	else if (level <= 40) min = 1;
-	else min = (level - 1) / 10 - 2;
-
-	int max = 0;
-	if (level < 20) max = 0;
-	else if (level < 40) max = 1;
-	else max = level / 10 - 2;
-
-	if (ascension <= min) return min;
-	if (ascension >= max) return max;
-	return ascension;
-}
-
-int character_max_level(int ascension)
-{
-	if (ascension <= 0) return 20;
-	return (ascension + 3) * 10;
-}
-
 #endif

@@ -20,7 +20,7 @@ void calamity_of_eshu_passive_func(WeaponPassiveArgs in)
 // AUTOGEN weapon2generator calamity_of_eshu_generator_func
 Weapon calamity_of_eshu_generator_func(Weapon in)
 {
-	int ascension = weapon_check_ascension(in.level, in.ascension);
+	int ascension = check_ascension(in.level, in.ascension);
 
 	static int const table[] = {
 		// values obtained from wiki

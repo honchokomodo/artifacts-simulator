@@ -47,13 +47,15 @@ float weapon_base_atk(int level, int ascension, int const table[14])
 
 	int tmin = tarr[ascension];
 	int tmax = tarr[ascension + 1];
-	int trange = tmax - tmin;
-	float t = (level - tmin) / (float) trange;
+	float trange = tmax - tmin;
+	float t = (level - tmin) / trange;
 
 	int a = table[2 * ascension];
 	int b = table[2 * ascension + 1];
 
 	float out = a + t * (b - a);
+
+	return out;
 }
 
 float weapon_bonus_factor(int level)
@@ -62,25 +64,6 @@ float weapon_bonus_factor(int level)
 	if (level == 0) return 1;
 	level *= 5;
 	return 0.040383 * level + 0.959588;
-}
-
-// identical to character_check_ascension
-// possibly move this to common.h?
-int weapon_check_ascension(int level, int ascension)
-{
-	int min = 0;
-	if (level <= 20) min = 0;
-	else if (level <= 40) min = 1;
-	else min = (level - 1) / 10 - 2;
-
-	int max = 0;
-	if (level < 20) max = 0;
-	else if (level < 40) max = 1;
-	else max = level / 10 - 2;
-
-	if (ascension <= min) return min;
-	if (ascension >= max) return max;
-	return ascension;
 }
 
 #endif

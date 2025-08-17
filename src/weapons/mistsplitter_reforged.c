@@ -26,7 +26,7 @@ void mistsplitter_reforged_passive_func(WeaponPassiveArgs in)
 // AUTOGEN weapon2generator mistsplitter_reforged_generator_func
 Weapon mistsplitter_reforged_generator_func(Weapon in)
 {
-	int ascension = weapon_check_ascension(in.level, in.ascension);
+	int ascension = check_ascension(in.level, in.ascension);
 
 	static int const table[] = {
 		// values obtained from wiki

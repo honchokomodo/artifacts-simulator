@@ -21,7 +21,7 @@ void skyward_harp_passive_func(WeaponPassiveArgs in)
 // AUTOGEN weapon2generator skyward_harp_generator_func
 Weapon skyward_harp_generator_func(Weapon in)
 {
-	int ascension = weapon_check_ascension(in.level, in.ascension);
+	int ascension = check_ascension(in.level, in.ascension);
 
 	static int const table[] = {
 		// values obtained from wiki

@@ -25,7 +25,7 @@ void amber_talent_func(CharacterTalentArgs in)
 // AUTOGEN character2generator amber_generator_func
 CharacterStats amber_generator_func(CharacterStats in)
 {
-	int ascension = character_check_ascension(in.level, in.ascension);
+	int ascension = check_ascension(in.level, in.ascension);
 
 	// values obtained from wiki
 	// https://genshin-impact.fandom.com/wiki/Character/Level_Scaling

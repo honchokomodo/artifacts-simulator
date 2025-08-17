@@ -25,7 +25,7 @@ void thundering_pulse_passive_func(WeaponPassiveArgs in)
 // AUTOGEN weapon2generator thundering_pulse_generator_func
 Weapon thundering_pulse_generator_func(Weapon in)
 {
-	int ascension = weapon_check_ascension(in.level, in.ascension);
+	int ascension = check_ascension(in.level, in.ascension);
 
 	static int const table[] = {
 		// values obtained from wiki
