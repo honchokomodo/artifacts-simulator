@@ -171,7 +171,7 @@ void generate_artifacts_arrs_h(void)
 	fprintf(file, "};\n\n");
 
 	fprintf(file, "char const * const flowerpath[] = {\n"
-			"\t[SET_NOTHING] = \"flower/path\",\n");
+			"\t[SET_NOTHING] = \"resources/images/artifacts/set_nothing/dereference.png\",\n");
 	for (int i = 0; i < count; i++) {
 		if (type_keys[i] != NULL && flower_paths[i] != NULL)
 			fprintf(file, "\t[%s] = %s,\n", type_keys[i], flower_paths[i]);
@@ -179,7 +179,7 @@ void generate_artifacts_arrs_h(void)
 	fprintf(file, "};\n\n");
 
 	fprintf(file, "char const * const featherpath[] = {\n"
-			"\t[SET_NOTHING] = \"feather/path\",\n");
+			"\t[SET_NOTHING] = \"resources/images/artifacts/set_nothing/arrow.png\",\n");
 	for (int i = 0; i < count; i++) {
 		if (type_keys[i] != NULL && feather_paths[i] != NULL)
 			fprintf(file, "\t[%s] = %s,\n", type_keys[i], feather_paths[i]);
@@ -187,7 +187,7 @@ void generate_artifacts_arrs_h(void)
 	fprintf(file, "};\n\n");
 
 	fprintf(file, "char const * const sandspath[] = {\n"
-			"\t[SET_NOTHING] = \"sands/path\",\n");
+			"\t[SET_NOTHING] = \"resources/images/artifacts/set_nothing/alarm_clock.png\",\n");
 	for (int i = 0; i < count; i++) {
 		if (type_keys[i] != NULL && sands_paths[i] != NULL)
 			fprintf(file, "\t[%s] = %s,\n", type_keys[i], sands_paths[i]);
@@ -195,7 +195,7 @@ void generate_artifacts_arrs_h(void)
 	fprintf(file, "};\n\n");
 
 	fprintf(file, "char const * const gobletpath[] = {\n"
-			"\t[SET_NOTHING] = \"goblet/path\",\n");
+			"\t[SET_NOTHING] = \"resources/images/artifacts/set_nothing/mug.png\",\n");
 	for (int i = 0; i < count; i++) {
 		if (type_keys[i] != NULL && goblet_paths[i] != NULL)
 			fprintf(file, "\t[%s] = %s,\n", type_keys[i], goblet_paths[i]);
@@ -203,7 +203,7 @@ void generate_artifacts_arrs_h(void)
 	fprintf(file, "};\n\n");
 
 	fprintf(file, "char const * const circletpath[] = {\n"
-			"\t[SET_NOTHING] = \"circlet/path\",\n");
+			"\t[SET_NOTHING] = \"resources/images/artifacts/set_nothing/earbuds.png\",\n");
 	for (int i = 0; i < count; i++) {
 		if (type_keys[i] != NULL && circlet_paths[i] != NULL)
 			fprintf(file, "\t[%s] = %s,\n", type_keys[i], circlet_paths[i]);

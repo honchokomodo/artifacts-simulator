@@ -278,4 +278,33 @@ void artifact_set_bonus(SetBonusArgs in)
 	set2bonus[in.set](in);
 }
 
+char const * artifact_get_image(ArtifactSet set, PieceType piece)
+{
+	char const * out = NULL;
+
+	switch (piece) {
+		default:
+		case FLOWER:
+			out = flowerpath[set];
+			break;
+		case FEATHER:
+			out = featherpath[set];
+			break;
+		case SANDS:
+			out = sandspath[set];
+			break;
+		case GOBLET:
+			out = gobletpath[set];
+			break;
+		case CIRCLET:
+			out = circletpath[set];
+			break;
+	}
+
+	if (out == NULL)
+		out = "resources/images/artifacts/set_nothing/dereference.png";
+
+	return out;
+}
+
 #endif
