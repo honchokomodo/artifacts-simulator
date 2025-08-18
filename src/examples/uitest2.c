@@ -22,7 +22,7 @@ int global_gap = 12;
 Clay_Padding global_padding = {16, 16, 16, 16};
 Clay_BorderElementConfig easy_border = {
 	.color = {0xFF, 0xFF, 0xFF, 0xFF},
-	//.width = {1, 1, 1, 1},
+	.width = {1, 1, 1, 1},
 };
 
 Clay_ElementDeclaration hcontainer()
@@ -220,7 +220,7 @@ void display_artifact1(la_Arena * arena, Artifact * artifact)
 			.aspectRatio = tex->width / (float) tex->height,
 		}) {
 			text_large(ch2str(stat2str[artifact->mainstat.type]));
-			text_p(ch2str(la_strfmt(arena, "%s%g", stat2pct[artifact->mainstat.type], artifact->mainstat.value)));
+			text_p(ch2str(la_strfmt(arena, "%g%s", artifact->mainstat.value, stat2pct[artifact->mainstat.type])));
 			CLAY({.layout.sizing.height = CLAY_SIZING_GROW(0)}) {}
 			text_p(ch2str(la_strfmt(arena, "+%d", artifact->level)));
 		}
@@ -246,9 +246,77 @@ void display_artifact1(la_Arena * arena, Artifact * artifact)
 	}
 }
 
+void display_artifact2(la_Arena * arena, Artifact * artifact)
+{
+	CLAY({
+		.layout = {
+			.layoutDirection = CLAY_TOP_TO_BOTTOM,
+			//.childGap = global_gap,
+			.padding = global_padding,
+		},
+		.border = easy_border,
+	}) {
+		Texture2D * tex = ic_get_tex(artifact_get_image(artifact->set, artifact->piece));
+		CLAY({
+			.layout = {
+				.layoutDirection = CLAY_TOP_TO_BOTTOM,
+				.sizing = {
+					.width = CLAY_SIZING_FIXED(128),
+					.height = CLAY_SIZING_FIXED(128),
+				},
+				.padding = global_padding,
+			},
+			.border = easy_border,
+			.image.imageData = tex,
+			.aspectRatio = tex->width / (float) tex->height,
+		}) {
+			text_large(ch2str(stat2str[artifact->mainstat.type]));
+			text_p(ch2str(la_strfmt(arena, "%g%s", artifact->mainstat.value, stat2pct[artifact->mainstat.type])));
+			CLAY({.layout.sizing.height = CLAY_SIZING_GROW(0)}) {}
+			text_p(ch2str(la_strfmt(arena, "+%d", artifact->level)));
+		}
+
+		CLAY({
+			.layout = {
+				.layoutDirection = CLAY_TOP_TO_BOTTOM,
+				.sizing.width = CLAY_SIZING_GROW(0),
+				.padding = global_padding,
+			},
+			.border = easy_border,
+		}) {
+			int min_spacer = 10;
+			for (int i = 0; i < artifact->num_substats; i++) {
+				Affix substat = artifact->substat[i];
+				CLAY(hcontainer()) {
+					text_p(ch2str(stat2abbr[substat.type]));
+					CLAY({.layout.sizing.width = CLAY_SIZING_GROW(min_spacer)}) {}
+					text_p(ch2str(la_strfmt(arena, "%g%s", substat.value, stat2pct[substat.type])));
+				}
+			}
+		}
+	}
+}
+
 void display_artifact_set(la_Arena * arena, Scenario * scenario)
 {
-	void (*displayfunc)(la_Arena *, Artifact *) = display_artifact1;
+	void (*displayfunc)(la_Arena *, Artifact *);
+	displayfunc = display_artifact1;
+
+	CLAY({
+		.layout = {
+			.layoutDirection = CLAY_LEFT_TO_RIGHT,
+			//.childGap = global_gap,
+			.padding = global_padding,
+		},
+		.border = easy_border,
+	}) {
+		displayfunc(arena, &scenario->loadout.flower);
+		displayfunc(arena, &scenario->loadout.feather);
+		displayfunc(arena, &scenario->loadout.sands);
+		displayfunc(arena, &scenario->loadout.goblet);
+		displayfunc(arena, &scenario->loadout.circlet);
+	}
+	displayfunc = display_artifact2;
 
 	CLAY({
 		.layout = {
@@ -440,17 +508,6 @@ int main(void)
 			.substat[2] = {ATK_PERCENT, 5.3},
 			.substat[3] = {HP_FLAT, 478},
 		},
-
-		.buffs_len = 2,
-		.buffs[0] = {
-			.label = "test buff",
-			.buff.ar[ATK_PERCENT] = 15,
-		},
-
-		.buffs[1] = {
-			.label = "test buff 2",
-			.buff.ar[CRIT_RATE] = 15,
-		}
 	};
 	scenario.accumulators = aggregate_stats(scenario);
 
