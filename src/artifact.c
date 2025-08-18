@@ -273,9 +273,9 @@ Artifact artifact_new_strongbox(ArtifactSet set)
 	return artifact_new(rand() % 3 == 0, arti);
 }
 
-void artifact_set_bonus(SetBonusArgs in)
+BuffElement artifact_set_bonus(SetBonusArgs in)
 {
-	set2bonus[in.set](in);
+	return set2bonus[in.set](in);
 }
 
 char const * artifact_get_image(ArtifactSet set, PieceType piece)

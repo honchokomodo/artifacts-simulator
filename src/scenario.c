@@ -80,20 +80,19 @@ StatAccumulators aggregate_stats(Scenario in)
 	sto.atk_base += in.weapon.atk;
 	sto.ar[in.weapon.bonus.type] += in.weapon.bonus.value;
 
-	/*
-	// ======== TODO make buff handling less bad
 	// step 4: handle artifact set bonuses
 	for (int i = 0; i < 5; i++) {
 		SetBonusArgs set_bonus_args = {
 			.set = setcounters[i].set,
 			.num_pieces = setcounters[i].count,
-			.loadout = &in.loadout,
-			.accumulators = &sto,
 		};
 
-		artifact_set_bonus(set_bonus_args);
+		BuffElement bonus = artifact_set_bonus(set_bonus_args);
+		sto = accumulator_combine(sto, bonus.buff);
 	}
 
+	/*
+	// ======== TODO make buff handling less bad
 	// step 5: handle weapon passives
 	WeaponPassiveArgs weapon_passive_args = {
 		.weapon = in.weapon,

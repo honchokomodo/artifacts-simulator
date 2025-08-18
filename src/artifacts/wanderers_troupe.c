@@ -8,14 +8,22 @@
 // AUTOGEN circletpath "resources/images/artifacts/set_nothing/earbuds.png"
 
 // AUTOGEN set2bonus wanderers_troupe_bonus_func
-void wanderers_troupe_bonus_func(SetBonusArgs in)
+BuffElement wanderers_troupe_bonus_func(SetBonusArgs in)
 {
-	if (in.num_pieces < 2) return;
-	in.accumulators->ar[ELEMENTAL_MASTERY] += 80;
+	BuffElement out = {0};
 
+	if (in.num_pieces < 2) return out;
+	out.label = "Wanderer's Troupe 2-Piece Bonus: Increases Elemental"
+		"Mastery by 80.";
+	out.buff.ar[ELEMENTAL_MASTERY] += 80;
+
+	return out;
+
+	/* 4pc bonus is optional so it is handled by set2ui
 	if (in.num_pieces < 4) return;
 	if (in.loadout->bonus2)
 		in.accumulators->all_bonus += 35.0;
+		*/
 }
 // AUTOGEN end
 

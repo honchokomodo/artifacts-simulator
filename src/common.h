@@ -104,13 +104,17 @@ typedef struct stat_accumulators {
 	float atk;
 	float def;
 	float all_bonus; // TO BE ADDED TO ELEMENTAL DAMAGE BONUS
+	float normal_bonus;
+	float charged_bonus; // is this even necessary?
+	float skill_bonus;
+	float burst_bonus;
 	float factor;
 	float ar[STAT_COUNT];
 } StatAccumulators;
 
 typedef struct buff_element {
 	StatAccumulators buff;
-	char * label;
+	char const * label;
 } BuffElement;
 
 StatAccumulators accumulator_combine(StatAccumulators lhs, StatAccumulators rhs)

@@ -14,6 +14,7 @@ typedef struct character_stats {
 		int skill;
 		int burst;
 	} talent;
+	// remove this
 	int normaldata;
 	int skilldata;
 	int burstdata;

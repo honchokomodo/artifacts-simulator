@@ -47,21 +47,17 @@ typedef struct artifact_loadout {
 	Artifact sands;
 	Artifact goblet;
 	Artifact circlet;
-	int bonus1;
-	int bonus2;
 } ArtifactLoadout;
 
 typedef struct set_bonus_args {
 	ArtifactSet set;
 	int num_pieces;
-	ArtifactLoadout * loadout;
-	StatAccumulators * accumulators;
 } SetBonusArgs;
 
-typedef void (*SetBonusFunc)(SetBonusArgs in);
-void noop_set_bonus_func(SetBonusArgs in)
+typedef BuffElement (*SetBonusFunc)(SetBonusArgs in);
+BuffElement noop_set_bonus_func(SetBonusArgs in)
 {
-	// do nothing
+	return (BuffElement) {0}; // return a nothing buff
 }
 
 #endif

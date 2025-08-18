@@ -8,14 +8,18 @@
 // AUTOGEN circletpath "resources/images/artifacts/set_nothing/earbuds.png"
 
 // AUTOGEN set2bonus finale_of_the_deep_galleries_bonus_func
-void finale_of_the_deep_galleries_bonus_func(SetBonusArgs in)
+BuffElement finale_of_the_deep_galleries_bonus_func(SetBonusArgs in)
 {
-	if (in.num_pieces < 2) return;
-	in.accumulators->ar[CRYO_BONUS] += 15.0;
+	BuffElement out = {0};
 
-	// TODO: handle whether the player is using their burst or normal
-	if (in.num_pieces < 4) return;
-	in.accumulators->all_bonus += 60.0;
+	if (in.num_pieces < 2) return out;
+	out.label = "Finale of the Deep Galleries 2-Piece Bonus: Cryo DMG"
+		"Bonus +15\%";
+	out.buff.ar[CRYO_BONUS] += 15.0;
+
+	return out;
+
+	// 4pc bonus is optional, so it is handled by set2ui.
 }
 // AUTOGEN end
 

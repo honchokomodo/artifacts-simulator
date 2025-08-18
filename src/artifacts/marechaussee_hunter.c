@@ -8,13 +8,22 @@
 // AUTOGEN circletpath "resources/images/artifacts/set_nothing/earbuds.png"
 
 // AUTOGEN set2bonus noop_set_bonus_func
-void marechaussee_hunter_bonus_func(SetBonusArgs in)
+BuffElement marechaussee_hunter_bonus_func(SetBonusArgs in)
 {
-	if (in.num_pieces < 2) return;
-	in.accumulators->all_bonus += 15.0;
+	BuffElement out = {0};
 
+	if (in.num_pieces < 2) return out;
+	out.label = "Marechaussee Hunter 2-Piece Bonus: Normal and Charged"
+		"Attack DMG +15\%";
+	out.buff.normal_bonus += 15.0;
+	out.buff.charged_bonus += 15.0;
+
+	return out;
+
+	/* 4pc bonus is optional, so it will be handled by set2ui
 	if (in.num_pieces < 4) return;
 	in.accumulators->ar[CRIT_RATE] += 12.0 * in.loadout->bonus2;
+	*/
 }
 // AUTOGEN end
 
