@@ -44,7 +44,8 @@ CharacterStats skirk_generator_func(CharacterStats in)
 		.talent = in.talent,
 	};
 
-	out = character_base_stats(out, 5, in.level, ascension, base_hp, base_atk, base_def, asc_hp, asc_atk, asc_def);
+	out = character_base_stats(out, 5, in.level, ascension, base_hp,
+			base_atk, base_def, asc_hp, asc_atk, asc_def);
 
 	out.crit_damage += bonuscd[ascension];
 	return out;
@@ -54,6 +55,18 @@ CharacterStats skirk_generator_func(CharacterStats in)
 // AUTOGEN character2ui skirk_ui_func
 void skirk_ui_func(CharacterStats * in)
 {
-	// TODO: implement this
+	static int deaths_crossing_stacks = 0;
+
+	CLAY({
+		.layout = {
+			.layoutDirection = CLAY_TOP_TO_BOTTOM,
+			.sizing = layoutExpand,
+			.padding = 2,
+			.childGap = 2,
+		},
+		.border = {{0xff, 0xff, 0xff, 0xff}, {1, 1, 1, 1}},
+	}) {
+		text_p(ch2str("nothing here yet"));
+	}
 }
 // AUTOGEN end

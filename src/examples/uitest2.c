@@ -7,13 +7,6 @@
 #include "../../build/include/characters_ui.c"
 #include "../../build/include/weapons_ui.c"
 
-enum tab_index {
-	TAB_BENCHMARK,
-	TAB_EQUIPMENT,
-	TAB_BUFFS,
-	TAB_COUNT,
-};
-
 typedef struct ui_data {
 	Scenario * scenario;
 } UI_Data;
@@ -347,7 +340,7 @@ void display_artifact_set(la_Arena * arena, Scenario * scenario)
 	};
 }
 
-void display_buffs(la_Arena * arena, Scenario * scenario)
+void display_active_buffs(la_Arena * arena, Scenario * scenario)
 {
 #define COND_DISPLAY(str, fmt, val) \
 	do { \
@@ -437,6 +430,20 @@ void display_buffs(la_Arena * arena, Scenario * scenario)
 	}
 #undef COND_DISPLAY
 #undef DISPLAY_BUFF
+}
+
+void display_optional_buffs(la_Arena * arena, Scenario * scenario)
+{
+	CLAY({
+		.layout = {
+			.layoutDirection = CLAY_TOP_TO_BOTTOM,
+			.childGap = global_gap,
+			.padding = global_padding,
+		},
+		.border = easy_border,
+	}) {
+		character2ui[scenario->character.type](&scenario->character);
+	}
 }
 
 void HandleClayErrors(Clay_ErrorData errorData)
@@ -583,7 +590,8 @@ int main(void)
 			display_character_attributes(&arena, &scenario);
 			display_weapon_attributes(&arena, &scenario);
 			display_artifact_set(&arena, &scenario);
-			display_buffs(&arena, &scenario);
+			display_active_buffs(&arena, &scenario);
+			display_optional_buffs(&arena, &scenario);
 		}
 
 		Clay_RenderCommandArray renderCommands = Clay_EndLayout();

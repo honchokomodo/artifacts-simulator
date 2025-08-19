@@ -61,6 +61,7 @@ typedef struct character_stats {
 	// geo res
 	float physical_bonus;
 	// physical res
+	BuffElement intrinsic_buff;
 } CharacterStats;
 
 typedef struct character_talent_args {
