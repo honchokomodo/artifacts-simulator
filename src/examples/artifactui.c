@@ -24,16 +24,61 @@ Clay_BorderElementConfig easy_border = {
 	.color = {0xFF, 0xFF, 0xFF, 0xFF},
 	.width = {1, 1, 1, 1},
 };
+Clay_BorderElementConfig icon_border_select = {
+	.color = {0xFF, 0xFF, 0xFF, 0xFF},
+	.width = {1, 1, 1, 2},
+};
 
-void display_artifact_concise(la_Arena * arena, Scenario * scenario)
+void display_icons(la_Arena * arena)
+{	
+	CLAY({
+		.layout = {
+			.layoutDirection = CLAY_LEFT_TO_RIGHT,
+		}
+	}){
+		Texture2D * tex = ic_get_tex("resources/images/artifacts/icons/flower.png");
+		CLAY({
+			.layout = {
+				//.sizing.width = CLAY_SIZING_PERCENT(0.2),
+				.sizing.height = CLAY_SIZING_FIXED(75),
+			},
+			.border = icon_border_select,
+			.image.imageData = tex,
+			.aspectRatio = tex->width / (float) tex->height,
+		}) {}
+	}
+}
+
+void display_artifact_set(la_Arena * arena, Scenario * scenario)
 {
 	CLAY({
 		.layout = {
+			.layoutDirection = CLAY_TOP_TO_BOTTOM,
 			.padding = global_padding,
 		},
 		.border = easy_border,
-	}){
-		text_p(CLAY_STRING("TEST"));
+	}) {
+		display_icons(arena);
+
+		Texture2D * tex = ic_get_tex(artifact_get_image(scenario->loadout.flower.set, scenario->loadout.flower.piece));
+		CLAY({
+			.layout = {
+				.sizing.width = CLAY_SIZING_FIXED(tex->width),
+			},
+			.border = easy_border,
+			.image.imageData = tex,
+			.aspectRatio = tex->width / (float) tex->height,
+		}) {}
+
+		CLAY({
+			.border = easy_border,
+			.layout = {
+				.layoutDirection = CLAY_TOP_TO_BOTTOM,
+				.sizing = layoutExpand,
+			},
+		}) {
+			text_large(ch2str("ahhhhhhhh"));
+		}
 	}
 }
 
@@ -138,7 +183,7 @@ int main(void)
                         .substat[3] = {HP_FLAT, 478},
                 },
         };
-	scenario.accumulators = aggregate_stats(scenario);
+	scenario.accumulators = aggregate_stats(scenario, scenario.active_set_bonuses);
 
 	UI_Data uiData = {
 		.scenario = &scenario,
@@ -177,7 +222,7 @@ int main(void)
 				.childOffset = Clay_GetScrollOffset(),
 			},
 		}) {
-			display_artifact_concise(&arena, &scenario);
+			display_artifact_set(&arena, &scenario);
 		}
 
 		Clay_RenderCommandArray renderCommands = Clay_EndLayout();
