@@ -334,17 +334,6 @@ void display_artifact_set(la_Arena * arena, Scenario * scenario)
 		displayfunc(arena, &scenario->loadout.goblet);
 		displayfunc(arena, &scenario->loadout.circlet);
 	}
-	
-	// attempting to display one artifact at a time????
-	CLAY({
-		.layout = {
-			.layoutDirection = CLAY_LEFT_TO_RIGHT,
-			.padding = global_padding,
-		},
-		.border = easy_border,
-	}) {
-		text_p(CLAY_STRING("TESTTTT"));
-	};
 }
 
 void display_buffs(la_Arena * arena, Scenario * scenario)
