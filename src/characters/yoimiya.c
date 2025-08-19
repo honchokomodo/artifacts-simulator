@@ -50,7 +50,7 @@ CharacterStats yoimiya_generator_func(CharacterStats in)
 // AUTOGEN end
 
 // AUTOGEN character2ui yoimiya_ui_func
-void yoimiya_ui_func(CharacterStats * in)
+void yoimiya_ui_func(size_t * len, BuffElement * arr, CharacterStats character)
 {
 	// TODO: implement this
 }

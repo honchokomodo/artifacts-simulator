@@ -53,7 +53,7 @@ CharacterStats skirk_generator_func(CharacterStats in)
 // AUTOGEN end
 
 // AUTOGEN character2ui skirk_ui_func
-void skirk_ui_func(CharacterStats * in)
+void skirk_ui_func(size_t * len, BuffElement * arr, CharacterStats character)
 {
 	static int deaths_crossing_stacks = 0;
 

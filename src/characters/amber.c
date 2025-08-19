@@ -61,8 +61,9 @@ CharacterStats amber_generator_func(CharacterStats in)
 // AUTOGEN end
 
 // AUTOGEN character2ui amber_ui_func
-void amber_ui_func(CharacterStats * in)
+void amber_ui_func(size_t * len, BuffElement * arr, CharacterStats character)
 {
+	/*
 	char * a4title = "Ascension 4: Every Arrow Finds Its Target";
 	char * a4desc = "Aimed Shot hits on weak spots increase ATK by 15% for"
 		"10s.";
@@ -84,6 +85,7 @@ void amber_ui_func(CharacterStats * in)
 	if (in->constellation >= 6) {
 		toggle_switch_text(&in->c6data, c6title, c6desc, NULL);
 	}
+	*/
 }
 // AUTOGEN end
 

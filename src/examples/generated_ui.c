@@ -64,7 +64,7 @@ int main(void)
 				.childGap = 12,
 			}
 		}) {
-			character2ui[amber.type](&amber);
+			character2ui[amber.type](NULL, NULL, amber);
 		}
 
 		Clay_RenderCommandArray renderCommands = Clay_EndLayout();
