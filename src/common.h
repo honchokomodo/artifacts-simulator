@@ -103,9 +103,9 @@ typedef struct stat_accumulators {
 	float hp;
 	float atk;
 	float def;
-	float all_bonus; // TO BE ADDED TO ELEMENTAL DAMAGE BONUS
+	float all_bonus; // general bonus damage, all other ones stack ontop of this
 	float normal_bonus;
-	float charged_bonus; // is this even necessary?
+	float charged_bonus;
 	float skill_bonus;
 	float burst_bonus;
 	float factor;
@@ -123,6 +123,10 @@ StatAccumulators accumulator_combine(StatAccumulators lhs, StatAccumulators rhs)
 	lhs.atk_base += rhs.atk_base;
 	lhs.def_base += rhs.def_base;
 	lhs.all_bonus += rhs.all_bonus;
+	lhs.normal_bonus += rhs.normal_bonus;
+	lhs.charged_bonus += rhs.charged_bonus;
+	lhs.skill_bonus += rhs.skill_bonus;
+	lhs.burst_bonus += rhs.burst_bonus;
 
 	lhs.factor *= rhs.factor;
 

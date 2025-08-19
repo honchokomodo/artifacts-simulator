@@ -13,7 +13,7 @@ BuffElement marechaussee_hunter_bonus_func(SetBonusArgs in)
 	BuffElement out = {0};
 
 	if (in.num_pieces < 2) return out;
-	out.label = "Marechaussee Hunter 2-Piece Bonus: Normal and Charged"
+	out.label = "Marechaussee Hunter 2-Piece Bonus: Normal and Charged "
 		"Attack DMG +15\%";
 	out.buff.normal_bonus += 15.0;
 	out.buff.charged_bonus += 15.0;

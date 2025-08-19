@@ -300,6 +300,7 @@ void display_artifact2(la_Arena * arena, Artifact * artifact)
 void display_artifact_set(la_Arena * arena, Scenario * scenario)
 {
 	void (*displayfunc)(la_Arena *, Artifact *);
+	/*
 	displayfunc = display_artifact1;
 
 	CLAY({
@@ -316,6 +317,7 @@ void display_artifact_set(la_Arena * arena, Scenario * scenario)
 		displayfunc(arena, &scenario->loadout.goblet);
 		displayfunc(arena, &scenario->loadout.circlet);
 	}
+	*/
 	displayfunc = display_artifact2;
 
 	CLAY({
@@ -336,30 +338,6 @@ void display_artifact_set(la_Arena * arena, Scenario * scenario)
 
 void display_buffs(la_Arena * arena, Scenario * scenario)
 {
-	CLAY({
-		.layout = {
-			.layoutDirection = CLAY_TOP_TO_BOTTOM,
-			//.childGap = global_gap,
-			.padding = global_padding,
-		},
-		.border = easy_border,
-	}) {
-		if (scenario->buffs_len <= 0) {
-			text_p(ch2str("There are no buffs to show."));
-			continue;
-		}
-
-		int min_spacer = 10;
-		for (int i = 0; i < scenario->buffs_len; i++)
-		{
-			CLAY({
-				.layout = {
-					.layoutDirection = CLAY_TOP_TO_BOTTOM,
-					.childGap = global_gap,
-					.padding = global_padding,
-				},
-				.border = easy_border,
-			}) {
 #define COND_DISPLAY(str, fmt, val) \
 	do { \
 		if (val != 0) { \
@@ -371,40 +349,83 @@ void display_buffs(la_Arena * arena, Scenario * scenario)
 		} \
 	} while (0)
 
-				BuffElement buff = scenario->buffs[i];
+#define DISPLAY_BUFF(b) \
+	do { \
+		CLAY({ \
+			.layout = { \
+				.layoutDirection = CLAY_TOP_TO_BOTTOM, \
+				.childGap = global_gap, \
+				.padding = global_padding, \
+			}, \
+			.border = easy_border, \
+		}) { \
+			text_p(ch2str(b.label)); \
+\
+			COND_DISPLAY("Base HP", "%g", b.buff.hp_base); \
+			COND_DISPLAY("Base ATK", "%g", b.buff.atk_base); \
+			COND_DISPLAY("Base DEF", "%g", b.buff.def_base); \
+			COND_DISPLAY("HP", "%g", b.buff.hp); \
+			COND_DISPLAY("ATK", "%g", b.buff.atk); \
+			COND_DISPLAY("DEF", "%g", b.buff.def); \
+			COND_DISPLAY("HP%", "%g%%", b.buff.ar[HP_PERCENT]); \
+			COND_DISPLAY("ATK%", "%g%%", b.buff.ar[ATK_PERCENT]); \
+			COND_DISPLAY("DEF%", "%g%%", b.buff.ar[DEF_PERCENT]); \
+			COND_DISPLAY("Bonus DMG", "%g%%", b.buff.all_bonus); \
+			COND_DISPLAY("Normal Attack Bonus DMG", "%g%%", b.buff.normal_bonus); \
+			COND_DISPLAY("Charged Attack Bonus DMG", "%g%%", b.buff.charged_bonus); \
+			COND_DISPLAY("Skill Bonus DMG", "%g%%", b.buff.skill_bonus); \
+			COND_DISPLAY("Burst Bonus DMG", "%g%%", b.buff.burst_bonus); \
+			COND_DISPLAY("Multiplicative Factor", "%g", b.buff.factor); \
+			COND_DISPLAY("Elemental Mastery", "%g", b.buff.ar[ELEMENTAL_MASTERY]); \
+			COND_DISPLAY("Crit RATE", "%g%%", b.buff.ar[CRIT_RATE]); \
+			COND_DISPLAY("Crit DMG", "%g%%", b.buff.ar[CRIT_DAMAGE]); \
+			COND_DISPLAY("Healing Bonus", "%g%%", b.buff.ar[HEALING_BONUS]); \
+			COND_DISPLAY("Energy Recharge", "%g%%", b.buff.ar[ENERGY_RECHARGE]); \
+			COND_DISPLAY("Pyro DMG Bonus", "%g%%", b.buff.ar[PYRO_BONUS]); \
+			COND_DISPLAY("Hydro DMG Bonus", "%g%%", b.buff.ar[HYDRO_BONUS]); \
+			COND_DISPLAY("Dendro DMG Bonus", "%g%%", b.buff.ar[DENDRO_BONUS]); \
+			COND_DISPLAY("Electro DMG Bonus", "%g%%", b.buff.ar[ELECTRO_BONUS]); \
+			COND_DISPLAY("Anemo DMG Bonus", "%g%%", b.buff.ar[ANEMO_BONUS]); \
+			COND_DISPLAY("Cryo DMG Bonus", "%g%%", b.buff.ar[CRYO_BONUS]); \
+			COND_DISPLAY("Geo DMG Bonus", "%g%%", b.buff.ar[GEO_BONUS]); \
+			COND_DISPLAY("Physical DMG Bonus", "%g%%", b.buff.ar[PHYSICAL_BONUS]); \
+		} \
+	} while (0)
 
-				text_p(ch2str(buff.label));
+	int min_spacer = 10;
 
-				COND_DISPLAY("Base HP", "%g", buff.buff.hp_base);
-				COND_DISPLAY("Base ATK", "%g", buff.buff.atk_base);
-				COND_DISPLAY("Base DEF", "%g", buff.buff.def_base);
-				COND_DISPLAY("HP", "%g", buff.buff.hp);
-				COND_DISPLAY("ATK", "%g", buff.buff.atk);
-				COND_DISPLAY("DEF", "%g", buff.buff.def);
-				COND_DISPLAY("HP%", "%g%%", buff.buff.ar[HP_PERCENT]);
-				COND_DISPLAY("ATK%", "%g%%", buff.buff.ar[ATK_PERCENT]);
-				COND_DISPLAY("DEF%", "%g%%", buff.buff.ar[DEF_PERCENT]);
-				COND_DISPLAY("Bonus DMG", "%g%%", buff.buff.all_bonus);
-				COND_DISPLAY("Multiplicative Factor", "%g", buff.buff.factor);
-				COND_DISPLAY("Elemental Mastery", "%g", buff.buff.ar[ELEMENTAL_MASTERY]);
-				COND_DISPLAY("Crit RATE", "%g%%", buff.buff.ar[CRIT_RATE]);
-				COND_DISPLAY("Crit DMG", "%g%%", buff.buff.ar[CRIT_DAMAGE]);
-				COND_DISPLAY("Healing Bonus", "%g%%", buff.buff.ar[HEALING_BONUS]);
-				COND_DISPLAY("Energy Recharge", "%g%%", buff.buff.ar[ENERGY_RECHARGE]);
-				COND_DISPLAY("Pyro DMG Bonus", "%g%%", buff.buff.ar[PYRO_BONUS]);
-				COND_DISPLAY("Hydro DMG Bonus", "%g%%", buff.buff.ar[HYDRO_BONUS]);
-				COND_DISPLAY("Dendro DMG Bonus", "%g%%", buff.buff.ar[DENDRO_BONUS]);
-				COND_DISPLAY("Electro DMG Bonus", "%g%%", buff.buff.ar[ELECTRO_BONUS]);
-				COND_DISPLAY("Anemo DMG Bonus", "%g%%", buff.buff.ar[ANEMO_BONUS]);
-				COND_DISPLAY("Cryo DMG Bonus", "%g%%", buff.buff.ar[CRYO_BONUS]);
-				COND_DISPLAY("Geo DMG Bonus", "%g%%", buff.buff.ar[GEO_BONUS]);
-				COND_DISPLAY("Physical DMG Bonus", "%g%%", buff.buff.ar[PHYSICAL_BONUS]);
+	CLAY({
+		.layout = {
+			.layoutDirection = CLAY_TOP_TO_BOTTOM,
+			//.childGap = global_gap,
+			.padding = global_padding,
+		},
+		.border = easy_border,
+	}) {
+		int buffs_shown = 0;
 
-#undef COND_DISPLAY
+		for (int i = 0; i < 3; i++) {
+			BuffElement artifact_buff = scenario->active_set_bonuses[i];
+
+			if (artifact_buff.label != NULL) {
+				DISPLAY_BUFF(artifact_buff);
+				buffs_shown += 1;
 			}
 		}
-	}
 
+		if (scenario->buffs_len + buffs_shown <= 0) {
+			text_p(ch2str("There are no buffs to show."));
+			continue;
+		}
+
+		for (int i = 0; i < scenario->buffs_len; i++)
+		{
+			BuffElement b = scenario->buffs[i];
+			DISPLAY_BUFF(b);
+		}
+	}
+#undef COND_DISPLAY
+#undef DISPLAY_BUFF
 }
 
 void HandleClayErrors(Clay_ErrorData errorData)
@@ -509,7 +530,7 @@ int main(void)
 			.substat[3] = {HP_FLAT, 478},
 		},
 	};
-	scenario.accumulators = aggregate_stats(scenario);
+	scenario.accumulators = aggregate_stats(scenario, scenario.active_set_bonuses);
 
 	UI_Data uiData = {
 		.scenario = &scenario,

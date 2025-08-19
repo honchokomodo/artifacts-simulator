@@ -11,12 +11,13 @@ typedef struct scenario {
 	ArtifactLoadout loadout;
 
 	StatAccumulators accumulators;
+	BuffElement active_set_bonuses[3];
 
 	size_t buffs_len;
 	BuffElement buffs[MAX_BUFFS];
 } Scenario;
 
-StatAccumulators aggregate_stats(Scenario in)
+StatAccumulators aggregate_stats(Scenario in, BuffElement * set_bonus_log)
 {
 	// step 1: prepare accumulators
 	StatAccumulators sto = {
@@ -57,6 +58,7 @@ StatAccumulators aggregate_stats(Scenario in)
 			Affix substat = arti.substat[line]; \
 			sto.ar[substat.type] += substat.value; \
 		} \
+		if (arti.set == SET_NOTHING) continue; \
 		for (int i = 0; i < 5; i++) { \
 			if (setcounters[i].set == SET_NOTHING) { \
 				setcounters[i].set = arti.set; \
@@ -81,6 +83,13 @@ StatAccumulators aggregate_stats(Scenario in)
 	sto.ar[in.weapon.bonus.type] += in.weapon.bonus.value;
 
 	// step 4: handle artifact set bonuses
+	if (set_bonus_log != NULL) {
+		set_bonus_log[0] = (BuffElement) {0};
+		set_bonus_log[1] = (BuffElement) {0};
+		set_bonus_log[2] = (BuffElement) {0};
+	}
+
+	int n_active = 0;
 	for (int i = 0; i < 5; i++) {
 		SetBonusArgs set_bonus_args = {
 			.set = setcounters[i].set,
@@ -88,7 +97,12 @@ StatAccumulators aggregate_stats(Scenario in)
 		};
 
 		BuffElement bonus = artifact_set_bonus(set_bonus_args);
+		if (bonus.label == NULL) continue;
+
 		sto = accumulator_combine(sto, bonus.buff);
+
+		if (set_bonus_log == NULL) continue;
+		set_bonus_log[n_active++] = bonus;
 	}
 
 	/*
@@ -130,7 +144,7 @@ StatAccumulators aggregate_stats(Scenario in)
 // should match what is seen idle in-game as closely as possible.
 void scenario_print(Scenario in)
 {
-	StatAccumulators sto = aggregate_stats(in);
+	StatAccumulators sto = aggregate_stats(in, in.active_set_bonuses);
 
 #define COND_PRINT(fmt, key) \
 	do { \

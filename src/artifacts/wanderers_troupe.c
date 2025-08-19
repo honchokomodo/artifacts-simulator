@@ -13,7 +13,7 @@ BuffElement wanderers_troupe_bonus_func(SetBonusArgs in)
 	BuffElement out = {0};
 
 	if (in.num_pieces < 2) return out;
-	out.label = "Wanderer's Troupe 2-Piece Bonus: Increases Elemental"
+	out.label = "Wanderer's Troupe 2-Piece Bonus: Increases Elemental "
 		"Mastery by 80.";
 	out.buff.ar[ELEMENTAL_MASTERY] += 80;
 

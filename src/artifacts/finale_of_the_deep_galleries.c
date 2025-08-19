@@ -13,7 +13,7 @@ BuffElement finale_of_the_deep_galleries_bonus_func(SetBonusArgs in)
 	BuffElement out = {0};
 
 	if (in.num_pieces < 2) return out;
-	out.label = "Finale of the Deep Galleries 2-Piece Bonus: Cryo DMG"
+	out.label = "Finale of the Deep Galleries 2-Piece Bonus: Cryo DMG "
 		"Bonus +15\%";
 	out.buff.ar[CRYO_BONUS] += 15.0;
 
