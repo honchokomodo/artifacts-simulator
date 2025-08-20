@@ -91,7 +91,7 @@ int main(void)
 					.height = CLAY_SIZING_FIXED(100),
 				},
 			}) {
-				assign_button(&state, 1, &sentinel);
+				easy_button(&state, 1, &sentinel);
 			}
 
 			toggle_switch(&state, &sentinel);

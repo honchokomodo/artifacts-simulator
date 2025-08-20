@@ -225,7 +225,7 @@ void dropdown_button(Clay_ElementId id, Clay_ElementId menu_id, Clay_String butt
 
 }
 
-void assign_button(int * dest, int value, bool * sentinel)
+void easy_button(int * dest, int value, bool * sentinel)
 {
 	/* 
 	 * turns any element into a clickable button.
@@ -233,11 +233,7 @@ void assign_button(int * dest, int value, bool * sentinel)
 	 * see toggle_switch for an example.
 	 */
 
-	bool hovered = Clay_Hovered();
-	Clay_Context * context = Clay_GetCurrentContext();
-	bool left_click = context->pointerInfo.state == CLAY_POINTER_DATA_RELEASED_THIS_FRAME;
-
-	if (hovered && left_click) {
+	if (Clay_Hovered() && left_up()) {
 		*dest = value;
 
 		if (sentinel) {
@@ -281,7 +277,7 @@ void toggle_switch(int * dest, bool * sentinel)
 		},
 	}) {
 		// turn the switch into a clickable button
-		assign_button(dest, !*dest, sentinel);
+		easy_button(dest, !*dest, sentinel);
 
 		CLAY({
 			// TODO: un-hardcode these
@@ -384,7 +380,7 @@ void k_opt_list(int * dest, int k, K_Opt * opts, bool * drop, bool * sentinel)
 					.childAlignment.y = CLAY_ALIGN_Y_CENTER,
 				},
 			}) {
-				assign_button(dest, opts[i].value, sentinel);
+				easy_button(dest, opts[i].value, sentinel);
 				if (*sentinel) {
 					*drop = false;
 				}
@@ -407,6 +403,11 @@ void k_opt_list(int * dest, int k, K_Opt * opts, bool * drop, bool * sentinel)
 			}
 		}
 	}
+}
+
+void float_slider(float * dest, float min, float max, bool * sentinel)
+{
+
 }
 
 #endif

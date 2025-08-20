@@ -225,8 +225,14 @@ void generate_characters_ui_c(void)
 			"#define CHARACTERS_UI_H\n\n");
 	fprintf(ui_file, "#include \"../../src/character.c\"\n"
 			"#include \"../../src/components.c\"\n\n");
-	fprintf(ui_file, "typedef void (*CharacterUIFunc)(size_t * len, BuffElement * arr, CharacterStats character);\n\n");
-	fprintf(ui_file, "void noop_character_ui_func(size_t * len, BuffElement * arr, CharacterStats character) {\n"
+	fprintf(ui_file, "typedef struct character_ui_args {\n"
+			"\tCharacterStats character;\n"
+			"\tsize_t * len;\n"
+			"\tBuffElement * arr;\n"
+			"\tbool * sentinel;\n"
+			"} CharacterUIArgs;\n\n");
+	fprintf(ui_file, "typedef void (*CharacterUIFunc)(CharacterUIArgs args);\n");
+	fprintf(ui_file, "void noop_character_ui_func(CharacterUIArgs args) {\n"
 			"\t// this function does nothing\n"
 			"}\n\n");
 	for (int i = 0; i < count; i++)

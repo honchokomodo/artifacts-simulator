@@ -61,7 +61,7 @@ CharacterStats amber_generator_func(CharacterStats in)
 // AUTOGEN end
 
 // AUTOGEN character2ui amber_ui_func
-void amber_ui_func(size_t * len, BuffElement * arr, CharacterStats character)
+void amber_ui_func(CharacterUIArgs args)
 {
 	/*
 	char * a4title = "Ascension 4: Every Arrow Finds Its Target";

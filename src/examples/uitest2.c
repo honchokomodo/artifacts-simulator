@@ -431,7 +431,16 @@ void display_optional_buffs(la_Arena * arena, Scenario * scenario)
 		},
 		.border = easy_border,
 	}) {
-		character2ui[scenario->character.type](&scenario->buffs_len, scenario->buffs, scenario->character);
+		bool something = 0;
+
+		CharacterUIArgs args = {
+			.character = scenario->character,
+			.len = &scenario->buffs_len,
+			.arr = scenario->buffs,
+			.sentinel = &something, // not used in this case
+		};
+
+		character2ui[scenario->character.type](args);
 	}
 }
 

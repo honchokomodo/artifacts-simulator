@@ -42,7 +42,8 @@ CharacterStats yoimiya_generator_func(CharacterStats in)
 		.talent = in.talent,
 	};
 
-	out = character_base_stats(out, 5, in.level, ascension, base_hp, base_atk, base_def, asc_hp, asc_atk, asc_def);
+	out = character_base_stats(out, 5, in.level, ascension, base_hp,
+			base_atk, base_def, asc_hp, asc_atk, asc_def);
 
 	out.crit_rate += bonuscr[ascension];
 	return out;
@@ -50,7 +51,7 @@ CharacterStats yoimiya_generator_func(CharacterStats in)
 // AUTOGEN end
 
 // AUTOGEN character2ui yoimiya_ui_func
-void yoimiya_ui_func(size_t * len, BuffElement * arr, CharacterStats character)
+void yoimiya_ui_func(CharacterUIArgs args)
 {
 	// TODO: implement this
 }
