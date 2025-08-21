@@ -407,6 +407,32 @@ void k_opt_list(int * dest, int k, K_Opt * opts, bool * drop, bool * sentinel)
 
 void float_slider(float * dest, float min, float max, bool * sentinel)
 {
+	float trange = max - min;
+	float t = (*dest - min) / trange;
+
+	// [a] step 1: draw it
+	// [ ] step 2: make it interactable
+	// [ ] step 3: make it pretty
+	// [ ] step 4: make it good
+
+	CLAY({
+		.layout = {
+			.layoutDirection = CLAY_LEFT_TO_RIGHT,
+			.sizing = {
+				.width = CLAY_SIZING_GROW(0),
+				.height = CLAY_SIZING_FIXED(10),
+			},
+		},
+	}) {
+		CLAY({
+			.backgroundColor = {0xff, 0xff, 0xff, 0xff},
+			.layout.sizing = {
+				.width = CLAY_SIZING_PERCENT(t),
+				.height = CLAY_SIZING_GROW(0),
+			},
+		}) {
+		}
+	}
 
 }
 

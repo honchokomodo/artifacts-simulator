@@ -41,6 +41,7 @@ int main(void)
 	};
 
 	int state = 0;
+	float floatstate = 2;
 	bool dropdowndown = 0;
 	bool sentinel = 0;
 
@@ -72,7 +73,8 @@ int main(void)
 			Clay_Color green = {0x00, 0xff, 0x00, 0xff};
 			Clay_Color red = {0xff, 0x00, 0x00, 0xff};
 
-			text_large(ch2str(la_strfmt(&arena, "%d", state)));
+			text_large(ch2str(la_strfmt(&arena, "state: %d", state)));
+			text_large(ch2str(la_strfmt(&arena, "floatstate: %g", floatstate)));
 
 			Texture2D * icon = ic_get_tex("resources/images/characters/character_nothing_icon.png");
 			CLAY({
@@ -132,6 +134,8 @@ int main(void)
 				}
 				k_opt_list(&state, k, opts, &dropdowndown, &sentinel);
 			}
+
+			float_slider(&floatstate, 0, 4, &sentinel);
 
 			CLAY({.layout.sizing = layoutExpand}) {}
 

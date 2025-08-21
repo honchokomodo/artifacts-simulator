@@ -6,9 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <assert.h>
-#include <stdio.h>
-
 // initialize the cache, num_entries being the size of the hash table.
 void ic_initcache(int num_entries, int max_images);
 
@@ -26,7 +23,7 @@ void ic_unload_all(void); // unload all textures in the cache.
  * // than enough. the size does not have to be larger than the expected amount
  * // of images though
  * // 1024 is chosen for max images because we definitely won't get that far.
- * ic_initcache(599);
+ * ic_initcache(599, 1024);
  *
  * // load some textures.
  * Texture2D * tex = ic_get_tex("cute-yoimiya.png");
