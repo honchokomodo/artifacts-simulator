@@ -411,11 +411,14 @@ void float_slider(float * dest, float min, float max, bool * sentinel)
 	float t = (*dest - min) / trange;
 
 	// [a] step 1: draw it
-	// [ ] step 2: make it interactable
+	// [a] step 2: make it interactable
 	// [ ] step 3: make it pretty
 	// [ ] step 4: make it good
 
+	Clay_ElementId id = CLAY_ID_LOCAL("float_slider");
+
 	CLAY({
+		.id = id,
 		.layout = {
 			.layoutDirection = CLAY_LEFT_TO_RIGHT,
 			.sizing = {
@@ -424,14 +427,22 @@ void float_slider(float * dest, float min, float max, bool * sentinel)
 			},
 		},
 	}) {
+		Clay_BoundingBox bb = Clay_GetElementData(id).boundingBox;
+		Clay_Vector2 mousepos = Clay_GetCurrentContext()->pointerInfo.position;
+		float tmouse = (mousepos.x - bb.x) / bb.width;
+
+		if (Clay_Hovered() && left_hold()) {
+			*dest = tmouse * trange + min;
+			*sentinel = true;
+		}
+
 		CLAY({
 			.backgroundColor = {0xff, 0xff, 0xff, 0xff},
 			.layout.sizing = {
 				.width = CLAY_SIZING_PERCENT(t),
 				.height = CLAY_SIZING_GROW(0),
 			},
-		}) {
-		}
+		}) {}
 	}
 
 }
