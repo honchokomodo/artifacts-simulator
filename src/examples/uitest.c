@@ -42,6 +42,7 @@ int main(void)
 
 	int state = 0;
 	float floatstate = 2;
+	float floatstate2 = 2;
 	bool dropdowndown = 0;
 	bool sentinel = 0;
 
@@ -135,7 +136,8 @@ int main(void)
 				k_opt_list(&state, k, opts, &dropdowndown, &sentinel);
 			}
 
-			float_slider(&floatstate, 0, 4, &sentinel);
+			float_slider(CLAY_ID("slider 1"), &floatstate, 0, 4, &sentinel);
+			float_slider(CLAY_ID("slider 2"), &floatstate2, 0, 4, &sentinel);
 
 			CLAY({.layout.sizing = layoutExpand}) {}
 
