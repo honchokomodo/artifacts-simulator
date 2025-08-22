@@ -42,6 +42,8 @@ Interface_Data uiData_Initialize() {
 // like boldface, italic, etc?
 const int FONT_ID_HONCHOKOMONO = 0;
 
+uint32_t active_element = 0;
+
 Clay_Color COLOR_TEXT = { 0xff, 0xff, 0xff, 0xff };
 Clay_Color COLOR_BG = {63, 63, 87, 255};
 Clay_Color COLOR_BG_ALT = {46, 46, 78, 255}; //primary
@@ -412,10 +414,14 @@ void float_slider(float * dest, float min, float max, bool * sentinel)
 
 	// [a] step 1: draw it
 	// [a] step 2: make it interactable
+	// [a] step 2a: make it not suck to use
 	// [ ] step 3: make it pretty
 	// [ ] step 4: make it good
 
 	Clay_ElementId id = CLAY_ID_LOCAL("float_slider");
+
+	bool hover = 0;
+	bool active = 0;
 
 	CLAY({
 		.id = id,
@@ -426,23 +432,50 @@ void float_slider(float * dest, float min, float max, bool * sentinel)
 				.height = CLAY_SIZING_FIXED(10),
 			},
 		},
+		.cornerRadius = CLAY_CORNER_RADIUS(5),
+		.border = {{0xff, 0xff, 0xff, 0xff}, {1, 1, 1, 1}},
 	}) {
-		Clay_BoundingBox bb = Clay_GetElementData(id).boundingBox;
-		Clay_Vector2 mousepos = Clay_GetCurrentContext()->pointerInfo.position;
-		float tmouse = (mousepos.x - bb.x) / bb.width;
-
-		if (Clay_Hovered() && left_hold()) {
-			*dest = tmouse * trange + min;
-			*sentinel = true;
-		}
-
 		CLAY({
 			.backgroundColor = {0xff, 0xff, 0xff, 0xff},
 			.layout.sizing = {
 				.width = CLAY_SIZING_PERCENT(t),
 				.height = CLAY_SIZING_GROW(0),
 			},
-		}) {}
+			.cornerRadius = CLAY_CORNER_RADIUS(5),
+		}) {
+			CLAY({
+				.backgroundColor = {0xff, 0xff, 0xff, 0xff},
+				.layout.sizing = {
+					.width = CLAY_SIZING_FIXED(20),
+					.height = CLAY_SIZING_FIXED(20),
+				},
+				.floating = {
+					.attachTo = CLAY_ATTACH_TO_PARENT,
+					.attachPoints = {
+						.parent = CLAY_ATTACH_POINT_RIGHT_CENTER,
+						.element = CLAY_ATTACH_POINT_CENTER_CENTER,
+					},
+				},
+				.cornerRadius = CLAY_CORNER_RADIUS(10),
+			}) {
+				if (Clay_Hovered()) hover = true;
+			}
+		}
+
+		if (Clay_Hovered()) hover = true;
+		if (hover && active_element == 0 && left_down()) active_element = id.id;
+		if (active_element != id.id) continue;
+		if (left_up()) active_element = 0;
+
+		Clay_BoundingBox bb = Clay_GetElementData(id).boundingBox;
+		Clay_Vector2 mousepos = Clay_GetCurrentContext()->pointerInfo.position;
+		float tmouse = (mousepos.x - bb.x) / bb.width;
+		float value = tmouse * trange + min;
+		if (value > max) value = max;
+		if (value < min) value = min;
+
+		*dest = value;
+		if (sentinel) *sentinel = true;
 	}
 
 }
