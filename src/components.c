@@ -415,11 +415,11 @@ void float_slider(Clay_ElementId slider_container_id, float * dest, float min, f
 	// [a] step 1: draw it
 	// [a] step 2: make it interactable
 	// [a] step 2a: make it not suck to use
-	// [ ] step 3: make it pretty
+	// [a] step 3: make it pretty
+	// [ ] step 3a: make it change if its hovered or active
 	// [ ] step 4: make it good
 
-	bool hover = 0;
-	bool active = 0;
+	bool hover = false;
 
 	// ==== begin element declarations
 	Clay_ElementDeclaration slider_container_decl = {
@@ -486,6 +486,93 @@ void float_slider(Clay_ElementId slider_container_id, float * dest, float min, f
 		Clay_Vector2 mousepos = Clay_GetCurrentContext()->pointerInfo.position;
 		float tmouse = (mousepos.x - bb.x) / bb.width;
 		float value = tmouse * trange + min;
+		if (value > max) value = max;
+		if (value < min) value = min;
+
+		*dest = value;
+		if (sentinel) *sentinel = true;
+	}
+}
+
+void int_slider(Clay_ElementId id, int * dest, int min, int max, bool * sentinel)
+{
+	int trange = max - min;
+	float t = (*dest - min) / (float) trange;
+
+	// [a] step 1: draw it
+	// [a] step 2: make it interactable
+	// [a] step 2a: make it not suck to use
+	// [ ] step 3: make it pretty
+	// [ ] step 3a: make it change if its hovered or active
+	// [ ] step 4: make it good
+
+	bool hover = false;
+
+	// ==== begin element declarations
+	Clay_ElementDeclaration slider_container_decl = {
+		.id = id,
+		.layout = {
+			.layoutDirection = CLAY_LEFT_TO_RIGHT,
+			.sizing = {
+				.width = CLAY_SIZING_GROW(0),
+				.height = CLAY_SIZING_FIXED(10),
+			},
+		},
+		.cornerRadius = CLAY_CORNER_RADIUS(5),
+		.border = {{0xff, 0xff, 0xff, 0xff}, {1, 1, 1, 1}},
+	};
+
+	Clay_ElementDeclaration slider_filled_decl = {
+		.backgroundColor = {0xff, 0xff, 0xff, 0xff},
+		.layout.sizing = {
+			.width = CLAY_SIZING_PERCENT(t),
+			.height = CLAY_SIZING_GROW(0),
+		},
+		.cornerRadius = CLAY_CORNER_RADIUS(5),
+	};
+
+	Clay_ElementDeclaration slider_knob_decl = {
+		.backgroundColor = {0xff, 0xff, 0xff, 0xff},
+		.layout.sizing = {
+			.width = CLAY_SIZING_FIXED(20),
+			.height = CLAY_SIZING_FIXED(20),
+		},
+		.floating = {
+			.attachTo = CLAY_ATTACH_TO_PARENT,
+			.attachPoints = {
+				.parent = CLAY_ATTACH_POINT_RIGHT_CENTER,
+				.element = CLAY_ATTACH_POINT_CENTER_CENTER,
+			},
+			//.zIndex = 0,
+		},
+		.cornerRadius = CLAY_CORNER_RADIUS(10),
+	};
+	// ==== end element declarations
+
+	CLAY(slider_container_decl) {
+		if (Clay_Hovered()) hover = true;
+		CLAY(slider_filled_decl) {
+			CLAY(slider_knob_decl) {
+				if (Clay_Hovered()) hover = true;
+			}
+		}
+
+		if (hover && active_element == 0 && left_down()) {
+			active_element = id.id;
+		}
+
+		if (active_element != id.id) {
+			continue;
+		}
+
+		if (left_up()) {
+			active_element = 0;
+		}
+
+		Clay_BoundingBox bb = Clay_GetElementData(id).boundingBox;
+		Clay_Vector2 mousepos = Clay_GetCurrentContext()->pointerInfo.position;
+		float tmouse = (mousepos.x - bb.x) / bb.width;
+		int value = (int) roundf(tmouse * trange + min);
 		if (value > max) value = max;
 		if (value < min) value = min;
 
