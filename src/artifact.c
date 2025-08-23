@@ -87,7 +87,7 @@ Artifact _artifact_addsubstat(Artifact in)
 	int accumulator = 0;
 	float rv = (rand() % 4) * 0.1 + 0.7;
 
-	for (int i = 0; i <= CRIT_DAMAGE; i++) {
+	for (int i = 0; i <= STAT_COUNT; i++) {
 		accumulator += substat_weights[i];
 		if (roll <= accumulator) {
 			in.substat[in.num_substats].type = i;

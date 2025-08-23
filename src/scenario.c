@@ -10,12 +10,26 @@ typedef struct scenario {
 	Weapon weapon;
 	ArtifactLoadout loadout;
 
+	/*
 	StatAccumulators accumulators;
 	BuffElement active_set_bonuses[3];
 
 	size_t buffs_len;
 	BuffElement buffs[MAX_BUFFS];
+	*/
 } Scenario;
+
+typedef struct conditions {
+} Conditions;
+
+StatAccumulators precompute_base_stats(Conditions conditions, CharacterStats character, Weapon weapon)
+{
+	// TODO: do something here
+}
+
+
+
+#if (0) // uhg
 
 StatAccumulators aggregate_stats(Scenario in, BuffElement * set_bonus_log)
 {
@@ -189,5 +203,7 @@ void scenario_print(Scenario in)
 	artifact_print(in.loadout.goblet);
 	printf("\n");
 }
+
+#endif
 
 #endif

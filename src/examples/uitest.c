@@ -138,6 +138,7 @@ int main(void)
 
 			float_slider(CLAY_ID("slider 1"), &floatstate, 0, 4, &sentinel);
 			float_slider(CLAY_ID("slider 2"), &floatstate2, 0, 4, &sentinel);
+			int_slider(CLAY_ID("slider 3"), &state, 0, 4, &sentinel);
 
 			CLAY({.layout.sizing = layoutExpand}) {}
 

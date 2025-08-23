@@ -6,13 +6,15 @@
 typedef enum stattype {
 	STAT_NOTHING,
 	HP_FLAT,
-	HP_PERCENT,
 	ATK_FLAT,
-	ATK_PERCENT,
 	DEF_FLAT,
+	HP_PERCENT,
+	ATK_PERCENT,
 	DEF_PERCENT,
 	ELEMENTAL_MASTERY,
 	ENERGY_RECHARGE,
+	CRIT_RATE,
+	CRIT_DAMAGE,
 	PYRO_BONUS,
 	ELECTRO_BONUS,
 	CRYO_BONUS,
@@ -22,21 +24,28 @@ typedef enum stattype {
 	GEO_BONUS,
 	PHYSICAL_BONUS,
 	HEALING_BONUS,
-	CRIT_RATE,
-	CRIT_DAMAGE,
+	HP_BASE,
+	ATK_BASE,
+	DEF_BASE,
+	HP_REAL,
+	ATK_REAL,
+	DEF_REAL,
+	BONUS_DAMAGE,
 	STAT_COUNT,
 } StatType;
 
 char const * const stat2str[STAT_COUNT] = {
 	[STAT_NOTHING] = "nil stat",
 	[HP_FLAT] = "HP",
-	[HP_PERCENT] = "HP%",
 	[ATK_FLAT] = "ATK",
-	[ATK_PERCENT] = "ATK%",
 	[DEF_FLAT] = "DEF",
+	[HP_PERCENT] = "HP%",
+	[ATK_PERCENT] = "ATK%",
 	[DEF_PERCENT] = "DEF%",
 	[ELEMENTAL_MASTERY] = "Elemental Mastery",
 	[ENERGY_RECHARGE] = "Energy Recharge",
+	[CRIT_RATE] = "CRIT Rate",
+	[CRIT_DAMAGE] = "CRIT DMG",
 	[PYRO_BONUS] = "Pyro DMG Bonus",
 	[ELECTRO_BONUS] = "Electro DMG Bonus",
 	[CRYO_BONUS] = "Cryo DMG Bonus",
@@ -46,20 +55,27 @@ char const * const stat2str[STAT_COUNT] = {
 	[GEO_BONUS] = "Geo DMG Bonus",
 	[PHYSICAL_BONUS] = "Physical DMG Bonus",
 	[HEALING_BONUS] = "Healing Bonus",
-	[CRIT_RATE] = "CRIT Rate",
-	[CRIT_DAMAGE] = "CRIT DMG",
+	[HP_BASE] = "Base HP",
+	[ATK_BASE] = "Base ATK",
+	[DEF_BASE] = "Base DEF",
+	[HP_REAL] = "HP",
+	[ATK_REAL] = "ATK",
+	[DEF_REAL] = "DEF",
+	[BONUS_DAMAGE] = "DMG Bonus",
 };
 
-char const * const stat2abbr[] = {
+char const * const stat2abbr[STAT_COUNT] = {
 	[STAT_NOTHING] = "nil",
 	[HP_FLAT] = "HP",
-	[HP_PERCENT] = "HP%",
 	[ATK_FLAT] = "ATK",
-	[ATK_PERCENT] = "ATK%",
 	[DEF_FLAT] = "DEF",
+	[HP_PERCENT] = "HP%",
+	[ATK_PERCENT] = "ATK%",
 	[DEF_PERCENT] = "DEF%",
 	[ELEMENTAL_MASTERY] = "EM",
 	[ENERGY_RECHARGE] = "ER",
+	[CRIT_RATE] = "CR",
+	[CRIT_DAMAGE] = "CD",
 	[PYRO_BONUS] = "Pyr.",
 	[ELECTRO_BONUS] = "Ele.",
 	[CRYO_BONUS] = "Cry.",
@@ -69,20 +85,27 @@ char const * const stat2abbr[] = {
 	[GEO_BONUS] = "Geo.",
 	[PHYSICAL_BONUS] = "Phy.",
 	[HEALING_BONUS] = "Hea.",
-	[CRIT_RATE] = "CR",
-	[CRIT_DAMAGE] = "CD",
+	[HP_BASE] = "bHP",
+	[ATK_BASE] = "bATK",
+	[DEF_BASE] = "bDEF",
+	[HP_REAL] = "HP", // identical to HP_FLAT. change?
+	[ATK_REAL] = "ATK", // identical to ATK_FLAT. change?
+	[DEF_REAL] = "DEF", // identical to DEF_FLAT. change?
+	[BONUS_DAMAGE]= "Bon.", // this one just sucks
 };
 
-char const * const stat2pct[] = {
+char const * const stat2pct[STAT_COUNT] = {
 	[STAT_NOTHING] = "",
 	[HP_FLAT] = "",
-	[HP_PERCENT] = "%",
 	[ATK_FLAT] = "",
-	[ATK_PERCENT] = "%",
 	[DEF_FLAT] = "",
+	[HP_PERCENT] = "%",
+	[ATK_PERCENT] = "%",
 	[DEF_PERCENT] = "%",
 	[ELEMENTAL_MASTERY] = "",
 	[ENERGY_RECHARGE] = "%",
+	[CRIT_RATE] = "%",
+	[CRIT_DAMAGE] = "%",
 	[PYRO_BONUS] = "%",
 	[ELECTRO_BONUS] = "%",
 	[CRYO_BONUS] = "%",
@@ -92,24 +115,18 @@ char const * const stat2pct[] = {
 	[GEO_BONUS] = "%",
 	[PHYSICAL_BONUS] = "%",
 	[HEALING_BONUS] = "%",
-	[CRIT_RATE] = "%",
-	[CRIT_DAMAGE] = "%",
+	[HP_BASE] = "",
+	[ATK_BASE] = "",
+	[DEF_BASE] = "",
+	[HP_REAL] = "",
+	[ATK_REAL] = "",
+	[DEF_REAL] = "",
+	[BONUS_DAMAGE]= "%",
 };
  
 typedef struct stat_accumulators {
-	float hp_base;
-	float atk_base;
-	float def_base;
-	float hp;
-	float atk;
-	float def;
-	float all_bonus; // general bonus damage, all other ones stack ontop of this
-	float normal_bonus;
-	float charged_bonus;
-	float skill_bonus;
-	float burst_bonus;
-	float factor;
 	float ar[STAT_COUNT];
+	float factor;
 } StatAccumulators;
 
 typedef struct buff_element {
@@ -119,20 +136,11 @@ typedef struct buff_element {
 
 StatAccumulators accumulator_combine(StatAccumulators lhs, StatAccumulators rhs)
 {
-	lhs.hp_base += rhs.hp_base;
-	lhs.atk_base += rhs.atk_base;
-	lhs.def_base += rhs.def_base;
-	lhs.all_bonus += rhs.all_bonus;
-	lhs.normal_bonus += rhs.normal_bonus;
-	lhs.charged_bonus += rhs.charged_bonus;
-	lhs.skill_bonus += rhs.skill_bonus;
-	lhs.burst_bonus += rhs.burst_bonus;
-
-	lhs.factor *= rhs.factor;
-
-	for (int stat = 0; stat < STAT_COUNT; stat++) {
+	for (int stat = 1; stat < STAT_COUNT; stat++) {
 		lhs.ar[stat] += rhs.ar[stat];
 	}
+
+	lhs.factor *= rhs.factor;
 
 	return lhs;
 }

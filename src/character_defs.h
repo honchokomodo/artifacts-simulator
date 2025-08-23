@@ -14,73 +14,30 @@ typedef struct character_stats {
 		int skill;
 		int burst;
 	} talent;
-	// remove this
-	int normaldata;
-	int skilldata;
-	int burstdata;
-	int a1data;
-	int a4data;
-	int utildata;
-	int c1data;
-	int c2data;
-	int c3data;
-	int c4data;
-	int c5data;
-	int c6data;
-
-	float hp;
-	float hp_percent;
-	float atk;
-	float atk_percent;
-	float def;
-	float def_percent;
-	float elemental_mastery;
-	// max stamina
-	
-	float crit_rate;
-	float crit_damage;
-	float healing_bonus;
-	// incoming healing bonus
-	float energy_recharge;
-	// cd reduction
-	// shield strength
-	
-	float pyro_bonus;
-	// pyro res
-	float hydro_bonus;
-	// hydro res
-	float dendro_bonus;
-	// dendro res
-	float electro_bonus;
-	// electro res
-	float anemo_bonus;
-	// anemo res
-	float cryo_bonus;
-	// cryo res
-	float geo_bonus;
-	// geo res
-	float physical_bonus;
-	// physical res
-	BuffElement intrinsic_buff;
+	StatAccumulators stats;
 } CharacterStats;
 
+// TODO: figure this out
 typedef struct character_talent_args {
 	CharacterStats character;
 	StatAccumulators * accumulators;
 } CharacterTalentArgs;
 
+// TODO: figure this out
 typedef void (*CharacterTalentFunc)(CharacterTalentArgs in);
 void noop_talent_func(CharacterTalentArgs in)
 {
 	// this function is supposed to do nothing
 }
 
+// TODO: fix this
 typedef CharacterStats (*CharacterGeneratorFunc)(CharacterStats in);
 CharacterStats noop_character_generator_func(CharacterStats in)
 {
 	return in; // do nothing
 }
 
+// TODO: check if this works
 CharacterStats character_base_stats(CharacterStats in, int quality, int level,
 		int ascension, float base_hp, float base_atk, float base_def,
 		float asc_hp, float asc_atk, float asc_def)
@@ -103,12 +60,12 @@ CharacterStats character_base_stats(CharacterStats in, int quality, int level,
 
 	float ascmul = asctbl[ascension];
 
-	in.hp = base_hp * lvlmul + asc_hp * ascmul;
-	in.atk = base_atk * lvlmul + asc_atk * ascmul;
-	in.def = base_def * lvlmul + asc_def * ascmul;
-	in.crit_rate = 5.0;
-	in.crit_damage = 50.0;
-	in.energy_recharge = 100.0;
+	in.stats[HP] = base_hp * lvlmul + asc_hp * ascmul;
+	in.stats[ATK] = base_atk * lvlmul + asc_atk * ascmul;
+	in.stats[DEF] = base_def * lvlmul + asc_def * ascmul;
+	in.stats[CRIT_RATE] = 5.0;
+	in.stats[CRIT_DAMAGE] = 50.0;
+	in.stats[ENERGY_RECHARGE] = 100.0;
 
 	return in;
 }
