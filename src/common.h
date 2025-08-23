@@ -27,10 +27,12 @@ typedef enum stattype {
 	HP_BASE,
 	ATK_BASE,
 	DEF_BASE,
-	HP_REAL,
-	ATK_REAL,
-	DEF_REAL,
+	HP_AGGREGATE,
+	ATK_AGGREGATE,
+	DEF_AGGREGATE,
 	BONUS_DAMAGE,
+	DAMAGE_MULTIPLIER,
+	DAMAGE_ADDITIVE,
 	STAT_COUNT,
 } StatType;
 
@@ -58,10 +60,12 @@ char const * const stat2str[STAT_COUNT] = {
 	[HP_BASE] = "Base HP",
 	[ATK_BASE] = "Base ATK",
 	[DEF_BASE] = "Base DEF",
-	[HP_REAL] = "HP",
-	[ATK_REAL] = "ATK",
-	[DEF_REAL] = "DEF",
+	[HP_AGGREGATE] = "HP",
+	[ATK_AGGREGATE] = "ATK",
+	[DEF_AGGREGATE] = "DEF",
 	[BONUS_DAMAGE] = "DMG Bonus",
+	[DAMAGE_MULTIPLIER] = "Base DMG Multipiler",
+	[DAMAGE_ADDITIVE] = "Additive Base DMG",
 };
 
 char const * const stat2abbr[STAT_COUNT] = {
@@ -88,10 +92,12 @@ char const * const stat2abbr[STAT_COUNT] = {
 	[HP_BASE] = "bHP",
 	[ATK_BASE] = "bATK",
 	[DEF_BASE] = "bDEF",
-	[HP_REAL] = "HP", // identical to HP_FLAT. change?
-	[ATK_REAL] = "ATK", // identical to ATK_FLAT. change?
-	[DEF_REAL] = "DEF", // identical to DEF_FLAT. change?
+	[HP_AGGREGATE] = "HP", // identical to HP_FLAT. change?
+	[ATK_AGGREGATE] = "ATK", // identical to ATK_FLAT. change?
+	[DEF_AGGREGATE] = "DEF", // identical to DEF_FLAT. change?
 	[BONUS_DAMAGE]= "Bon.", // this one just sucks
+	[DAMAGE_MULTIPLIER] = "mul.",
+	[DAMAGE_ADDITIVE] = "add.",
 };
 
 char const * const stat2pct[STAT_COUNT] = {
@@ -118,15 +124,16 @@ char const * const stat2pct[STAT_COUNT] = {
 	[HP_BASE] = "",
 	[ATK_BASE] = "",
 	[DEF_BASE] = "",
-	[HP_REAL] = "",
-	[ATK_REAL] = "",
-	[DEF_REAL] = "",
+	[HP_AGGREGATE] = "",
+	[ATK_AGGREGATE] = "",
+	[DEF_AGGREGATE] = "",
 	[BONUS_DAMAGE]= "%",
+	[DAMAGE_MULTIPLIER] = "%",
+	[DAMAGE_ADDITIVE] = "",
 };
  
 typedef struct stat_accumulators {
 	float ar[STAT_COUNT];
-	float factor;
 } StatAccumulators;
 
 typedef struct buff_element {
@@ -139,8 +146,6 @@ StatAccumulators accumulator_combine(StatAccumulators lhs, StatAccumulators rhs)
 	for (int stat = 1; stat < STAT_COUNT; stat++) {
 		lhs.ar[stat] += rhs.ar[stat];
 	}
-
-	lhs.factor *= rhs.factor;
 
 	return lhs;
 }
