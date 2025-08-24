@@ -45,7 +45,7 @@ CharacterStats yoimiya_generator_func(CharacterStats in)
 	out = character_base_stats(out, 5, in.level, ascension, base_hp,
 			base_atk, base_def, asc_hp, asc_atk, asc_def);
 
-	out.crit_rate += bonuscr[ascension];
+	out.stats.ar[CRIT_RATE] += bonuscr[ascension];
 	return out;
 }
 // AUTOGEN end

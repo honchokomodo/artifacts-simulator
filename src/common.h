@@ -1,7 +1,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#define MAX_BUFFS 20
+#include <stdio.h>
 
 typedef enum stattype {
 	STAT_NOTHING,
@@ -141,6 +141,22 @@ typedef struct buff_element {
 	char const * label;
 } BuffElement;
 
+void accumulator_print(StatAccumulators in)
+{
+#define ACCUMULATOR_PRINT_COND_PRINT(key) \
+	do { \
+		if (in.ar[key] != 0) { \
+			printf("%s - %g\n", stat2str[key], in.ar[key]); \
+		} \
+	} while (0)
+
+	for (int i = 0; i < STAT_COUNT; i++) {
+		ACCUMULATOR_PRINT_COND_PRINT(i);
+	}
+
+#undef ACCUMULATOR_PRINT_COND_PRINT
+}
+
 StatAccumulators accumulator_combine(StatAccumulators lhs, StatAccumulators rhs)
 {
 	for (int stat = 1; stat < STAT_COUNT; stat++) {
@@ -148,24 +164,6 @@ StatAccumulators accumulator_combine(StatAccumulators lhs, StatAccumulators rhs)
 	}
 
 	return lhs;
-}
-
-void buff_append(BuffElement * list, size_t * len, BuffElement buff)
-{
-	if (*len >= MAX_BUFFS) return;
-	list[*len++] = buff;
-}
-
-void buff_remove(BuffElement * list, size_t * len, int idx)
-{
-	if (*len <= 0) return;
-	if (idx < 0 || idx >= *len) return;
-
-	// just shift everything over
-	for (int i = idx + 1; i < *len; i++)
-		list[i - 1] = list[i];
-
-	*len -= 1;
 }
 
 int check_ascension(int level, int ascension)

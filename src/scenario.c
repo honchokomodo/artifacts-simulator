@@ -105,27 +105,42 @@ Consequence: Damage may be buffed per reaction. Artifact sets may affect enemy
 
 */
 
-typedef struct scenario {
-	CharacterStats character;
-	Weapon weapon;
-	ArtifactLoadout loadout;
-
-	/*
-	StatAccumulators accumulators;
-	BuffElement active_set_bonuses[3];
-
-	size_t buffs_len;
-	BuffElement buffs[MAX_BUFFS];
-	*/
-} Scenario;
-
-typedef struct conditions {
-} Conditions;
-
-StatAccumulators precompute_base_stats(Conditions conditions, CharacterStats character, Weapon weapon)
+StatAccumulators acc_character_stats(StatAccumulators in,
+		CharacterStats character)
 {
-	// TODO: do something here
+	return accumulator_combine(in, character.stats);
 }
 
+StatAccumulators acc_weapon_stats(StatAccumulators in, Weapon weapon)
+{
+	in.ar[ATK_BASE] += weapon.atk;
+	in.ar[weapon.bonus.type] += weapon.bonus.value;
+
+	return in;
+}
+
+StatAccumulators acc_artifact_stats(StatAccumulators in, Artifact artifact)
+{
+	in.ar[artifact.mainstat.type] += artifact.mainstat.value;
+	for (int i = 0; i < artifact.num_substats; i++) {
+		Affix substat = artifact.substat[i];
+		in.ar[substat.type] += substat.value;
+	}
+
+	return in;
+}
+
+StatAccumulators compute_base_stats(StatAccumulators in)
+{
+	float hp_fac = 1 + in.ar[HP_PERCENT] / 100;
+	float atk_fac = 1 + in.ar[ATK_PERCENT] / 100;
+	float def_fac = 1 + in.ar[DEF_PERCENT] / 100;
+
+	in.ar[HP_AGGREGATE] = in.ar[HP_BASE] * hp_fac + in.ar[HP_FLAT];
+	in.ar[ATK_AGGREGATE] = in.ar[ATK_BASE] * atk_fac + in.ar[ATK_FLAT];
+	in.ar[DEF_AGGREGATE] = in.ar[DEF_BASE] * def_fac + in.ar[DEF_FLAT];
+
+	return in;
+}
 
 #endif

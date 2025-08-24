@@ -60,12 +60,12 @@ CharacterStats character_base_stats(CharacterStats in, int quality, int level,
 
 	float ascmul = asctbl[ascension];
 
-	in.stats[HP] = base_hp * lvlmul + asc_hp * ascmul;
-	in.stats[ATK] = base_atk * lvlmul + asc_atk * ascmul;
-	in.stats[DEF] = base_def * lvlmul + asc_def * ascmul;
-	in.stats[CRIT_RATE] = 5.0;
-	in.stats[CRIT_DAMAGE] = 50.0;
-	in.stats[ENERGY_RECHARGE] = 100.0;
+	in.stats.ar[HP_BASE] = base_hp * lvlmul + asc_hp * ascmul;
+	in.stats.ar[ATK_BASE] = base_atk * lvlmul + asc_atk * ascmul;
+	in.stats.ar[DEF_BASE] = base_def * lvlmul + asc_def * ascmul;
+	in.stats.ar[CRIT_RATE] = 5.0;
+	in.stats.ar[CRIT_DAMAGE] = 50.0;
+	in.stats.ar[ENERGY_RECHARGE] = 100.0;
 
 	return in;
 }

@@ -10,19 +10,7 @@
 // AUTOGEN set2bonus noop_set_bonus_func
 BuffElement marechaussee_hunter_bonus_func(SetBonusArgs in)
 {
-	BuffElement out = {0};
-
-	if (in.num_pieces < 2) return out;
-	out.label = "Marechaussee Hunter 2-Piece Bonus";
-	out.buff.normal_bonus += 15.0;
-	out.buff.charged_bonus += 15.0;
-
-	return out;
-
-	/* 4pc bonus is optional, so it will be handled by set2ui
-	if (in.num_pieces < 4) return;
-	in.accumulators->ar[CRIT_RATE] += 12.0 * in.loadout->bonus2;
-	*/
+	// does nothing for now
 }
 // AUTOGEN end
 
