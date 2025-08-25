@@ -1,7 +1,10 @@
 CCFLAGS += -Llib -Iinclude -lm -lraylib
+UNAME_S := $(shell uname -s)
 
 ifeq ($(OS), Windows_NT)
 	CCFLAGS += -lgdi32 -lwinmm
+else ifeq ($(UNAME_S),Darwin)
+	CCFLAGS += -framework Cocoa -framework IOKit -framework OpenGL -framework CoreVideo -framework CoreAudio
 endif
 
 run: build/main
