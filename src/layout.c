@@ -2,7 +2,7 @@
 #include "components.c"
 #include "scenario.c"
 #include "artifact_ui.c"
-#include "../build/include/characters_ui.c"
+#include "character_ui.c"
 #include "../build/include/weapons_ui.c"
 
 Clay_RenderCommandArray create_layout(Interface_Data *data) {

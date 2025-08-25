@@ -1,18 +1,41 @@
-// AUTOGEN CharacterType SKIRK
-// AUTOGEN character2str Skirk
-// TODO: get actual pics
-// AUTOGEN character2icon "resources/images/characters/character_nothing_icon.png"
-// AUTOGEN character2portrait "resources/images/characters/character_nothing_portrait.png"
-
 // AUTOGEN character2talent skirk_talent_func
+// AUTOGEN end
+
+// AUTOGEN character2generator skirk_generator_func
+// AUTOGEN end
+
+// AUTOGEN character2ui skirk_ui_func
+// AUTOGEN end
+#ifdef TEMPLATE_CharacterType
+	SKIRK,
+#endif
+
+#ifdef TEMPLATE_character2str
+	[SKIRK] = "Skirk",
+#endif
+
+// TODO: get actual pics
+#ifdef TEMPLATE_character2icon
+	[SKIRK] = "resources/images/characters/character_nothing_icon.png",
+#endif
+
+#ifdef TEMPLATE_character2portrait
+	[SKIRK] = "resources/images/characters/character_nothing_portrait.png",
+#endif
+
+#ifdef TEMPLATE_character2talent_impl
 void skirk_talent_func(CharacterTalentArgs in)
 {
 	// do nothing for now
 	// TODO: fill this out
 }
-// AUTOGEN end
+#endif
 
-// AUTOGEN character2generator skirk_generator_func
+#ifdef TEMPLATE_character2talent_arr
+	[SKIRK] = skirk_talent_func,
+#endif
+
+#ifdef TEMPLATE_character2generator_impl
 CharacterStats skirk_generator_func(CharacterStats in)
 {
 	int ascension = check_ascension(in.level, in.ascension);
@@ -50,9 +73,13 @@ CharacterStats skirk_generator_func(CharacterStats in)
 	out.crit_damage += bonuscd[ascension];
 	return out;
 }
-// AUTOGEN end
+#endif
 
-// AUTOGEN character2ui skirk_ui_func
+#ifdef TEMPLATE_character2generator_arr
+	[SKIRK] = skirk_generator_func,
+#endif
+
+#ifdef TEMPLATE_character2ui_impl
 void skirk_ui_func(CharacterUIArgs args)
 {
 	static int deaths_crossing_stacks = 0;
@@ -69,4 +96,8 @@ void skirk_ui_func(CharacterUIArgs args)
 		text_p(ch2str("nothing here yet"));
 	}
 }
-// AUTOGEN end
+#endif
+
+#ifdef TEMPLATE_character2ui_arr
+	[SKIRK] = skirk_ui_func,
+#endif

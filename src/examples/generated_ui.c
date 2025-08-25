@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../../build/include/characters_ui.c"
+#include "../character_ui.c"
 
 void HandleClayErrors(Clay_ErrorData errorData)
 {

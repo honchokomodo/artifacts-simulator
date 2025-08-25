@@ -1,11 +1,21 @@
-// AUTOGEN CharacterType AMBER
-// AUTOGEN character2str Amber
-// TODO: get actual pics
-// AUTOGEN character2icon "resources/images/characters/character_nothing_icon.png"
-// AUTOGEN character2portrait "resources/images/characters/character_nothing_portrait.png"
-// woah! a comment that isn't processed by the codegen!
+#ifdef TEMPLATE_CharacterType
+	AMBER,
+#endif
 
-// AUTOGEN character2talent amber_talent_func
+#ifdef TEMPLATE_character2str
+	[AMBER] = "Amber",
+#endif
+
+// TODO: get actual pics
+#ifdef TEMPLATE_character2icon
+	[AMBER] = "resources/images/characters/character_nothing_icon.png",
+#endif
+
+#ifdef TEMPLATE_character2portrait
+	[AMBER] = "resources/images/characters/character_nothing_portrait.png",
+#endif
+
+#ifdef TEMPLATE_character2talent_impl
 void amber_talent_func(CharacterTalentArgs in)
 {
 	if (in.character.a4data) {
@@ -20,9 +30,13 @@ void amber_talent_func(CharacterTalentArgs in)
 		in.accumulators->ar[ATK_PERCENT] += 15.0;
 	}
 }
-// AUTOGEN end
+#endif
 
-// AUTOGEN character2generator amber_generator_func
+#ifdef TEMPLATE_character2talent_arr
+	[AMBER] = amber_talent_func,
+#endif
+
+#ifdef TEMPLATE_character2generator_impl
 CharacterStats amber_generator_func(CharacterStats in)
 {
 	int ascension = check_ascension(in.level, in.ascension);
@@ -58,9 +72,13 @@ CharacterStats amber_generator_func(CharacterStats in)
 	return character_base_stats(out, 4, in.level, ascension, base_hp,
 			base_atk, base_def, asc_hp, asc_atk, asc_def);
 }
-// AUTOGEN end
+#endif
 
-// AUTOGEN character2ui amber_ui_func
+#ifdef TEMPLATE_character2generator_arr
+	[AMBER] = amber_generator_func,
+#endif
+
+#ifdef TEMPLATE_character2ui_impl
 void amber_ui_func(CharacterUIArgs args)
 {
 	/*
@@ -87,6 +105,8 @@ void amber_ui_func(CharacterUIArgs args)
 	}
 	*/
 }
-// AUTOGEN end
+#endif
 
-// trailing?
+#ifdef TEMPLATE_character2ui_arr
+	[AMBER] = amber_ui_func,
+#endif

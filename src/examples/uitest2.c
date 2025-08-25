@@ -4,7 +4,7 @@
 #include "../components.c"
 #include "../scenario.c"
 #include "../artifact_ui.c"
-#include "../../build/include/characters_ui.c"
+#include "../character_ui.c"
 #include "../../build/include/weapons_ui.c"
 
 typedef struct ui_data {
