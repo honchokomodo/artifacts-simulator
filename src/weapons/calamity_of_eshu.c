@@ -1,9 +1,20 @@
-// AUTOGEN WeaponType CALAMITY_OF_ESHU
-// AUTOGEN weapon2str Calamity of Eshu
-// AUTOGEN weapon2icon "resources/images/weapons/weapon_nothing_icon.png"
-// AUTOGEN weapon2icon_asc "resources/images/weapons/weapon_nothing_asc_icon.png"
+#ifdef TEMPLATE_WeaponType
+	CALAMITY_OF_ESHU,
+#endif
 
-// AUTOGEN weapon2passive calamity_of_eshu_passive_func
+#ifdef TEMPLATE_weapon2str
+	[CALAMITY_OF_ESHU] = "Calamity of Eshu",
+#endif
+
+#ifdef TEMPLATE_weapon2icon
+	[CALAMITY_OF_ESHU] = "resources/images/weapons/weapon_nothing_icon.png",
+#endif
+
+#ifdef TEMPLATE_weapon2icon_asc
+	[CALAMITY_OF_ESHU] = "resources/images/weapons/weapon_nothing_asc_icon.png",
+#endif
+
+#ifdef TEMPLATE_weapon2passive_impl
 void calamity_of_eshu_passive_func(WeaponPassiveArgs in)
 {
 	/* from wiki:
@@ -15,9 +26,13 @@ void calamity_of_eshu_passive_func(WeaponPassiveArgs in)
 	// do nothing for now
 	// TODO: implement this
 }
-// AUTOGEN end
+#endif
 
-// AUTOGEN weapon2generator calamity_of_eshu_generator_func
+#ifdef TEMPLATE_weapon2passive_arr
+	[CALAMITY_OF_ESHU] = calamity_of_eshu_passive_func,
+#endif
+
+#ifdef TEMPLATE_weapon2generator_impl
 Weapon calamity_of_eshu_generator_func(Weapon in)
 {
 	int ascension = check_ascension(in.level, in.ascension);
@@ -58,13 +73,20 @@ Weapon calamity_of_eshu_generator_func(Weapon in)
 
 	return out;
 }
-// AUTOGEN end
+#endif
 
-// AUTOGEN weapon2ui calamity_of_eshu_ui_func
+#ifdef TEMPLATE_weapon2generator_arr
+	[CALAMITY_OF_ESHU] = calamity_of_eshu_generator_func,
+#endif
+
+#ifdef TEMPLATE_weapon2ui_impl
 void calamity_of_eshu_ui_func(Weapon * in)
 {
 	// do nothing for now
 	// TODO: implement this
 }
-// AUTOGEN end
+#endif
 
+#ifdef TEMPLATE_weapon2ui_arr
+	[CALAMITY_OF_ESHU] = calamity_of_eshu_ui_func,
+#endif

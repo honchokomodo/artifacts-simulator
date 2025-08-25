@@ -4,6 +4,31 @@
 // AUTOGEN weapon2icon_asc "resources/images/weapons/weapon_nothing_asc_icon.png"
 
 // AUTOGEN weapon2passive mistsplitter_reforged_passive_func
+// AUTOGEN end
+
+// AUTOGEN weapon2generator mistsplitter_reforged_generator_func
+// AUTOGEN end
+
+// AUTOGEN weapon2ui mistsplitter_reforged_ui_func
+// AUTOGEN end
+
+#ifdef TEMPLATE_WeaponType
+	MISTSPLITTER_REFORGED,
+#endif
+
+#ifdef TEMPLATE_weapon2str
+	[MISTSPLITTER_REFORGED] = "Mistsplitter Reforged",
+#endif
+
+#ifdef TEMPLATE_weapon2icon
+	[MISTSPLITTER_REFORGED] = "resources/images/weapons/weapon_nothing_icon.png",
+#endif
+
+#ifdef TEMPLATE_weapon2icon_asc
+	[MISTSPLITTER_REFORGED] = "resources/images/weapons/weapon_nothing_asc_icon.png",
+#endif
+
+#ifdef TEMPLATE_weapon2passive_impl
 void mistsplitter_reforged_passive_func(WeaponPassiveArgs in)
 {
 	/* from wiki:
@@ -21,9 +46,13 @@ void mistsplitter_reforged_passive_func(WeaponPassiveArgs in)
 	// do nothing for now
 	// TODO: implement this
 }
-// AUTOGEN end
+#endif
 
-// AUTOGEN weapon2generator mistsplitter_reforged_generator_func
+#ifdef TEMPLATE_weapon2passive_arr
+	[MISTSPLITTER_REFORGED] = mistsplitter_reforged_passive_func,
+#endif
+
+#ifdef TEMPLATE_weapon2generator_impl
 Weapon mistsplitter_reforged_generator_func(Weapon in)
 {
 	int ascension = check_ascension(in.level, in.ascension);
@@ -64,13 +93,20 @@ Weapon mistsplitter_reforged_generator_func(Weapon in)
 
 	return out;
 }
-// AUTOGEN end
+#endif
 
-// AUTOGEN weapon2ui mistsplitter_reforged_ui_func
+#ifdef TEMPLATE_weapon2generator_arr
+	[MISTSPLITTER_REFORGED] = mistsplitter_reforged_generator_func,
+#endif
+
+#ifdef TEMPLATE_weapon2ui_impl
 void mistsplitter_reforged_ui_func(Weapon * in)
 {
 	// do nothing for now
 	// TODO: implement this
 }
-// AUTOGEN end
+#endif
 
+#ifdef TEMPLATE_weapon2ui_arr
+	[MISTSPLITTER_REFORGED] = mistsplitter_reforged_ui_func,
+#endif

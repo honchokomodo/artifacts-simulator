@@ -5,7 +5,7 @@
 #include "../scenario.c"
 #include "../artifact_ui.c"
 #include "../character_ui.c"
-#include "../../build/include/weapons_ui.c"
+#include "../weapon_ui.c"
 
 enum tab_index {
 	TAB_BENCHMARK,

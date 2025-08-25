@@ -10,32 +10,23 @@ endif
 run: build/main
 	build/main
 
-build/main: src/*.c build generate_headers
+build/main: src/*.c build
 	gcc -o build/main src/main.c $(CCFLAGS)
 
-basic: src/*.c build generate_headers
+basic: src/*.c build
 	gcc -o build/basic src/examples/basic.c
 
-generated_ui: src/*.c build generate_headers
+generated_ui: src/*.c build
 	gcc -o build/generated_ui src/examples/generated_ui.c $(CCFLAGS)
 
-uitest: src/*.c build generate_headers
+uitest: src/*.c build
 	gcc -o build/uitest src/examples/uitest.c $(CCFLAGS)
 
-uitest2: src/*.c build generate_headers
+uitest2: src/*.c build
 	gcc -o build/uitest2 src/examples/uitest2.c $(CCFLAGS)
 
-artifactui: src/*.c build generate_headers
+artifactui: src/*.c build
 	gcc -o build/artifactui src/examples/artifactui.c $(CCFLAGS)
-
-generate_headers: build/include build/generate_weapons
-	build/generate_weapons
-
-build/generate_weapons: src/generate_weapons.c
-	gcc -o build/generate_weapons src/generate_weapons.c
-
-build/include:
-	mkdir -p build/include
 
 build:
 	mkdir -p build
