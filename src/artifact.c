@@ -5,11 +5,128 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#include "../build/include/artifacts_arrs.h"
+#include "common.h"
+
+typedef enum artifact_set {
+	SET_NOTHING,
+#define TEMPLATE_ArtifactSet
+#include "artifacts/artifacts_list.h"
+#undef TEMPLATE_ArtifactSet
+} ArtifactSet;
+
+#define MAX_SUBSTATS 4
+#define MAX_UPGRADES 5
+
+typedef enum piece_type {
+	PIECE_NOTHING,
+	FLOWER,
+	FEATHER,
+	SANDS,
+	GOBLET,
+	CIRCLET,
+} PieceType;
+
+char const * const piece2str[] = {
+	[PIECE_NOTHING] = "nil piece",
+	[FLOWER] = "Flower",
+	[FEATHER] = "Feather",
+	[SANDS] = "Sands",
+	[GOBLET] = "Goblet",
+	[CIRCLET] = "Circlet",
+};
+
+typedef struct affix {
+	StatType type;
+	float value;
+} Affix;
+
+typedef struct artifact {
+	int level;
+	ArtifactSet set;
+	PieceType piece;
+	Affix mainstat;
+	
+	size_t num_substats;
+	Affix substat[MAX_SUBSTATS];
+	int num_upgrades[MAX_SUBSTATS];
+} Artifact;
+
+typedef struct artifact_loadout {
+	Artifact flower;
+	Artifact feather;
+	Artifact sands;
+	Artifact goblet;
+	Artifact circlet;
+} ArtifactLoadout;
+
+typedef struct set_bonus_args {
+	ArtifactSet set;
+	int num_pieces;
+} SetBonusArgs;
+
+typedef BuffElement (*SetBonusFunc)(SetBonusArgs in);
+BuffElement noop_set_bonus_func(SetBonusArgs in)
+{
+	return (BuffElement) {0}; // return a nothing buff
+}
+
+#define TEMPLATE_set2bonus_impl
+#include "artifacts/artifacts_list.h"
+#undef TEMPLATE_set2bonus_impl
+
+char const * const set2str[] = {
+	[SET_NOTHING] = "nil set",
+#define TEMPLATE_set2str
+#include "artifacts/artifacts_list.h"
+#undef TEMPLATE_set2str
+};
+
+char const * const flowerpath[] = {
+	[SET_NOTHING] = "resources/images/artifacts/set_nothing/dereference.png",
+#define TEMPLATE_flowerpath
+#include "artifacts/artifacts_list.h"
+#undef TEMPLATE_flowerpath
+};
+
+char const * const featherpath[] = {
+	[SET_NOTHING] = "resources/images/artifacts/set_nothing/arrow.png",
+#define TEMPLATE_featherpath
+#include "artifacts/artifacts_list.h"
+#undef TEMPLATE_featherpath
+};
+
+char const * const sandspath[] = {
+	[SET_NOTHING] = "resources/images/artifacts/set_nothing/alarm_clock.png",
+#define TEMPLATE_sandspath
+#include "artifacts/artifacts_list.h"
+#undef TEMPLATE_sandspath
+};
+
+char const * const gobletpath[] = {
+	[SET_NOTHING] = "resources/images/artifacts/set_nothing/mug.png",
+#define TEMPLATE_gobletpath
+#include "artifacts/artifacts_list.h"
+#undef TEMPLATE_gobletpath
+};
+
+char const * const circletpath[] = {
+	[SET_NOTHING] = "resources/images/artifacts/set_nothing/earbuds.png",
+#define TEMPLATE_circletpath
+#include "artifacts/artifacts_list.h"
+#undef TEMPLATE_circletpath
+};
+
+SetBonusFunc const set2bonus[] = {
+	[SET_NOTHING] = noop_set_bonus_func,
+#define TEMPLATE_set2bonus_arr
+#include "artifacts/artifacts_list.h"
+#undef TEMPLATE_set2bonus_arr
+};
 
 float const mainstat_values[][6] = {
 	// values obtained from wiki.
 	// table has entries for levels 0, 4, 8, 12, 16, 20.
+	// TODO: copy the entire table here (and benchmark)
 	[HP_FLAT] = {717, 1530, 2342, 3155, 3967, 4780},
 	[ATK_FLAT] = {47, 100, 152, 205, 258, 311},
 
@@ -37,6 +154,7 @@ float const mainstat_values[][6] = {
 float const substat_values[] = {
 	// values obtained from wiki.
 	// table has entries for max roll only.
+	// TODO: enter values for all possible roll values (and benchmark)
 	[HP_FLAT] = 298.75,
 	[ATK_FLAT] = 19.45,
 	[DEF_FLAT] = 23.15,

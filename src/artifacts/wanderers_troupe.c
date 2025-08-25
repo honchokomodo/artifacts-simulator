@@ -1,13 +1,33 @@
-// AUTOGEN ArtifactSet WANDERERS_TROUPE
-// AUTOGEN set2str Wanderer's Troupe
-// TODO: get actual pics
-// AUTOGEN flowerpath "resources/images/artifacts/set_nothing/dereference.png"
-// AUTOGEN featherpath "resources/images/artifacts/set_nothing/arrow.png"
-// AUTOGEN sandspath "resources/images/artifacts/set_nothing/alarm_clock.png"
-// AUTOGEN gobletpath "resources/images/artifacts/set_nothing/mug.png"
-// AUTOGEN circletpath "resources/images/artifacts/set_nothing/earbuds.png"
+#ifdef TEMPLATE_ArtifactSet
+	WANDERERS_TROUPE,
+#endif
 
-// AUTOGEN set2bonus wanderers_troupe_bonus_func
+#ifdef TEMPLATE_set2str
+	[WANDERERS_TROUPE] = "Wanderer's Troupe",
+#endif
+
+// TODO: get actual pics
+#ifdef TEMPLATE_flowerpath
+	[WANDERERS_TROUPE] = "resources/images/artifacts/set_nothing/dereference.png",
+#endif
+
+#ifdef TEMPLATE_featherpath
+	[WANDERERS_TROUPE] = "resources/images/artifacts/set_nothing/arrow.png",
+#endif
+
+#ifdef TEMPLATE_sandspath
+	[WANDERERS_TROUPE] = "resources/images/artifacts/set_nothing/alarm_clock.png",
+#endif
+
+#ifdef TEMPLATE_gobletpath
+	[WANDERERS_TROUPE] = "resources/images/artifacts/set_nothing/mug.png",
+#endif
+
+#ifdef TEMPLATE_circletpath
+	[WANDERERS_TROUPE] = "resources/images/artifacts/set_nothing/earbuds.png",
+#endif
+
+#ifdef TEMPLATE_set2bonus_impl
 BuffElement wanderers_troupe_bonus_func(SetBonusArgs in)
 {
 	BuffElement out = {0};
@@ -24,11 +44,19 @@ BuffElement wanderers_troupe_bonus_func(SetBonusArgs in)
 		in.accumulators->all_bonus += 35.0;
 		*/
 }
-// AUTOGEN end
+#endif
 
-// AUTOGEN set2ui wanderers_troupe_ui_func
+#ifdef TEMPLATE_set2bonus_arr
+	[WANDERERS_TROUPE] = wanderers_troupe_bonus_func,
+#endif
+
+#ifdef TEMPLATE_set2ui_impl
 void wanderers_troupe_ui_func(ArtifactLoadout * in)
 {
 	// does nothing for now
 }
-// AUTOGEN end
+#endif
+
+#ifdef TEMPLATE_set2ui_arr
+	[WANDERERS_TROUPE] = wanderers_troupe_ui_func,
+#endif
