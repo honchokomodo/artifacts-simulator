@@ -1,16 +1,32 @@
-// AUTOGEN CharacterType YOIMIYA
-// AUTOGEN character2str Yoimiya
-// TODO: possibly replace pics with smaller sizes because holy crap this one is enormous
-// AUTOGEN character2portrait "resources/images/characters/yoimiya_portrait.png"
+#ifdef TEMPLATE_CharacterType
+	YOIMIYA,
+#endif
 
-// AUTOGEN character2talent yoimiya_talent_func
+#ifdef TEMPLATE_character2str
+	[YOIMIYA] = "Yoimiya",
+#endif
+
+// TODO: get actual pics
+#ifdef TEMPLATE_character2icon
+	[YOIMIYA] = "resources/images/characters/character_nothing_icon.png",
+#endif
+
+#ifdef TEMPLATE_character2portrait
+	[YOIMIYA] = "resources/images/characters/character_nothing_portrait.png",
+#endif
+
+#ifdef TEMPLATE_character2talent_impl
 void yoimiya_talent_func(CharacterTalentArgs in)
 {
 	// do nothing for now
 }
-// AUTOGEN end
+#endif
 
-// AUTOGEN character2generator yoimiya_generator_func
+#ifdef TEMPLATE_character2talent_arr
+	[YOIMIYA] = yoimiya_talent_func,
+#endif
+
+#ifdef TEMPLATE_character2generator_impl
 CharacterStats yoimiya_generator_func(CharacterStats in)
 {
 	int ascension = check_ascension(in.level, in.ascension);
@@ -48,12 +64,19 @@ CharacterStats yoimiya_generator_func(CharacterStats in)
 	out.stats.ar[CRIT_RATE] += bonuscr[ascension];
 	return out;
 }
-// AUTOGEN end
+#endif
 
-// AUTOGEN character2ui yoimiya_ui_func
+#ifdef TEMPLATE_character2generator_arr
+	[YOIMIYA] = yoimiya_generator_func,
+#endif
+
+#ifdef TEMPLATE_character2ui_impl
 void yoimiya_ui_func(CharacterUIArgs args)
 {
 	// TODO: implement this
 }
-// AUTOGEN end
+#endif
 
+#ifdef TEMPLATE_character2ui_arr
+	[YOIMIYA] = yoimiya_ui_func,
+#endif

@@ -1,10 +1,21 @@
-// AUTOGEN WeaponType THUNDERING_PULSE
-// AUTOGEN weapon2str Thundering Pulse
-// AUTOGEN weapon2icon "resources/images/weapons/thundering_pulse_icon.png"
-// TODO: get the ascended version of the weapon icon
-// AUTOGEN weapon2icon_asc "resources/images/weapons/thundering_pulse_icon.png"
+#ifdef TEMPLATE_WeaponType
+	THUNDERING_PULSE,
+#endif
 
-// AUTOGEN weapon2passive thundering_pulse_passive_func
+#ifdef TEMPLATE_weapon2str
+	[THUNDERING_PULSE] = "Thundering Pulse",
+#endif
+
+#ifdef TEMPLATE_weapon2icon
+	[THUNDERING_PULSE] = "resources/images/weapons/thundering_pulse_icon.png",
+#endif
+
+#ifdef TEMPLATE_weapon2icon_asc
+	// TODO: get the ascended version of the weapon icon
+	[THUNDERING_PULSE] = "resources/images/weapons/thundering_pulse_icon.png",
+#endif
+
+#ifdef TEMPLATE_weapon2passive_impl
 void thundering_pulse_passive_func(WeaponPassiveArgs in)
 {
 	/* from wiki:
@@ -20,9 +31,13 @@ void thundering_pulse_passive_func(WeaponPassiveArgs in)
 	// do nothing for now
 	// TODO: implement this
 }
-// AUTOGEN end
+#endif
 
-// AUTOGEN weapon2generator thundering_pulse_generator_func
+#ifdef TEMPLATE_weapon2passive_arr
+	[THUNDERING_PULSE] = thundering_pulse_passive_func,
+#endif
+
+#ifdef TEMPLATE_weapon2generator_impl
 Weapon thundering_pulse_generator_func(Weapon in)
 {
 	int ascension = check_ascension(in.level, in.ascension);
@@ -63,13 +78,20 @@ Weapon thundering_pulse_generator_func(Weapon in)
 
 	return out;
 }
-// AUTOGEN end
+#endif
 
-// AUTOGEN weapon2ui thundering_pulse_ui_func
+#ifdef TEMPLATE_weapon2generator_arr
+	[THUNDERING_PULSE] = thundering_pulse_generator_func,
+#endif
+
+#ifdef TEMPLATE_weapon2ui_impl
 void thundering_pulse_ui_func(Weapon * in)
 {
 	// do nothing for now
 	// TODO: implement this
 }
-// AUTOGEN end
+#endif
 
+#ifdef TEMPLATE_weapon2ui_arr
+	[THUNDERING_PULSE] = thundering_pulse_ui_func,
+#endif

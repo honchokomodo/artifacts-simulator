@@ -4,6 +4,31 @@
 // AUTOGEN weapon2icon_asc "resources/images/weapons/weapon_nothing_asc_icon.png"
 
 // AUTOGEN weapon2passive skyward_harp_passive_func
+// AUTOGEN end
+
+// AUTOGEN weapon2generator skyward_harp_generator_func
+// AUTOGEN end
+
+// AUTOGEN weapon2ui skyward_harp_ui_func
+// AUTOGEN end
+
+#ifdef TEMPLATE_WeaponType
+	SKYWARD_HARP,
+#endif
+
+#ifdef TEMPLATE_weapon2str
+	[SKYWARD_HARP] = "Skyward Harp",
+#endif
+
+#ifdef TEMPLATE_weapon2icon
+	[SKYWARD_HARP] = "resources/images/weapons/weapon_nothing_icon.png",
+#endif
+
+#ifdef TEMPLATE_weapon2icon_asc
+	[SKYWARD_HARP] = "resources/images/weapons/weapon_nothing_asc_icon.png",
+#endif
+
+#ifdef TEMPLATE_weapon2passive_impl
 void skyward_harp_passive_func(WeaponPassiveArgs in)
 {
 	/* from wiki:
@@ -16,9 +41,13 @@ void skyward_harp_passive_func(WeaponPassiveArgs in)
 	// do nothing for now
 	// TODO: implement this
 }
-// AUTOGEN end
+#endif
 
-// AUTOGEN weapon2generator skyward_harp_generator_func
+#ifdef TEMPLATE_weapon2passive_arr
+	[SKYWARD_HARP] = skyward_harp_passive_func,
+#endif
+
+#ifdef TEMPLATE_weapon2generator_impl
 Weapon skyward_harp_generator_func(Weapon in)
 {
 	int ascension = check_ascension(in.level, in.ascension);
@@ -59,13 +88,20 @@ Weapon skyward_harp_generator_func(Weapon in)
 
 	return out;
 }
-// AUTOGEN end
+#endif
 
-// AUTOGEN weapon2ui skyward_harp_ui_func
+#ifdef TEMPLATE_weapon2generator_arr
+	[SKYWARD_HARP] = skyward_harp_generator_func,
+#endif
+
+#ifdef TEMPLATE_weapon2ui_impl
 void skyward_harp_ui_func(Weapon * in)
 {
 	// do nothing for now
 	// TODO: implement this
 }
-// AUTOGEN end
+#endif
 
+#ifdef TEMPLATE_weapon2ui_arr
+	[SKYWARD_HARP] = skyward_harp_ui_func,
+#endif
