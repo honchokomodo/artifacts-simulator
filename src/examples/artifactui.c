@@ -3,7 +3,7 @@
 
 #include "../components.c"
 #include "../scenario.c"
-#include "../../build/include/artifacts_ui.c"
+#include "../artifact_ui.c"
 #include "../../build/include/characters_ui.c"
 #include "../../build/include/weapons_ui.c"
 
