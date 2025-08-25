@@ -25,19 +25,15 @@ uitest2: src/*.c build generate_headers
 artifactui: src/*.c build generate_headers
 	gcc -o build/artifactui src/examples/artifactui.c $(CCFLAGS)
 
-generate_headers: build/include build/generate_characters build/generate_weapons build/generate_artifacts
+generate_headers: build/include build/generate_characters build/generate_weapons
 	build/generate_characters
 	build/generate_weapons
-	build/generate_artifacts
 
 build/generate_characters: src/generate_characters.c
 	gcc -o build/generate_characters src/generate_characters.c
 
 build/generate_weapons: src/generate_weapons.c
 	gcc -o build/generate_weapons src/generate_weapons.c
-
-build/generate_artifacts: src/generate_artifacts.c
-	gcc -o build/generate_artifacts src/generate_artifacts.c
 
 build/include:
 	mkdir -p build/include

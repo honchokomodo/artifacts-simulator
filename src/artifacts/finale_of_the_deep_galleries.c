@@ -1,13 +1,33 @@
-// AUTOGEN ArtifactSet FINALE_OF_THE_DEEP_GALLERIES
-// AUTOGEN set2str Finale of the Deep Galleries
-// TODO: get actual pics
-// AUTOGEN flowerpath "resources/images/artifacts/set_nothing/dereference.png"
-// AUTOGEN featherpath "resources/images/artifacts/set_nothing/arrow.png"
-// AUTOGEN sandspath "resources/images/artifacts/set_nothing/alarm_clock.png"
-// AUTOGEN gobletpath "resources/images/artifacts/set_nothing/mug.png"
-// AUTOGEN circletpath "resources/images/artifacts/set_nothing/earbuds.png"
+#ifdef TEMPLATE_ArtifactSet
+	FINALE_OF_THE_DEEP_GALLERIES,
+#endif
 
-// AUTOGEN set2bonus finale_of_the_deep_galleries_bonus_func
+#ifdef TEMPLATE_set2str
+	[FINALE_OF_THE_DEEP_GALLERIES] = "Finale of the Deep Galleries",
+#endif
+
+// TODO: get actual pics
+#ifdef TEMPLATE_flowerpath
+	[FINALE_OF_THE_DEEP_GALLERIES] = "resources/images/artifacts/set_nothing/dereference.png",
+#endif
+
+#ifdef TEMPLATE_featherpath
+	[FINALE_OF_THE_DEEP_GALLERIES] = "resources/images/artifacts/set_nothing/arrow.png",
+#endif
+
+#ifdef TEMPLATE_sandspath
+	[FINALE_OF_THE_DEEP_GALLERIES] = "resources/images/artifacts/set_nothing/alarm_clock.png",
+#endif
+
+#ifdef TEMPLATE_gobletpath
+	[FINALE_OF_THE_DEEP_GALLERIES] = "resources/images/artifacts/set_nothing/mug.png",
+#endif
+
+#ifdef TEMPLATE_circletpath
+	[FINALE_OF_THE_DEEP_GALLERIES] = "resources/images/artifacts/set_nothing/earbuds.png",
+#endif
+
+#ifdef TEMPLATE_set2bonus_impl
 BuffElement finale_of_the_deep_galleries_bonus_func(SetBonusArgs in)
 {
 	BuffElement out = {0};
@@ -20,11 +40,19 @@ BuffElement finale_of_the_deep_galleries_bonus_func(SetBonusArgs in)
 
 	// 4pc bonus is optional, so it is handled by set2ui.
 }
-// AUTOGEN end
+#endif
 
-// AUTOGEN set2ui finale_of_the_deep_galleries_ui_func
+#ifdef TEMPLATE_set2bonus_arr
+	[FINALE_OF_THE_DEEP_GALLERIES] = finale_of_the_deep_galleries_bonus_func,
+#endif
+
+#ifdef TEMPLATE_set2ui_impl
 void finale_of_the_deep_galleries_ui_func(ArtifactLoadout * in)
 {
 	// does nothing for now
 }
-// AUTOGEN end
+#endif
+
+#ifdef TEMPLATE_set2ui_arr
+	[FINALE_OF_THE_DEEP_GALLERIES] = finale_of_the_deep_galleries_ui_func,
+#endif
