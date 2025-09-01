@@ -18,6 +18,9 @@
 #ifdef TEMPLATE_character2talent_impl
 float amber_fully_charged_shot()
 {
+	// for my build, against stunned lv 103 cryo regisvine:
+	// off-crit: 2815
+	// on-crit: 8375
 }
 
 void amber_talent_func(CharacterTalentArgs in)
