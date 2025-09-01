@@ -1,11 +1,3 @@
-// AUTOGEN character2talent skirk_talent_func
-// AUTOGEN end
-
-// AUTOGEN character2generator skirk_generator_func
-// AUTOGEN end
-
-// AUTOGEN character2ui skirk_ui_func
-// AUTOGEN end
 #ifdef TEMPLATE_CharacterType
 	SKIRK,
 #endif

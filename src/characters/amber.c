@@ -16,6 +16,10 @@
 #endif
 
 #ifdef TEMPLATE_character2talent_impl
+float amber_fully_charged_shot()
+{
+}
+
 void amber_talent_func(CharacterTalentArgs in)
 {
 	// does nothing for now

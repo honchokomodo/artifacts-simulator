@@ -1,17 +1,3 @@
-// AUTOGEN WeaponType MISTSPLITTER_REFORGED
-// AUTOGEN weapon2str Mistsplitter Reforged
-// AUTOGEN weapon2icon "resources/images/weapons/weapon_nothing_icon.png"
-// AUTOGEN weapon2icon_asc "resources/images/weapons/weapon_nothing_asc_icon.png"
-
-// AUTOGEN weapon2passive mistsplitter_reforged_passive_func
-// AUTOGEN end
-
-// AUTOGEN weapon2generator mistsplitter_reforged_generator_func
-// AUTOGEN end
-
-// AUTOGEN weapon2ui mistsplitter_reforged_ui_func
-// AUTOGEN end
-
 #ifdef TEMPLATE_WeaponType
 	MISTSPLITTER_REFORGED,
 #endif

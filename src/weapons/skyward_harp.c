@@ -1,17 +1,3 @@
-// AUTOGEN WeaponType SKYWARD_HARP
-// AUTOGEN weapon2str Skyward Harp
-// AUTOGEN weapon2icon "resources/images/weapons/weapon_nothing_icon.png"
-// AUTOGEN weapon2icon_asc "resources/images/weapons/weapon_nothing_asc_icon.png"
-
-// AUTOGEN weapon2passive skyward_harp_passive_func
-// AUTOGEN end
-
-// AUTOGEN weapon2generator skyward_harp_generator_func
-// AUTOGEN end
-
-// AUTOGEN weapon2ui skyward_harp_ui_func
-// AUTOGEN end
-
 #ifdef TEMPLATE_WeaponType
 	SKYWARD_HARP,
 #endif

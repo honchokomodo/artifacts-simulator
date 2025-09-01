@@ -1,9 +1,3 @@
-// AUTOGEN set2bonus noop_set_bonus_func
-// AUTOGEN end
-
-// AUTOGEN set2ui marechaussee_hunter_ui_func
-// AUTOGEN end
-
 #ifdef TEMPLATE_ArtifactSet
 	MARECHAUSSEE_HUNTER,
 #endif
