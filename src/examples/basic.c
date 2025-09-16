@@ -81,9 +81,18 @@ int main(void)
 	stats = acc_artifact_stats(stats, loadout.sands);
 	stats = acc_artifact_stats(stats, loadout.goblet);
 	stats = acc_artifact_stats(stats, loadout.circlet);
-	stats = compute_base_stats(stats);
 
-	accumulator_print(stats);
+	// handle teamwide buffs
+	// aggregate base stats
+	// handle unique stat bonuses
+	// idle stats
+
+	accumulator_print(compute_base_stats(stats));
+
+	// handle talent-specific bonuses
+	// final stats
+	// damage calculation
+
 
 	return 0;
 }

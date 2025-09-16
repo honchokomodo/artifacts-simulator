@@ -1,11 +1,6 @@
 #ifndef IMAGE_CACHE_C
 #define IMAGE_CACHE_C
 
-#include <raylib.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-
 // initialize the cache, num_entries being the size of the hash table.
 void ic_initcache(int num_entries, int max_images);
 
@@ -43,6 +38,11 @@ void ic_unload_all(void); // unload all textures in the cache.
  * // free all memory when no longer in use.
  * ic_destroycache();
  */
+
+#include <raylib.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
 struct _ic_tbl_entry {
 	char * fpath;

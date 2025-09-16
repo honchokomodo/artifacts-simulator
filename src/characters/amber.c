@@ -16,11 +16,20 @@
 #endif
 
 #ifdef TEMPLATE_character2talent_impl
+/*
+ * damage calculation needs to know:
+ * talent level and scaling
+ * stats & bonuses
+ * enemy resistances multiplier
+ * enemy level/defense multiplier
+ * crit/no crit/mean
+ */
+// for my build, against stunned lv 103 cryo regisvine:
+// off-crit: 2815
+// on-crit: 8375
 float amber_fully_charged_shot()
 {
-	// for my build, against stunned lv 103 cryo regisvine:
-	// off-crit: 2815
-	// on-crit: 8375
+	
 }
 
 void amber_talent_func(CharacterTalentArgs in)
