@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 
+#include "enemy.c"
+
 typedef enum stattype {
 	STAT_NOTHING,
 	HP_FLAT,
@@ -136,6 +138,7 @@ typedef struct stat_accumulators {
 	float ar[STAT_COUNT];
 } StatAccumulators;
 
+// TODO: probably delete this?
 typedef struct buff_element {
 	StatAccumulators buff;
 	char const * label;
@@ -143,18 +146,11 @@ typedef struct buff_element {
 
 void accumulator_print(StatAccumulators in)
 {
-#define ACCUMULATOR_PRINT_COND_PRINT(key) \
-	do { \
-		if (in.ar[key] != 0) { \
-			printf("%s - %g\n", stat2str[key], in.ar[key]); \
-		} \
-	} while (0)
-
 	for (int i = 0; i < STAT_COUNT; i++) {
-		ACCUMULATOR_PRINT_COND_PRINT(i);
+		if (in.ar[i] != 0) { \
+			printf("%s - %g\n", stat2str[i], in.ar[i]); \
+		}
 	}
-
-#undef ACCUMULATOR_PRINT_COND_PRINT
 }
 
 StatAccumulators accumulator_combine(StatAccumulators lhs, StatAccumulators rhs)

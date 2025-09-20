@@ -16,20 +16,44 @@
 #endif
 
 #ifdef TEMPLATE_character2talent_impl
-/*
- * damage calculation needs to know:
- * talent level and scaling
- * stats & bonuses
- * enemy resistances multiplier
- * enemy level/defense multiplier
- * crit/no crit/mean
- */
-// for my build, against stunned lv 103 cryo regisvine:
-// off-crit: 2815
-// on-crit: 8375
-float amber_fully_charged_shot()
+float amber_fully_charged_shot(CharacterAttackArgs in)
 {
-	
+	// TODO: handle melt and vaporize
+	static float const scaling[] = {
+		// values obtained from wiki
+		// https://genshin-impact.fandom.com/wiki/Amber
+		[1] = 124,
+		[2] = 133.3,
+		[3] = 142.6,
+		[4] = 155,
+		[5] = 164.3,
+		[6] = 173.6,
+		[7] = 186,
+		[8] = 198.4,
+		[9] = 210.8,
+		[10] = 223.2,
+		[11] = 235.6,
+	};
+
+	float scale_fac = scaling[in.character.talent.normal] / 100;
+
+	float total_dmg_bonus = in.stats.ar[PYRO_BONUS] + in.stats.ar[BONUS_DAMAGE];
+	float total_dmg_bonus_fac = 1 + total_dmg_bonus / 100;
+
+	float enemy_def_fac = enemy_defense_fac(in.enemy, in.character.level);
+	float enemy_res_fac = enemy_resistance_fac(in.enemy.pyro_res);
+
+	float total_atk = in.stats.ar[ATK_AGGREGATE];
+	float damage = scale_fac * total_atk * total_dmg_bonus_fac * enemy_def_fac * enemy_res_fac;
+
+	float crit_fac = 1 + in.stats.ar[CRIT_DAMAGE] / 100;
+	float mean_crit_fac = 1 + in.stats.ar[CRIT_DAMAGE] * in.stats.ar[CRIT_RATE] / 10000;
+
+	if (in.crit == ON_CRIT) return damage * crit_fac;
+	if (in.crit == OFF_CRIT) return damage;
+	if (in.crit == MEAN_CRIT) return damage * mean_crit_fac;
+
+	return 0; // should be unreachable
 }
 
 void amber_talent_func(CharacterTalentArgs in)

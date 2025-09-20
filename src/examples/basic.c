@@ -109,7 +109,6 @@ int main(void)
 
 	// at this point, stats == idle stats
 	// the stats pretty much match enka.network += entered data inaccuracy
-
 	accumulator_print(compute_base_stats(stats));
 
 	// handle talent-specific bonuses
@@ -123,38 +122,25 @@ int main(void)
 	stats.ar[BONUS_DAMAGE] += 35;
 
 	// at this point, stats == augmented stats
-	stats = compute_base_stats(stats); // may be necessary?
+	stats = compute_base_stats(stats);
+	// at this point, stats == final stats
 	
 	// damage calculation
 	// calculating damage against a lv 103 cryo regisvine:
-	// off-crit: 2815
-	// on-crit: 8375
-	float enemy_level = 103;
+	// off-crit: 2815 (no reactions)
+	// on-crit: 8375 (no reactions)
+	CharacterAttackArgs args = {
+		.character = amber,
+		.stats = stats,
+		.enemy = {
+			.level = 103,
+			.pyro_res = 10,
+		},
+		.crit = MEAN_CRIT,
+	};
 
-	// should be determined from character talent level scaling table
-	float talent_scale_fac = 2.232;
+	float damage = amber_fully_charged_shot(args);
 
-	float total_dmg_bonus = stats.ar[PYRO_BONUS] + stats.ar[BONUS_DAMAGE];
-	float total_dmg_bonus_fac = 1 + total_dmg_bonus / 100;
-
-	float crit_fac = 1 + stats.ar[CRIT_DAMAGE] / 100;
-	// in the actual implementation, def and res debuffs need to be taken
-	// into account
-	float enemy_def_fac = (amber.level + 100) / (amber.level + 100 + enemy_level + 100);
-	// res fac should be handled by its own function
-	// in the real game its a piecewise thingy
-	float enemy_res_fac = 0.9; // 10% pyro dmg res
-
-	float damage = talent_scale_fac * stats.ar[ATK_AGGREGATE] * total_dmg_bonus_fac * crit_fac * enemy_def_fac * enemy_res_fac;
-
-	/*
-	printf("talent_scale_fac: %f\n", talent_scale_fac);
-	printf("atk: %f\n", stats.ar[ATK_AGGREGATE]);
-	printf("total_dmg_bonus_fac: %f\n", total_dmg_bonus_fac);
-	printf("crit_fac: %f\n", crit_fac);
-	printf("enemy_def_fac: %f\n", enemy_def_fac);
-	printf("enemy_res_fac: %f\n", enemy_res_fac);
-	*/
 	printf("damage: %f\n", damage);
 
 	return 0;

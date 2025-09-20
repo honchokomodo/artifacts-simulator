@@ -23,9 +23,22 @@ typedef struct character_stats {
 	StatAccumulators stats;
 } CharacterStats;
 
+typedef enum crit_mode {
+	OFF_CRIT,
+	ON_CRIT,
+	MEAN_CRIT,
+} CritMode;
+
+typedef struct character_attack_args {
+	CharacterStats character;
+	StatAccumulators stats;
+	Enemy enemy;
+	CritMode crit;
+} CharacterAttackArgs;
+
 typedef struct character_talent_args {
 	CharacterStats character;
-	StatAccumulators * accumulators;
+	StatAccumulators accumulators;
 } CharacterTalentArgs;
 
 typedef void (*CharacterTalentFunc)(CharacterTalentArgs in);
