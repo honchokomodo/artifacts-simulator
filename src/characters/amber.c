@@ -18,7 +18,6 @@
 #ifdef TEMPLATE_character2talent_impl
 float amber_fully_charged_shot(CharacterAttackArgs in)
 {
-	// TODO: handle melt and vaporize
 	static float const scaling[] = {
 		// values obtained from wiki
 		// https://genshin-impact.fandom.com/wiki/Amber
@@ -43,8 +42,11 @@ float amber_fully_charged_shot(CharacterAttackArgs in)
 	float enemy_def_fac = enemy_defense_fac(in.enemy, in.character.level);
 	float enemy_res_fac = enemy_resistance_fac(in.enemy.pyro_res);
 
+	// TODO: handle reaction bonuses like cwof 4p
+	float reaction_mult = amplifying_multiplier(in.reaction, in.stats.ar[ELEMENTAL_MASTERY], 0);
+
 	float total_atk = in.stats.ar[ATK_AGGREGATE];
-	float damage = scale_fac * total_atk * total_dmg_bonus_fac * enemy_def_fac * enemy_res_fac;
+	float damage = scale_fac * total_atk * total_dmg_bonus_fac * enemy_def_fac * enemy_res_fac * reaction_mult;
 
 	float crit_fac = 1 + in.stats.ar[CRIT_DAMAGE] / 100;
 	float mean_crit_fac = 1 + in.stats.ar[CRIT_DAMAGE] * in.stats.ar[CRIT_RATE] / 10000;

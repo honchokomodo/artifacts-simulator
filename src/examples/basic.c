@@ -127,8 +127,12 @@ int main(void)
 	
 	// damage calculation
 	// calculating damage against a lv 103 cryo regisvine:
-	// off-crit: 2815 (no reactions)
-	// on-crit: 8375 (no reactions)
+	// REACTION_NOTHING: 2815
+	// REACTION_NOTHING crit: 8375
+	// REVERSE_VAPORIZE: 6598
+	// REVERSE_VAPORIZE crit: 19627
+	// FORWARD_MELT: 8797
+	// FORWARD_MELT crit: 26172
 	CharacterAttackArgs args = {
 		.character = amber,
 		.stats = stats,
@@ -136,7 +140,8 @@ int main(void)
 			.level = 103,
 			.pyro_res = 10,
 		},
-		.crit = MEAN_CRIT,
+		.crit = ON_CRIT,
+		.reaction = FORWARD_MELT,
 	};
 
 	float damage = amber_fully_charged_shot(args);

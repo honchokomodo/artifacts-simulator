@@ -34,6 +34,7 @@ typedef struct character_attack_args {
 	StatAccumulators stats;
 	Enemy enemy;
 	CritMode crit;
+	ReactionType reaction;
 } CharacterAttackArgs;
 
 typedef struct character_talent_args {

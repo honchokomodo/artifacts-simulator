@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-#include "enemy.c"
+#include "damage_util.c"
 
 typedef enum stattype {
 	STAT_NOTHING,
@@ -184,4 +184,5 @@ int ascension_max_level(int ascension)
 	if (ascension <= 0) return 20;
 	return (ascension + 3) * 10;
 }
+
 #endif
