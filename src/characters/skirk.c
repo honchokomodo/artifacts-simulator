@@ -74,6 +74,7 @@ CharacterStats skirk_generator_func(CharacterStats in)
 #ifdef TEMPLATE_character2ui_impl
 void skirk_ui_func(CharacterUIArgs args)
 {
+	/*
 	static int deaths_crossing_stacks = 0;
 
 	CLAY({
@@ -87,6 +88,9 @@ void skirk_ui_func(CharacterUIArgs args)
 	}) {
 		text_p(ch2str("nothing here yet"));
 	}
+	*/
+
+	// does nothing for now
 }
 #endif
 

@@ -31,6 +31,7 @@ typedef enum crit_mode {
 
 typedef struct character_attack_args {
 	CharacterStats character;
+	// for aggregating stats without touching character base stats
 	StatAccumulators stats;
 	Enemy enemy;
 	CritMode crit;
@@ -39,6 +40,7 @@ typedef struct character_attack_args {
 
 typedef struct character_talent_args {
 	CharacterStats character;
+	// for aggregating stats without touching character base stats
 	StatAccumulators accumulators;
 } CharacterTalentArgs;
 

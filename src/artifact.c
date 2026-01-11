@@ -1,8 +1,8 @@
 #ifndef ARTIFACT_C
 #define ARTIFACT_C
 
-#include <stdlib.h>
-#include <stdio.h>
+#include <stdlib.h> // literally just for rand
+#include <stdio.h> // literally just for printf. get rid of this
 #include <stdbool.h>
 
 #include "common.h"
@@ -167,6 +167,10 @@ float const substat_values[] = {
 	[CRIT_DAMAGE] = 7.77,
 };
 
+/*
+ * print an overview of an artifact to stdout.
+ * TODO: move this elsewehere
+ */
 void artifact_print(Artifact in)
 {
 	printf("%s - %s +%d\n", set2str[in.set], piece2str[in.piece], in.level);
@@ -176,7 +180,10 @@ void artifact_print(Artifact in)
 	}
 }
 
-Artifact _artifact_addsubstat(Artifact in)
+/*
+ * fill any empty substat slots in an artifact.
+ */
+Artifact _artifact_fillsubstats(Artifact in)
 {
 	int substat_weights[] = {
 		// values obtained from wiki.
@@ -194,48 +201,59 @@ Artifact _artifact_addsubstat(Artifact in)
 	int max = 44;
 
 	// new substats may not match whatever stats are already present.
+	// this will also catch any already-defined substats, even if they are
+	// set to 0.
 	max -= substat_weights[in.mainstat.type];
 	substat_weights[in.mainstat.type] = 0;
-	for (int i = 0; i < in.num_substats; i++) {
-		max -= substat_weights[in.substat[i].type];
-		substat_weights[in.substat[i].type] = 0;
+	for (int line = 0; line < 4; line++) {
+		max -= substat_weights[in.substat[line].type];
+		substat_weights[in.substat[line].type] = 0;
 	}
 
-	int roll = 1 + rand() % max;
-	int accumulator = 0;
-	float rv = (rand() % 4) * 0.1 + 0.7;
+	// check each line.
+	for (int line = 0; line < 4; line++) {
+		// if its STAT_NOTHING, fill it with a random zero stat.
+		if (in.substat[line].type == STAT_NOTHING) {
+			int roll = 1 + rand() % max;
+			int accumulator = 0;
 
-	for (int i = 0; i <= STAT_COUNT; i++) {
-		accumulator += substat_weights[i];
-		if (roll <= accumulator) {
-			in.substat[in.num_substats].type = i;
-			in.substat[in.num_substats].value = rv * substat_values[i];
-			in.num_substats += 1;
-			break;
+			for (StatType stat = 0; stat <= CRIT_DAMAGE; stat++) {
+				accumulator += substat_weights[stat];
+				if (roll <= accumulator) {
+					in.substat[line].type = stat;
+					in.substat[line].value = 0;
+
+					max -= substat_weights[stat];
+					substat_weights[stat] = 0;
+					break;
+				}
+			}
+		}
+
+		// if its a zero stat, fill it with a random roll.
+		if (in.substat[line].value == 0) {
+			float rv = (rand() % 4) * 0.1 + 0.7;
+			in.substat[line].value = rv * substat_values[in.substat[line].type];
 		}
 	}
 
 	return in;
 }
 
-Artifact artifact_upgrade_newline(Artifact in, StatType type, float rv)
-{
-	in.level += 4;
-	in.mainstat.value = mainstat_values[in.mainstat.type][in.level / 4];
-
-	int line = in.num_substats;
-	in.substat[line].type = type;
-	in.substat[line].value = rv * substat_values[type];
-	in.num_substats += 1;
-
-	return in;
-}
-
+/*
+ * upgrade a specific substat of an artifact by a specific roll value.
+ */
 Artifact artifact_upgrade_line(Artifact in, int line, float rv)
 {
+	// no check for overlevelling.
+	// assume that this is only called if the caller knows exactly what
+	// they're doing
+
+	// bump level and mainstat
 	in.level += 4;
 	in.mainstat.value = mainstat_values[in.mainstat.type][in.level / 4];
 
+	// bump selected stat line by roll value
 	StatType type = in.substat[line].type;
 	in.substat[line].value += rv * substat_values[type];
 	in.num_upgrades[line] += 1;
@@ -243,17 +261,25 @@ Artifact artifact_upgrade_line(Artifact in, int line, float rv)
 	return in;
 }
 
+/*
+ * upgrade an artifact as normal.
+ */
 Artifact artifact_upgrade(Artifact in)
 {
+	// can't be upgraded any further
 	if (in.level >= 20)
 		return in;
 
+	// bump level and mainstat
 	in.level += 4;
 	in.mainstat.value = mainstat_values[in.mainstat.type][in.level / 4];
 
-	if (in.num_substats < 4)
-		return _artifact_addsubstat(in);
+	if (in.num_substats < 4) {
+		in.num_substats += 1;
+		return in;
+	}
 
+	// bump random stat line by random roll
 	int line = rand() % 4;
 	float rv = (rand() % 4) * 0.1 + 0.7;
 	StatType type = in.substat[line].type;
@@ -263,6 +289,9 @@ Artifact artifact_upgrade(Artifact in)
 	return in;
 }
 
+/*
+ * return the mainstat of an artifact if it is a given piece.
+ */
 StatType _artifact_getmainstat(PieceType piece)
 {
 	typedef struct choice {
@@ -347,6 +376,9 @@ StatType _artifact_getmainstat(PieceType piece)
 	return STAT_NOTHING;
 }
 
+/*
+ * generate a plain-old-data artifact.
+ */
 #define ARTIFACT_NEW(has4substats, ...) artifact_new(has4substats, (Artifact) {__VA_ARGS__})
 Artifact artifact_new(bool has4substats, Artifact in)
 {
@@ -364,13 +396,13 @@ Artifact artifact_new(bool has4substats, Artifact in)
 		in.mainstat.value = mainstat_values[in.mainstat.type][in.level / 4];
 	
 	// determine what substats the artifact will have
-	int substats = 3;
-	if (has4substats)
-		substats = 4;
+	in = _artifact_fillsubstats(in);
 
-	while (in.num_substats < substats)
-		in = _artifact_addsubstat(in);
+	in.num_substats = 3;
+	if (has4substats) // DO NOT ASSUME THIS IS EITHER 0 OR 1
+		in.num_substats = 4;
 
+	// upgrade artifact to desired level
 	int num_upgrades = in.level / 4;
 	in.level = 0;
 	for (int i = 0; i < num_upgrades; i++)
@@ -391,11 +423,13 @@ Artifact artifact_new_strongbox(ArtifactSet set)
 	return artifact_new(rand() % 3 == 0, arti);
 }
 
+// TODO: make this not suck or move it elsewehere
 BuffElement artifact_set_bonus(SetBonusArgs in)
 {
 	return set2bonus[in.set](in);
 }
 
+// TODO: make this not suck or move it elsewehere
 char const * artifact_get_image(ArtifactSet set, PieceType piece)
 {
 	char const * out = NULL;

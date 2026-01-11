@@ -1,7 +1,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include <stdio.h>
+#include <stdio.h> // for printf. get rid of this
 
 #include "damage_util.c"
 
@@ -144,6 +144,7 @@ typedef struct buff_element {
 	char const * label;
 } BuffElement;
 
+// TODO: move this elsewehere
 void accumulator_print(StatAccumulators in)
 {
 	for (int i = 0; i < STAT_COUNT; i++) {
