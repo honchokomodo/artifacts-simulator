@@ -1,11 +1,3 @@
-// AUTOGEN character2talent skirk_talent_func
-// AUTOGEN end
-
-// AUTOGEN character2generator skirk_generator_func
-// AUTOGEN end
-
-// AUTOGEN character2ui skirk_ui_func
-// AUTOGEN end
 #ifdef TEMPLATE_CharacterType
 	SKIRK,
 #endif
@@ -70,7 +62,7 @@ CharacterStats skirk_generator_func(CharacterStats in)
 	out = character_base_stats(out, 5, in.level, ascension, base_hp,
 			base_atk, base_def, asc_hp, asc_atk, asc_def);
 
-	out.crit_damage += bonuscd[ascension];
+	out.stats.ar[CRIT_DAMAGE] += bonuscd[ascension];
 	return out;
 }
 #endif
@@ -82,6 +74,7 @@ CharacterStats skirk_generator_func(CharacterStats in)
 #ifdef TEMPLATE_character2ui_impl
 void skirk_ui_func(CharacterUIArgs args)
 {
+	/*
 	static int deaths_crossing_stacks = 0;
 
 	CLAY({
@@ -95,6 +88,9 @@ void skirk_ui_func(CharacterUIArgs args)
 	}) {
 		text_p(ch2str("nothing here yet"));
 	}
+	*/
+
+	// does nothing for now
 }
 #endif
 

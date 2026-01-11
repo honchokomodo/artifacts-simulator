@@ -18,17 +18,7 @@
 #ifdef TEMPLATE_character2talent_impl
 void amber_talent_func(CharacterTalentArgs in)
 {
-	if (in.character.a4data) {
-		in.accumulators->ar[ATK_PERCENT] += 15.0;
-	}
-
-	if (in.character.c2data) {
-		in.accumulators->all_bonus += 200.0;
-	}
-
-	if (in.character.c6data) {
-		in.accumulators->ar[ATK_PERCENT] += 15.0;
-	}
+	// does nothing for now
 }
 #endif
 
@@ -66,7 +56,7 @@ CharacterStats amber_generator_func(CharacterStats in)
 		.ascension = ascension,
 		.constellation = in.constellation,
 		.talent = in.talent,
-		.atk_percent = bonusatk[ascension],
+		.stats.ar[ATK_PERCENT] = bonusatk[ascension],
 	};
 
 	return character_base_stats(out, 4, in.level, ascension, base_hp,
@@ -81,29 +71,7 @@ CharacterStats amber_generator_func(CharacterStats in)
 #ifdef TEMPLATE_character2ui_impl
 void amber_ui_func(CharacterUIArgs args)
 {
-	/*
-	char * a4title = "Ascension 4: Every Arrow Finds Its Target";
-	char * a4desc = "Aimed Shot hits on weak spots increase ATK by 15% for"
-		"10s.";
-	if (in->ascension >= 4) {
-		toggle_switch_text(&in->a4data, a4title, a4desc, NULL);
-	}
-
-	char * c2title = "Constellation 2: Bunny Triggered";
-	char * c2desc = "Baron Bunny, new and improved! Hitting Baron Bunny's"
-		"foot with a fully-charged Aimed Shot manually detonates it.\n"
-		"Explosion via manual detonation deals 200% additional DMG.";
-	if (in->constellation >= 2) {
-		toggle_switch_text(&in->c2data, c2title, c2desc, NULL);
-	}
-
-	char * c6title = "Constellation 6: Wildfire";
-	char * c6desc = "Fiery Rain increases all party members' Movement SPD"
-		"by 15% and ATK by 15% for 10s.";
-	if (in->constellation >= 6) {
-		toggle_switch_text(&in->c6data, c6title, c6desc, NULL);
-	}
-	*/
+	// does nothing for now
 }
 #endif
 

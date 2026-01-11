@@ -20,29 +20,7 @@ typedef struct scenario {
 StatAccumulators aggregate_stats(Scenario in, BuffElement * set_bonus_log)
 {
 	// step 1: prepare accumulators
-	StatAccumulators sto = {
-		.hp_base = in.character.hp,
-		.atk_base = in.character.atk,
-		.def_base = in.character.def,
-		.ar[HP_PERCENT] = in.character.hp_percent,
-		.ar[ATK_PERCENT] = in.character.atk_percent,
-		.ar[DEF_PERCENT] = in.character.def_percent,
-		.ar[ELEMENTAL_MASTERY] = in.character.elemental_mastery,
-		.ar[ENERGY_RECHARGE] = in.character.energy_recharge,
-		.ar[PYRO_BONUS] = in.character.pyro_bonus,
-		.ar[ELECTRO_BONUS] = in.character.electro_bonus,
-		.ar[CRYO_BONUS] = in.character.cryo_bonus,
-		.ar[HYDRO_BONUS] = in.character.hydro_bonus,
-		.ar[DENDRO_BONUS] = in.character.dendro_bonus,
-		.ar[ANEMO_BONUS] = in.character.anemo_bonus,
-		.ar[GEO_BONUS] = in.character.geo_bonus,
-		.ar[PHYSICAL_BONUS] = in.character.physical_bonus,
-		.ar[HEALING_BONUS] = in.character.healing_bonus,
-		.ar[CRIT_RATE] = in.character.crit_rate,
-		.ar[CRIT_DAMAGE] = in.character.crit_damage,
-		
-		.factor = 1,
-	};
+	StatAccumulators sto = in.character.stats;
 
 	typedef struct set_entry {
 		ArtifactSet set;

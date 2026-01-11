@@ -1,18 +1,20 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#define MAX_BUFFS 20
+#include <stdio.h> // for printf. get rid of this
 
 typedef enum stattype {
 	STAT_NOTHING,
 	HP_FLAT,
-	HP_PERCENT,
 	ATK_FLAT,
-	ATK_PERCENT,
 	DEF_FLAT,
+	HP_PERCENT,
+	ATK_PERCENT,
 	DEF_PERCENT,
 	ELEMENTAL_MASTERY,
 	ENERGY_RECHARGE,
+	CRIT_RATE,
+	CRIT_DAMAGE,
 	PYRO_BONUS,
 	ELECTRO_BONUS,
 	CRYO_BONUS,
@@ -22,21 +24,30 @@ typedef enum stattype {
 	GEO_BONUS,
 	PHYSICAL_BONUS,
 	HEALING_BONUS,
-	CRIT_RATE,
-	CRIT_DAMAGE,
+	HP_BASE,
+	ATK_BASE,
+	DEF_BASE,
+	HP_AGGREGATE,
+	ATK_AGGREGATE,
+	DEF_AGGREGATE,
+	BONUS_DAMAGE,
+	DAMAGE_MULTIPLIER,
+	DAMAGE_ADDITIVE,
 	STAT_COUNT,
 } StatType;
 
 char const * const stat2str[STAT_COUNT] = {
 	[STAT_NOTHING] = "nil stat",
 	[HP_FLAT] = "HP",
-	[HP_PERCENT] = "HP%",
 	[ATK_FLAT] = "ATK",
-	[ATK_PERCENT] = "ATK%",
 	[DEF_FLAT] = "DEF",
+	[HP_PERCENT] = "HP%",
+	[ATK_PERCENT] = "ATK%",
 	[DEF_PERCENT] = "DEF%",
 	[ELEMENTAL_MASTERY] = "Elemental Mastery",
 	[ENERGY_RECHARGE] = "Energy Recharge",
+	[CRIT_RATE] = "CRIT Rate",
+	[CRIT_DAMAGE] = "CRIT DMG",
 	[PYRO_BONUS] = "Pyro DMG Bonus",
 	[ELECTRO_BONUS] = "Electro DMG Bonus",
 	[CRYO_BONUS] = "Cryo DMG Bonus",
@@ -46,20 +57,29 @@ char const * const stat2str[STAT_COUNT] = {
 	[GEO_BONUS] = "Geo DMG Bonus",
 	[PHYSICAL_BONUS] = "Physical DMG Bonus",
 	[HEALING_BONUS] = "Healing Bonus",
-	[CRIT_RATE] = "CRIT Rate",
-	[CRIT_DAMAGE] = "CRIT DMG",
+	[HP_BASE] = "Base HP",
+	[ATK_BASE] = "Base ATK",
+	[DEF_BASE] = "Base DEF",
+	[HP_AGGREGATE] = "HP",
+	[ATK_AGGREGATE] = "ATK",
+	[DEF_AGGREGATE] = "DEF",
+	[BONUS_DAMAGE] = "DMG Bonus",
+	[DAMAGE_MULTIPLIER] = "Base DMG Multipiler",
+	[DAMAGE_ADDITIVE] = "Additive Base DMG",
 };
 
-char const * const stat2abbr[] = {
+char const * const stat2abbr[STAT_COUNT] = {
 	[STAT_NOTHING] = "nil",
 	[HP_FLAT] = "HP",
-	[HP_PERCENT] = "HP%",
 	[ATK_FLAT] = "ATK",
-	[ATK_PERCENT] = "ATK%",
 	[DEF_FLAT] = "DEF",
+	[HP_PERCENT] = "HP%",
+	[ATK_PERCENT] = "ATK%",
 	[DEF_PERCENT] = "DEF%",
 	[ELEMENTAL_MASTERY] = "EM",
 	[ENERGY_RECHARGE] = "ER",
+	[CRIT_RATE] = "CR",
+	[CRIT_DAMAGE] = "CD",
 	[PYRO_BONUS] = "Pyr.",
 	[ELECTRO_BONUS] = "Ele.",
 	[CRYO_BONUS] = "Cry.",
@@ -69,20 +89,29 @@ char const * const stat2abbr[] = {
 	[GEO_BONUS] = "Geo.",
 	[PHYSICAL_BONUS] = "Phy.",
 	[HEALING_BONUS] = "Hea.",
-	[CRIT_RATE] = "CR",
-	[CRIT_DAMAGE] = "CD",
+	[HP_BASE] = "bHP",
+	[ATK_BASE] = "bATK",
+	[DEF_BASE] = "bDEF",
+	[HP_AGGREGATE] = "HP", // identical to HP_FLAT. change?
+	[ATK_AGGREGATE] = "ATK", // identical to ATK_FLAT. change?
+	[DEF_AGGREGATE] = "DEF", // identical to DEF_FLAT. change?
+	[BONUS_DAMAGE]= "Bon.", // this one just sucks
+	[DAMAGE_MULTIPLIER] = "mul.",
+	[DAMAGE_ADDITIVE] = "add.",
 };
 
-char const * const stat2pct[] = {
+char const * const stat2pct[STAT_COUNT] = {
 	[STAT_NOTHING] = "",
 	[HP_FLAT] = "",
-	[HP_PERCENT] = "%",
 	[ATK_FLAT] = "",
-	[ATK_PERCENT] = "%",
 	[DEF_FLAT] = "",
+	[HP_PERCENT] = "%",
+	[ATK_PERCENT] = "%",
 	[DEF_PERCENT] = "%",
 	[ELEMENTAL_MASTERY] = "",
 	[ENERGY_RECHARGE] = "%",
+	[CRIT_RATE] = "%",
+	[CRIT_DAMAGE] = "%",
 	[PYRO_BONUS] = "%",
 	[ELECTRO_BONUS] = "%",
 	[CRYO_BONUS] = "%",
@@ -92,67 +121,44 @@ char const * const stat2pct[] = {
 	[GEO_BONUS] = "%",
 	[PHYSICAL_BONUS] = "%",
 	[HEALING_BONUS] = "%",
-	[CRIT_RATE] = "%",
-	[CRIT_DAMAGE] = "%",
+	[HP_BASE] = "",
+	[ATK_BASE] = "",
+	[DEF_BASE] = "",
+	[HP_AGGREGATE] = "",
+	[ATK_AGGREGATE] = "",
+	[DEF_AGGREGATE] = "",
+	[BONUS_DAMAGE]= "%",
+	[DAMAGE_MULTIPLIER] = "%",
+	[DAMAGE_ADDITIVE] = "",
 };
  
 typedef struct stat_accumulators {
-	float hp_base;
-	float atk_base;
-	float def_base;
-	float hp;
-	float atk;
-	float def;
-	float all_bonus; // general bonus damage, all other ones stack ontop of this
-	float normal_bonus;
-	float charged_bonus;
-	float skill_bonus;
-	float burst_bonus;
-	float factor;
 	float ar[STAT_COUNT];
 } StatAccumulators;
 
+// TODO: probably delete this?
 typedef struct buff_element {
 	StatAccumulators buff;
 	char const * label;
 } BuffElement;
 
+// TODO: move this elsewehere
+void accumulator_print(StatAccumulators in)
+{
+	for (int i = 0; i < STAT_COUNT; i++) {
+		if (in.ar[i] != 0) { \
+			printf("%s - %g\n", stat2str[i], in.ar[i]); \
+		}
+	}
+}
+
 StatAccumulators accumulator_combine(StatAccumulators lhs, StatAccumulators rhs)
 {
-	lhs.hp_base += rhs.hp_base;
-	lhs.atk_base += rhs.atk_base;
-	lhs.def_base += rhs.def_base;
-	lhs.all_bonus += rhs.all_bonus;
-	lhs.normal_bonus += rhs.normal_bonus;
-	lhs.charged_bonus += rhs.charged_bonus;
-	lhs.skill_bonus += rhs.skill_bonus;
-	lhs.burst_bonus += rhs.burst_bonus;
-
-	lhs.factor *= rhs.factor;
-
-	for (int stat = 0; stat < STAT_COUNT; stat++) {
+	for (int stat = 1; stat < STAT_COUNT; stat++) {
 		lhs.ar[stat] += rhs.ar[stat];
 	}
 
 	return lhs;
-}
-
-void buff_append(BuffElement * list, size_t * len, BuffElement buff)
-{
-	if (*len >= MAX_BUFFS) return;
-	list[*len++] = buff;
-}
-
-void buff_remove(BuffElement * list, size_t * len, int idx)
-{
-	if (*len <= 0) return;
-	if (idx < 0 || idx >= *len) return;
-
-	// just shift everything over
-	for (int i = idx + 1; i < *len; i++)
-		list[i - 1] = list[i];
-
-	*len -= 1;
 }
 
 int check_ascension(int level, int ascension)
@@ -177,4 +183,5 @@ int ascension_max_level(int ascension)
 	if (ascension <= 0) return 20;
 	return (ascension + 3) * 10;
 }
+
 #endif
