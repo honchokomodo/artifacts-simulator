@@ -188,7 +188,7 @@ void toggle_switch_text(int * dest, char * maintext, char * subtext, bool * sent
 
 	//TODO: possibly make this file-scope instead of function-scope
 	
-	CLAY({
+	CLAY(CLAY_ID_LOCAL("toggle_switch_text"),{
 		// The container for the switch element
 		.layout = {
 			.layoutDirection = CLAY_TOP_TO_BOTTOM,
@@ -197,7 +197,7 @@ void toggle_switch_text(int * dest, char * maintext, char * subtext, bool * sent
 			.childGap = 12, //TODO: un-hardcode this
 		},
 	}) {
-		CLAY({
+		CLAY_AUTO_ID({
 			// text and toggle
 			.layout = {
 				.layoutDirection = CLAY_LEFT_TO_RIGHT,
@@ -210,7 +210,7 @@ void toggle_switch_text(int * dest, char * maintext, char * subtext, bool * sent
 			if (maintext != NULL) {
 				// maintext
 				text_p(ch2str(maintext));
-				CLAY({
+				CLAY_AUTO_ID({
 					// spacer
 					.layout.sizing = layoutWide,
 				}) {}
@@ -220,7 +220,7 @@ void toggle_switch_text(int * dest, char * maintext, char * subtext, bool * sent
 		}
 
 		if (subtext != NULL) {
-			text_desc(ch2str(subtext));
+			text_p(ch2str(subtext));
 		}
 	}
 }
@@ -239,7 +239,7 @@ void k_opt_list(int * dest, int k, K_Opt * opts, bool * drop, bool * sentinel)
 		return;
 	}
 
-	CLAY({ // main container config
+	CLAY(CLAY_ID_LOCAL("dropdown"),{ // main container config
 		.backgroundColor = COLOR_BG,
 		.layout = {
 			.layoutDirection = CLAY_TOP_TO_BOTTOM,
@@ -258,7 +258,7 @@ void k_opt_list(int * dest, int k, K_Opt * opts, bool * drop, bool * sentinel)
 		}
 
 		for (int i = 0; i < k; i++) {
-			CLAY({ // opt element config
+			CLAY_AUTO_ID({ // opt element config
 				.backgroundColor = interactable_color(),
 				.layout = {
 					.layoutDirection = CLAY_LEFT_TO_RIGHT,
@@ -273,7 +273,7 @@ void k_opt_list(int * dest, int k, K_Opt * opts, bool * drop, bool * sentinel)
 				}
 				if (opts[i].image != NULL) {
 					Texture2D * tex = ic_get_tex(opts[i].image);
-					CLAY({
+					CLAY_AUTO_ID({
 						.layout.sizing = {
 							.width = CLAY_SIZING_FIXED(30),
 							.height = CLAY_SIZING_FIXED(30),
@@ -308,7 +308,6 @@ void float_slider(Clay_ElementId slider_container_id, float * dest, float min, f
 
 	// ==== begin element declarations
 	Clay_ElementDeclaration slider_container_decl = {
-		.id = slider_container_id,
 		.layout = {
 			.layoutDirection = CLAY_LEFT_TO_RIGHT,
 			.sizing = {
@@ -347,10 +346,10 @@ void float_slider(Clay_ElementId slider_container_id, float * dest, float min, f
 	};
 	// ==== end element declarations
 
-	CLAY(slider_container_decl) {
+	CLAY(CLAY_ID_LOCAL("slider_container_id"),slider_container_decl) {
 		if (Clay_Hovered()) hover = true;
-		CLAY(slider_filled_decl) {
-			CLAY(slider_knob_decl) {
+		CLAY_AUTO_ID(slider_filled_decl) {
+			CLAY_AUTO_ID(slider_knob_decl) {
 				if (Clay_Hovered()) hover = true;
 			}
 		}
@@ -395,7 +394,6 @@ void int_slider(Clay_ElementId id, int * dest, int min, int max, bool * sentinel
 
 	// ==== begin element declarations
 	Clay_ElementDeclaration slider_container_decl = {
-		.id = id,
 		.layout = {
 			.layoutDirection = CLAY_LEFT_TO_RIGHT,
 			.sizing = {
@@ -434,10 +432,10 @@ void int_slider(Clay_ElementId id, int * dest, int min, int max, bool * sentinel
 	};
 	// ==== end element declarations
 
-	CLAY(slider_container_decl) {
+	CLAY(CLAY_ID_LOCAL("id"),slider_container_decl) {
 		if (Clay_Hovered()) hover = true;
-		CLAY(slider_filled_decl) {
-			CLAY(slider_knob_decl) {
+		CLAY_AUTO_ID(slider_filled_decl) {
+			CLAY_AUTO_ID(slider_knob_decl) {
 				if (Clay_Hovered()) hover = true;
 			}
 		}

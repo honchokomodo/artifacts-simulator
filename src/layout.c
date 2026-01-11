@@ -31,10 +31,10 @@ Clay_RenderCommandArray create_layout(Interface_Data *data) {
 			.backgroundColor = { 0xff, 0xff, 0xff, 0xff},
 			.cornerRadius = 32
 		}){
-			CLAY(CLAY_ID("Top_Container"), { .layout = { .sizing = {layoutWide} }}){
+			CLAY(CLAY_ID("Top_Container"), { .layout = { .sizing = layoutWide }}){
 
 			}
-			CLAY(CLAY_ID("Bottom_Container"), {.layout = { .sizing = {layoutExpand} }}){}
+			CLAY(CLAY_ID("Bottom_Container"), {.layout = { .sizing = layoutExpand }}){}
 		}
 	}
 	
