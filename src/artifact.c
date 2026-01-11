@@ -185,7 +185,8 @@ void artifact_print(Artifact in)
  */
 Artifact _artifact_fillsubstats(Artifact in)
 {
-	int substat_weights[] = {
+	int substat_weights[STAT_COUNT] = { // ensure all non-specified lookups
+					    // are properly zeroed.
 		// values obtained from wiki.
 		[HP_FLAT] = 6,
 		[ATK_FLAT] = 6,
