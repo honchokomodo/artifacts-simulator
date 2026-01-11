@@ -62,7 +62,7 @@ int main(void)
 		}
 		
 		// ============ i think we can refactor this out
-		Clay_String dropdownIds[][2] = {
+		/*Clay_String dropdownIds[][2] = {
 			{CLAY_STRING("SANDS_Button"), CLAY_STRING("SANDS_Menu")},
 			{CLAY_STRING("GOBLET_Button"), CLAY_STRING("GOBLET_Menu")},
 			{CLAY_STRING("CIRCLET_Button"), CLAY_STRING("CIRCLET_Menu")}
@@ -77,7 +77,7 @@ int main(void)
 			}else if(!Clay_PointerOver(Clay_GetElementId(dropdownIds[i][0])) && IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
 				uiData.state[i] = false;
 			}
-		}
+		}*/
 		// ============
 
 		Clay_SetDebugModeEnabled(uiData.showDebug);

@@ -27,29 +27,32 @@ typedef struct {
 	// and artifact sets plus other useful values
 } Interface_Data;
 
+Interface_Data uiData_Initialize() {
+	Interface_Data data = {0};
+	return data;
+}
+
 typedef struct k_opt_opt {
 	int value;
 	char * label;
 	char * image;
 } K_Opt;
 
-Interface_Data uiData_Initialize() {
-	Interface_Data data = {0};
-	return data;
-}
-
-// TODO perhaps use different font ids for text formatting
-// like boldface, italic, etc?
 const int FONT_ID_HONCHOKOMONO = 0;
+const int FONT_ID_HONCHOKOMONO_ITALIC = 1;
+const int FONT_ID_HONCHOKOMONO_LIGHT = 2;
+const int FONT_ID_HONCHOKOMONO_LIGHT_ITALIC = 3;
+const int FONT_ID_HONCHOKOMONO_BOLD = 4;
+const int FONT_ID_HONCHOKOMONO_BOLD_ITALIC = 5;
+
+Clay_Color COLOR_TEXT = { 0x00, 0x00, 0x00, 0xff };
+Clay_Color COLOR_BG = {0xe6, 0xf8, 0xbd, 255};
+Clay_Color COLOR_BG_ALT = {0xff, 0xff, 0xff, 0xff}; //primary
+Clay_Color COLOR_BORDER = {0x4a, 0xb6, 0x80, 0xff};   // primary
+Clay_Color COLOR_BORDER_SECONDARY = {0xbf, 0xe4, 0xc5, 0xff};  // secondary
+Clay_Color COLOR_BUTTON = {0x8f, 0xe4, 0xc5, 0xff};
 
 uint32_t active_element = 0;
-
-Clay_Color COLOR_TEXT = { 0xff, 0xff, 0xff, 0xff };
-Clay_Color COLOR_BG = {63, 63, 87, 255};
-Clay_Color COLOR_BG_ALT = {46, 46, 78, 255}; //primary
-Clay_Color COLOR_BORDER = {215, 182, 91, 255};   // accent
-Clay_Color COLOR_BORDER_ACCENT = {255, 190, 2, 255}; 
-Clay_Color COLOR_BUTTON = {238, 185, 36, 255}; // button-primary
 
 Clay_Sizing layoutExpand = {
 	.width = CLAY_SIZING_GROW(0),
@@ -98,37 +101,6 @@ Clay_Color interactable_color(void)
 	return hover;
 }
 
-void text_large(Clay_String text)
-{
-	CLAY_TEXT(text,
-		CLAY_TEXT_CONFIG({
-			.fontId = FONT_ID_HONCHOKOMONO,
-			.fontSize = 24,
-			.textColor = COLOR_TEXT,
-		})
-	);
-}
-
-void text_sub_heading(Clay_String text){
-	CLAY_TEXT(text,
-		CLAY_TEXT_CONFIG({
-			.fontId = FONT_ID_HONCHOKOMONO,
-			.fontSize = 22,
-			.textColor = COLOR_TEXT,
-		})
-	);
-}
-
-void text_sub_heading1(Clay_String text){
-	CLAY_TEXT(text,
-		CLAY_TEXT_CONFIG({
-			.fontId = FONT_ID_HONCHOKOMONO,
-			.fontSize = 20,
-			.textColor = COLOR_TEXT,
-		})
-	);
-}
-
 void text_p(Clay_String text){
 	CLAY_TEXT(text,
 		CLAY_TEXT_CONFIG({
@@ -137,94 +109,6 @@ void text_p(Clay_String text){
 			.textColor = COLOR_TEXT,
 		})
 	);
-}
-
-void text_desc(Clay_String text){
-	CLAY_TEXT(text,
-		CLAY_TEXT_CONFIG({
-			.fontId = FONT_ID_HONCHOKOMONO,
-			.fontSize = 15, 
-			.textColor = COLOR_TEXT,
-			.textAlignment = CLAY_TEXT_ALIGN_LEFT,
-		})
-	);
-}
-
-static void dropdown_menu(Clay_ElementId menu_id, Clay_String items_text[], size_t items_text_len){
-
-	CLAY({
-		.id = menu_id,
-		.floating = {
-			.attachTo = CLAY_ATTACH_TO_PARENT,
-			.attachPoints = {
-				.parent = CLAY_ATTACH_POINT_CENTER_BOTTOM,
-				.element = CLAY_ATTACH_POINT_CENTER_TOP
-			},
-		}
-	}){
-		CLAY({
-			.layout = {
-				.layoutDirection = CLAY_TOP_TO_BOTTOM,
-				.sizing.width = CLAY_SIZING_FIXED(135),
-			},
-			.cornerRadius = CLAY_CORNER_RADIUS(8)
-		}) {
-			for(int i=0; i < items_text_len; i++ ){
-
-				Clay_CornerRadius cornerRadius;
-				Clay_Color bg_color;
-		
-				if (i == 0) {
-					cornerRadius = (Clay_CornerRadius){4, 4, 0, 0};
-				} else if (i == items_text_len - 1) {
-					cornerRadius = (Clay_CornerRadius){0, 0, 4, 4};
-				} else {
-					cornerRadius = (Clay_CornerRadius){0, 0, 0, 0};
-				}
-
-				if ( !(i % 2) ) { 
-					bg_color = (Clay_Color) { 0xf8, 0xf8, 0xd4, 0xff };
-				} else {
-					bg_color = (Clay_Color) { 0xd2, 0xb2, 0x78, 0xff };
-				}
-	
-				CLAY({
-					.id = CLAY_SIDI(menu_id.stringId, i),
-					.layout = {
-						.padding = {4,4,2,2},
-						.sizing = {
-							.width = CLAY_SIZING_PERCENT(1)
-						}
-					},
-					.backgroundColor = bg_color,
-				}){
-					COLOR_TEXT = (Clay_Color) { 0x16, 0x15, 0x29, 0xff };
-					text_p(items_text[i]);
-					COLOR_TEXT = (Clay_Color) { 0xff, 0xff, 0xff, 0xff };
-				}
-			}
-		}
-	}
-
-}
-
-void dropdown_button(Clay_ElementId id, Clay_ElementId menu_id, Clay_String button_text, Clay_String items_text[], size_t items_text_len, bool state){
-
-		CLAY({
-			.id = id,
-			.layout = {
-				.padding = {4,4,4,4},
-			},
-			.backgroundColor = COLOR_BUTTON,
-			.cornerRadius = CLAY_CORNER_RADIUS(8),
-		}){
-			text_p(button_text);
-
-			if(state){
-				dropdown_menu(menu_id, items_text, items_text_len);	
-			}
-		}
-
 }
 
 void easy_button(int * dest, int value, bool * sentinel)
@@ -267,7 +151,7 @@ void toggle_switch(int * dest, bool * sentinel)
 		.y = CLAY_ALIGN_Y_CENTER,
 	};
 
-	CLAY({
+	CLAY(CLAY_ID_LOCAL("toggle_switch"),{
 		.backgroundColor = toggleColor,
 		.layout = {
 			// TODO: un-hardcode these
@@ -281,7 +165,7 @@ void toggle_switch(int * dest, bool * sentinel)
 		// turn the switch into a clickable button
 		easy_button(dest, !*dest, sentinel);
 
-		CLAY({
+		CLAY_AUTO_ID({
 			// TODO: un-hardcode these
 			.backgroundColor = COLOR_BUTTON,
 			.layout.sizing = {
@@ -341,6 +225,7 @@ void toggle_switch_text(int * dest, char * maintext, char * subtext, bool * sent
 	}
 }
 
+// this is a dropdown
 void k_opt_list(int * dest, int k, K_Opt * opts, bool * drop, bool * sentinel)
 {
 	bool just_dropped = 0;
