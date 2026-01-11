@@ -9,112 +9,63 @@ typedef struct scenario {
 	CharacterStats character;
 	Weapon weapon;
 	ArtifactLoadout loadout;
+	StatAccumulators buffs;
 
 	StatAccumulators accumulators;
-	BuffElement active_set_bonuses[3];
-
-	size_t buffs_len;
-	BuffElement buffs[MAX_BUFFS];
+	CritMode crit;
 } Scenario;
 
-StatAccumulators aggregate_stats(Scenario in, BuffElement * set_bonus_log)
+StatAccumulators acc_character_stats(StatAccumulators in,
+		CharacterStats character)
 {
-	// step 1: prepare accumulators
-	StatAccumulators sto = in.character.stats;
+	return accumulator_combine(in, character.stats);
+}
 
-	typedef struct set_entry {
-		ArtifactSet set;
-		int count;
-	} Entry;
-	Entry setcounters[5] = {0};
+StatAccumulators acc_weapon_stats(StatAccumulators in, Weapon weapon)
+{
+	in.ar[ATK_BASE] += weapon.atk;
+	in.ar[weapon.bonus.type] += weapon.bonus.value;
 
-	// step 2: aggregate artifact stats and sets into accumulator
-#define AGGREGATE_ARTIFACT_STATS(arti) \
-	do { \
-		sto.ar[arti.mainstat.type] += arti.mainstat.value; \
-		for (int line = 0; line < 4; line++) { \
-			Affix substat = arti.substat[line]; \
-			sto.ar[substat.type] += substat.value; \
-		} \
-		if (arti.set == SET_NOTHING) continue; \
-		for (int i = 0; i < 5; i++) { \
-			if (setcounters[i].set == SET_NOTHING) { \
-				setcounters[i].set = arti.set; \
-			} \
-			if (setcounters[i].set == arti.set) { \
-				setcounters[i].count += 1; \
-				break; \
-			} \
-		} \
-	} while (0)
+	return in;
+}
 
-	AGGREGATE_ARTIFACT_STATS(in.loadout.flower);
-	AGGREGATE_ARTIFACT_STATS(in.loadout.feather);
-	AGGREGATE_ARTIFACT_STATS(in.loadout.sands);
-	AGGREGATE_ARTIFACT_STATS(in.loadout.goblet);
-	AGGREGATE_ARTIFACT_STATS(in.loadout.circlet);
-
-#undef AGGREGATE_ARTIFACT_STATS
-	
-	// step 3: handle weapon stats
-	sto.atk_base += in.weapon.atk;
-	sto.ar[in.weapon.bonus.type] += in.weapon.bonus.value;
-
-	// step 4: handle artifact set bonuses
-	if (set_bonus_log != NULL) {
-		set_bonus_log[0] = (BuffElement) {0};
-		set_bonus_log[1] = (BuffElement) {0};
-		set_bonus_log[2] = (BuffElement) {0};
+StatAccumulators acc_artifact_stats(StatAccumulators in, Artifact artifact)
+{
+	in.ar[artifact.mainstat.type] += artifact.mainstat.value;
+	for (int line = 0; line < artifact.num_substats; line++) {
+		Affix substat = artifact.substat[line];
+		in.ar[substat.type] += substat.value;
 	}
 
-	int n_active = 0;
-	for (int i = 0; i < 5; i++) {
-		SetBonusArgs set_bonus_args = {
-			.set = setcounters[i].set,
-			.num_pieces = setcounters[i].count,
-		};
+	return in;
+}
 
-		BuffElement bonus = artifact_set_bonus(set_bonus_args);
-		if (bonus.label == NULL) continue;
+StatAccumulators compute_base_stats(StatAccumulators in)
+{
+	float hp_fac = 1 + in.ar[HP_PERCENT] / 100;
+	float atk_fac = 1 + in.ar[ATK_PERCENT] / 100;
+	float def_fac = 1 + in.ar[DEF_PERCENT] / 100;
 
-		sto = accumulator_combine(sto, bonus.buff);
+	in.ar[HP_AGGREGATE] = in.ar[HP_BASE] * hp_fac + in.ar[HP_FLAT];
+	in.ar[ATK_AGGREGATE] = in.ar[ATK_BASE] * atk_fac + in.ar[ATK_FLAT];
+	in.ar[DEF_AGGREGATE] = in.ar[DEF_BASE] * def_fac + in.ar[DEF_FLAT];
 
-		if (set_bonus_log == NULL) continue;
-		set_bonus_log[n_active++] = bonus;
-	}
+	return in;
+}
 
-	/*
-	// ======== TODO make buff handling less bad
-	// step 5: handle weapon passives
-	WeaponPassiveArgs weapon_passive_args = {
-		.weapon = in.weapon,
-		.accumulators = &sto,
-	};
-	weapon_passive(weapon_passive_args);
-	
-	// step 6: handle character passives and constellations
-	CharacterTalentArgs character_talent_args = {
-		.character = in.character,
-		.accumulators = &sto,
-	};
+StatAccumulators aggregate_stats(Scenario in)
+{
+	StatAccumulators sto = {0};
 
-	character_talents(character_talent_args);
-	// ========
-	*/
-
-	// step 4: handle buffs
-	for (int i = 0; i < in.buffs_len; i++) {
-		sto = accumulator_combine(sto, in.buffs[i].buff);
-	}
-
-	// step 7: combine base stats with aggregate stats and elemental bonuses
-	float hp_fac = 1 + sto.ar[HP_PERCENT] / 100;
-	float atk_fac = 1 + sto.ar[ATK_PERCENT] / 100;
-	float def_fac = 1 + sto.ar[DEF_PERCENT] / 100;
-
-	sto.hp = sto.hp_base * hp_fac + sto.ar[HP_FLAT];
-	sto.atk = sto.atk_base * atk_fac + sto.ar[ATK_FLAT];
-	sto.def = sto.def_base * def_fac + sto.ar[DEF_FLAT];
+	sto = acc_character_stats(sto, in.character);
+	sto = acc_weapon_stats(sto, in.weapon);
+	sto = acc_artifact_stats(sto, in.loadout.flower);
+	sto = acc_artifact_stats(sto, in.loadout.feather);
+	sto = acc_artifact_stats(sto, in.loadout.sands);
+	sto = acc_artifact_stats(sto, in.loadout.goblet);
+	sto = acc_artifact_stats(sto, in.loadout.circlet);
+	sto = accumulator_combine(sto, in.buffs);
+	sto = compute_base_stats(sto);
 
 	return sto;
 }
@@ -122,7 +73,7 @@ StatAccumulators aggregate_stats(Scenario in, BuffElement * set_bonus_log)
 // should match what is seen idle in-game as closely as possible.
 void scenario_print(Scenario in)
 {
-	StatAccumulators sto = aggregate_stats(in, in.active_set_bonuses);
+	StatAccumulators sto = aggregate_stats(in);
 
 #define COND_PRINT(fmt, key) \
 	do { \
@@ -131,14 +82,14 @@ void scenario_print(Scenario in)
 	} while (0)
 
 	printf("%s - lv.%d\n", character2str[in.character.type], in.character.level);
-	printf("HP - %g\n", sto.hp);
-	printf("ATK - %g\n", sto.atk);
-	printf("DEF - %g\n", sto.def);
+	COND_PRINT("HP - %g\n", HP_AGGREGATE);
+	COND_PRINT("ATK - %g\n", ATK_AGGREGATE);
+	COND_PRINT("DEF - %g\n", DEF_AGGREGATE);
 	COND_PRINT("Elemental Mastery - %g\n", ELEMENTAL_MASTERY);
-	printf("Crit RATE - %g%%\n", sto.ar[CRIT_RATE]);
-	printf("Crit DMG - %g%%\n", sto.ar[CRIT_DAMAGE]);
+	COND_PRINT("Crit RATE - %g%%\n", CRIT_RATE);
+	COND_PRINT("Crit DMG - %g%%\n", CRIT_DAMAGE);
 	COND_PRINT("Healing Bonus - %g%%\n", HEALING_BONUS);
-	printf("Energy Recharge - %g%%\n", sto.ar[ENERGY_RECHARGE]);
+	COND_PRINT("Energy Recharge - %g%%\n", ENERGY_RECHARGE);
 	COND_PRINT("Pyro DMG Bonus - %g%%\n", PYRO_BONUS);
 	COND_PRINT("Hydro DMG Bonus - %g%%\n", HYDRO_BONUS);
 	COND_PRINT("Dendro DMG Bonus - %g%%\n", DENDRO_BONUS);
@@ -162,9 +113,9 @@ void scenario_print(Scenario in)
 	printf("\n");
 	artifact_print(in.loadout.sands);
 	printf("\n");
-	artifact_print(in.loadout.circlet);
-	printf("\n");
 	artifact_print(in.loadout.goblet);
+	printf("\n");
+	artifact_print(in.loadout.circlet);
 	printf("\n");
 }
 
