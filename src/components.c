@@ -38,6 +38,23 @@ typedef struct k_opt_opt {
 	char * image;
 } K_Opt;
 
+typedef struct {
+	int centerX, centerY;
+	float radius;
+	Color start, end;
+} CircleGradient;
+
+enum CustomLayoutElementType {
+  CUSTOM_ELEMENT_TYPE_GRADIENT
+};
+
+typedef struct {
+  CustomLayoutElementType type;
+  union {
+    CircleGradient gradient;
+  } customData;
+} CustomElement;
+
 const int FONT_ID_HONCHOKOMONO = 0;
 const int FONT_ID_HONCHOKOMONO_ITALIC = 1;
 const int FONT_ID_HONCHOKOMONO_LIGHT = 2;

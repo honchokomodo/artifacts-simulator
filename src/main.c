@@ -31,9 +31,19 @@ int main(void)
 	Clay_ErrorHandler errorHandler = {HandleClayErrors};
 	Clay_Context * clayContext = Clay_Initialize(clayMemory, windowSize, errorHandler);
 
-	Font fonts[1];
+	Font fonts[6];
 	fonts[FONT_ID_HONCHOKOMONO] = LoadFontEx("resources/fonts/honchokomono-regular-normal.otf", 48, NULL, 0);
-	SetTextureFilter(fonts[FONT_ID_HONCHOKOMONO].texture, TEXTURE_FILTER_BILINEAR);
+  fonts[FONT_ID_HONCHOKOMONO_ITALIC] = LoadFontEx("resources/fonts/honchokomono-regular-italic", 48, NULL, 0);
+  fonts[FONT_ID_HONCHOKOMONO_LIGHT] = LoadFontEx("resources/fonts/honchokomono-light", 48, NULL, 0); 
+  fonts[FONT_ID_HONCHOKOMONO_LIGHT_ITALIC] = LoadFontEx("resources/fonts/honchokomono-light-italic", 48, NULL, 0);
+  fonts[FONT_ID_HONCHOKOMONO_BOLD] = LoadFontEx("resources/fonts/honchokomono-bold", 48, NULL, 0);
+  fonts[FONT_ID_HONCHOKOMONO_BOLD_ITALIC] = LoadFontEx("resources/fonts/honchokomono-bold-italic", 48, NULL, 0);
+	SetTextureFilter(fonts[FONT_ID_HONCHOKOMONO].texture, TEXTURE_FILTER_BILINEAR); 
+  SetTextureFilter(fonts[FONT_ID_HONCHOKOMONO_ITALIC].texture, TEXTURE_FILTER_BILINEAR); 
+  SetTextureFilter(fonts[FONT_ID_HONCHOKOMONO_LIGHT].texture, TEXTURE_FILTER_BILINEAR); 
+  SetTextureFilter(fonts[FONT_ID_HONCHOKOMONO_LIGHT_ITALIC].texture, TEXTURE_FILTER_BILINEAR); 
+  SetTextureFilter(fonts[FONT_ID_HONCHOKOMONO_BOLD].texture, TEXTURE_FILTER_BILINEAR);
+  SetTextureFilter(fonts[FONT_ID_HONCHOKOMONO_BOLD_ITALIC].texture, TEXTURE_FILTER_BILINEAR);
 	Clay_SetMeasureTextFunction(Raylib_MeasureText, fonts);  
 
 	ic_initcache(599, 1024);
@@ -61,25 +71,6 @@ int main(void)
 			uiData.showDebug = !uiData.showDebug;
 		}
 		
-		// ============ i think we can refactor this out
-		/*Clay_String dropdownIds[][2] = {
-			{CLAY_STRING("SANDS_Button"), CLAY_STRING("SANDS_Menu")},
-			{CLAY_STRING("GOBLET_Button"), CLAY_STRING("GOBLET_Menu")},
-			{CLAY_STRING("CIRCLET_Button"), CLAY_STRING("CIRCLET_Menu")}
-		};
-		size_t dropdownIdsLens = sizeof(dropdownIds) / sizeof(dropdownIds[0]);
-
-		for(int i = 0; i<dropdownIdsLens; i++){
-			if(Clay_PointerOver(Clay_GetElementId(dropdownIds[i][0])) && IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
-				uiData.state[i] = 
-				(Clay_PointerOver(Clay_GetElementId(dropdownIds[i][0])))
-				|| Clay_PointerOver(Clay_GetElementId(dropdownIds[i][1]));
-			}else if(!Clay_PointerOver(Clay_GetElementId(dropdownIds[i][0])) && IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
-				uiData.state[i] = false;
-			}
-		}*/
-		// ============
-
 		Clay_SetDebugModeEnabled(uiData.showDebug);
 		Clay_SetLayoutDimensions(uiData.windowSize);
 
