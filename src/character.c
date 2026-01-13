@@ -23,39 +23,6 @@ typedef struct character_stats {
 	StatAccumulators stats;
 } CharacterStats;
 
-typedef enum crit_mode {
-	OFF_CRIT,
-	ON_CRIT,
-	MEAN_CRIT,
-} CritMode;
-
-typedef struct character_attack_args {
-	CharacterStats character;
-	// for aggregating stats without touching character base stats
-	StatAccumulators stats;
-	// Enemy enemy
-	CritMode crit;
-	// ReactionType reaction;
-} CharacterAttackArgs;
-
-typedef struct character_talent_args {
-	CharacterStats character;
-	// for aggregating stats without touching character base stats
-	StatAccumulators accumulators;
-} CharacterTalentArgs;
-
-typedef void (*CharacterTalentFunc)(CharacterTalentArgs in);
-void noop_talent_func(CharacterTalentArgs in)
-{
-	// this function is supposed to do nothing
-}
-
-typedef CharacterStats (*CharacterGeneratorFunc)(CharacterStats in);
-CharacterStats noop_character_generator_func(CharacterStats in)
-{
-	return in; // do nothing
-}
-
 CharacterStats character_base_stats(CharacterStats in, int quality, int level,
 		int ascension, float base_hp, float base_atk, float base_def,
 		float asc_hp, float asc_atk, float asc_def)
@@ -71,6 +38,7 @@ CharacterStats character_base_stats(CharacterStats in, int quality, int level,
 	};
 
 	// simplified version of the formula on the wiki
+	// TODO: update this
 	float lvlmul = ((level * 272477) + 3027523) / 3300000.0 +
 		(quality == 5) *
 		(-0.000545558586118 + 0.000443691458696 * level +
@@ -87,14 +55,6 @@ CharacterStats character_base_stats(CharacterStats in, int quality, int level,
 
 	return in;
 }
-
-#define TEMPLATE_character2talent_impl
-#include "characters/characters_list.h"
-#undef TEMPLATE_character2talent_impl
-
-#define TEMPLATE_character2generator_impl
-#include "characters/characters_list.h"
-#undef TEMPLATE_character2generator_impl
 
 char const * const character2str[] = {
 	[CHARACTER_NOTHING] = "nil character",
@@ -117,12 +77,15 @@ char const * const character2portrait[] = {
 #undef TEMPLATE_character2portrait
 };
 
-CharacterTalentFunc const character2talent[] = {
-	[CHARACTER_NOTHING] = noop_talent_func,
-#define TEMPLATE_character2talent_arr
+typedef CharacterStats (*CharacterGeneratorFunc)(CharacterStats in);
+CharacterStats noop_character_generator_func(CharacterStats in)
+{
+	return in; // do nothing
+}
+
+#define TEMPLATE_character2generator_impl
 #include "characters/characters_list.h"
-#undef TEMPLATE_character2talent_arr
-};
+#undef TEMPLATE_character2generator_impl
 
 CharacterGeneratorFunc const character2generator[] = {
 	[CHARACTER_NOTHING] = noop_character_generator_func,
@@ -137,11 +100,6 @@ CharacterGeneratorFunc const character2generator[] = {
 CharacterStats character_new(CharacterType type, CharacterStats in)
 {
 	return character2generator[type](in);
-}
-
-void character_talents(CharacterTalentArgs in)
-{
-	character2talent[in.character.type](in);
 }
 
 #endif

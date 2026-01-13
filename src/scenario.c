@@ -5,6 +5,12 @@
 #include "weapon.c"
 #include "character.c"
 
+typedef enum crit_mode {
+	OFF_CRIT,
+	ON_CRIT,
+	MEAN_CRIT,
+} CritMode;
+
 typedef struct scenario {
 	CharacterStats character;
 	Weapon weapon;

@@ -22,17 +22,6 @@ typedef struct weapon {
 	BuffElement intrinsic_buff;
 } Weapon;
 
-typedef struct weapon_passive_args {
-	Weapon weapon;
-	StatAccumulators * accumulators;
-} WeaponPassiveArgs;
-
-typedef void (*WeaponPassiveFunc)(WeaponPassiveArgs in);
-void noop_passive_func(WeaponPassiveArgs in)
-{
-	// this function is supposed to do nothing
-}
-
 typedef Weapon (*WeaponGeneratorFunc)(Weapon in);
 Weapon noop_weapon_generator_func(Weapon in)
 {
@@ -73,10 +62,6 @@ float weapon_bonus_factor(int level)
 	return 0.040383 * level + 0.959588;
 }
 
-#define TEMPLATE_weapon2passive_impl
-#include "weapons/weapons_list.h"
-#undef TEMPLATE_weapon2passive_impl
-
 #define TEMPLATE_weapon2generator_impl
 #include "weapons/weapons_list.h"
 #undef TEMPLATE_weapon2generator_impl
@@ -102,13 +87,6 @@ char const * const weapon2icon_asc[] = {
 #undef TEMPLATE_weapon2icon_asc
 };
 
-WeaponPassiveFunc const weapon2passive[] = {
-	[WEAPON_NOTHING] = noop_passive_func,
-#define TEMPLATE_weapon2passive_arr
-#include "weapons/weapons_list.h"
-#undef TEMPLATE_weapon2passive_arr
-};
-
 WeaponGeneratorFunc const weapon2generator[] = {
 	[WEAPON_NOTHING] = noop_weapon_generator_func,
 #define TEMPLATE_weapon2generator_arr
@@ -122,11 +100,6 @@ WeaponGeneratorFunc const weapon2generator[] = {
 Weapon weapon_new(WeaponType type, Weapon in)
 {
 	return weapon2generator[type](in);
-}
-
-void weapon_passive(WeaponPassiveArgs in)
-{
-	weapon2passive[in.weapon.type](in);
 }
 
 char const * weapon_icon(Weapon in)
