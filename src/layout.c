@@ -12,31 +12,19 @@ Clay_RenderCommandArray create_layout(Interface_Data *data) {
 	Texture2D * yoimiya_img_tex = ic_get_tex("resources/images/characters/yoimiya_portrait.png");
 	
 	Clay_BeginLayout();
-
-	// TODO: don't know what to do with memory allocation :(
-	size_t temp = 256;
-	la_Arena temp_arena = { .buf = malloc(temp), .bufsz = temp };
-	CustomElement *gradient = la_alloc(&temp_arena, temp_arena.bufsz);
+	
+	// TODO: gradient overrides the background color or vice versa but I want both???
+	CustomElement *gradient = la_alloc(&arena, sizeof(*gradient));
 	gradient->type = CUSTOM_ELEMENT_TYPE_GRADIENT;
-	gradient->customData.gradient = (CircleGradient) { .centerX = 100, .centerY = 100, .radius = 100, .start = {0xe6, 0xf8, 0xbd, 0xff}, .end = {0xe6, 0xf8, 0xbd, 0x00} };
+	gradient->customData.gradient = (CircleGradient) { .x1 = 950, .y1 = 100, .x2 = 100, .y2 = 668, .radius = 800, .start1 = {0xe6, 0xf8, 0xbd, 0xff}, .end1 = {0xe6, 0xf8, 0xbd, 0x00}, .start2 = {0xdb, 0xff, 0xdd, 0xff}, .end2 = {0xdb, 0xff, 0xdd, 0x00} };
 
-	//Build UI here	
-	CLAY(CLAY_ID("Background_Container"),{ .layout = { .sizing = {CLAY_SIZING_GROW(0), CLAY_SIZING_GROW(0)}, .childAlignment = {.x = CLAY_ALIGN_X_CENTER}, .padding.top = 30 }, .backgroundColor = { 0xf8, 0xff, 0xe9, 0xff }, .custom=gradient }){
-		// DrawCircleGradient(100, 100, 100, (Color) {0xe6, 0xf8, 0xbd, 0xff}, (Color) {0xe6, 0xf8, 0xbd, 0x00});  
-		CLAY(CLAY_ID("Main_Content_Container"),
-		{
-			.layout = { 
-				.sizing = {CLAY_SIZING_PERCENT(0.75), CLAY_SIZING_GROW(0)},
-				.layoutDirection = CLAY_TOP_TO_BOTTOM
-			}, 
-			.backgroundColor = { 0xff, 0xff, 0xff, 0xff},
-			.cornerRadius = 32,
-			.custom = gradient,
-		}){
-			CLAY(CLAY_ID("Top_Container"), { .layout = { .sizing = layoutWide }}){
-
+	//Build UI here
+	CLAY(CLAY_ID("Background_Container"), { .layout = { .sizing = layoutExpand }, .backgroundColor = {0xf8, 0xff, 0xe9, 0xff} }){
+		CLAY(CLAY_ID("Bg_Gradient"), { .layout = { .sizing = layoutExpand, .childAlignment.x = CLAY_ALIGN_X_CENTER, .padding.top = 30 }, .custom = gradient }){
+			CLAY(CLAY_ID("Main_Content_Container"), { .layout = { .sizing = {CLAY_SIZING_PERCENT(0.75), CLAY_SIZING_GROW(0)}, .layoutDirection = CLAY_TOP_TO_BOTTOM }, .backgroundColor = { 0xff, 0xff, 0xff, 0xff}, .cornerRadius = 32, }){
+				CLAY(CLAY_ID("Top_Container"), { .layout = { .sizing = layoutWide }}){}
+				CLAY(CLAY_ID("Bottom_Container"), {.layout = { .sizing = layoutExpand }}){}
 			}
-			CLAY(CLAY_ID("Bottom_Container"), {.layout = { .sizing = layoutExpand }}){}
 		}
 	}
 
@@ -52,13 +40,20 @@ Clay_RenderCommandArray create_layout(Interface_Data *data) {
 			  if(!customElement) continue;
 				switch(customElement->type) {
 					case CUSTOM_ELEMENT_TYPE_GRADIENT: {
-						CircleGradient gradientData = customElement->customData.gradient;
+						CircleGradient gradientData = customElement->customData.gradient;	
 						DrawCircleGradient(
-							gradientData.centerX, // centerX
-							gradientData.centerY, // centerY
+							gradientData.x1, // centerX
+							gradientData.y1, // centerY
 							gradientData.radius, // radius
-							gradientData.start,
-							gradientData.end
+							gradientData.start1,
+							gradientData.end1
+						);
+						DrawCircleGradient(
+							gradientData.x2, // centerX
+							gradientData.y2, // centerY
+							gradientData.radius, // radius
+							gradientData.start2,
+							gradientData.end2
 						);
 						break;
 					}
@@ -67,7 +62,5 @@ Clay_RenderCommandArray create_layout(Interface_Data *data) {
     }
   }
 	return renderCommands;
-	la_reset(&temp_arena);
-	free(temp_arena.buf);
 }
 

@@ -17,7 +17,6 @@ int main(void)
 	Clay_Raylib_Initialize(1024, 768, "Artifact Simulator", WINDOW_CONFIG_FLAGS);
 	SetTargetFPS(30);
 
-
 	uint64_t clayRequiredMemory = Clay_MinMemorySize();
 	Clay_Arena clayMemory = {
 	    .memory = malloc(clayRequiredMemory),
@@ -47,10 +46,7 @@ int main(void)
 	Clay_SetMeasureTextFunction(Raylib_MeasureText, fonts);  
 
 	ic_initcache(599, 1024);
-	la_Arena arena = {
-		.buf = malloc(16384),
-		.bufsz = 16384,
-	};
+	arena.buf = malloc(16384);
 
 	if (!_ic_table && !_ic_arr && !arena.buf)
 		exit(1);

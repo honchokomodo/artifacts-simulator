@@ -13,6 +13,11 @@
 #include "utils/linear_allocator.c"
 #include "utils/image_cache.c"
 
+la_Arena arena = {
+		.buf = NULL,
+		.bufsz = 16384,
+	};
+
 typedef struct {
 	Clay_Dimensions windowSize;
 	Vector2 mousePosition;
@@ -39,9 +44,9 @@ typedef struct k_opt_opt {
 } K_Opt;
 
 typedef struct {
-	int centerX, centerY;
+	int x1, y1, x2, y2;
 	float radius;
-	Color start, end;
+	Color start1, end1, start2, end2;
 } CircleGradient;
 
 enum CustomLayoutElementType {
