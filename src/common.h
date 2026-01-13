@@ -136,12 +136,6 @@ typedef struct stat_accumulators {
 	float ar[STAT_COUNT];
 } StatAccumulators;
 
-// TODO: probably delete this?
-typedef struct buff_element {
-	StatAccumulators buff;
-	char const * label;
-} BuffElement;
-
 // TODO: move this elsewehere
 void accumulator_print(StatAccumulators in)
 {

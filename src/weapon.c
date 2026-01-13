@@ -19,7 +19,6 @@ typedef struct weapon {
 	float atk;
 	Affix bonus;
 	int passivedata;
-	BuffElement intrinsic_buff;
 } Weapon;
 
 typedef Weapon (*WeaponGeneratorFunc)(Weapon in);

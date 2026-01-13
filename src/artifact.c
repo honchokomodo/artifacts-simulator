@@ -59,21 +59,6 @@ typedef struct artifact_loadout {
 	Artifact circlet;
 } ArtifactLoadout;
 
-typedef struct set_bonus_args {
-	ArtifactSet set;
-	int num_pieces;
-} SetBonusArgs;
-
-typedef BuffElement (*SetBonusFunc)(SetBonusArgs in);
-BuffElement noop_set_bonus_func(SetBonusArgs in)
-{
-	return (BuffElement) {0}; // return a nothing buff
-}
-
-#define TEMPLATE_set2bonus_impl
-#include "artifacts/artifacts_list.h"
-#undef TEMPLATE_set2bonus_impl
-
 char const * const set2str[] = {
 	[SET_NOTHING] = "nil set",
 #define TEMPLATE_set2str
@@ -114,13 +99,6 @@ char const * const circletpath[] = {
 #define TEMPLATE_circletpath
 #include "artifacts/artifacts_list.h"
 #undef TEMPLATE_circletpath
-};
-
-SetBonusFunc const set2bonus[] = {
-	[SET_NOTHING] = noop_set_bonus_func,
-#define TEMPLATE_set2bonus_arr
-#include "artifacts/artifacts_list.h"
-#undef TEMPLATE_set2bonus_arr
 };
 
 float const mainstat_values[][6] = {
@@ -422,12 +400,6 @@ Artifact artifact_new_strongbox(ArtifactSet set)
 {
 	Artifact arti = {.set = set};
 	return artifact_new(rand() % 3 == 0, arti);
-}
-
-// TODO: make this not suck or move it elsewehere
-BuffElement artifact_set_bonus(SetBonusArgs in)
-{
-	return set2bonus[in.set](in);
 }
 
 // TODO: make this not suck or move it elsewehere

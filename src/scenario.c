@@ -5,20 +5,11 @@
 #include "weapon.c"
 #include "character.c"
 
-typedef enum crit_mode {
-	OFF_CRIT,
-	ON_CRIT,
-	MEAN_CRIT,
-} CritMode;
-
 typedef struct scenario {
 	CharacterStats character;
 	Weapon weapon;
 	ArtifactLoadout loadout;
 	StatAccumulators buffs;
-
-	StatAccumulators accumulators;
-	CritMode crit;
 } Scenario;
 
 StatAccumulators acc_character_stats(StatAccumulators in,
@@ -76,7 +67,6 @@ StatAccumulators aggregate_stats(Scenario in)
 	return sto;
 }
 
-// should match what is seen idle in-game as closely as possible.
 void scenario_print(Scenario in)
 {
 	StatAccumulators sto = aggregate_stats(in);
@@ -124,5 +114,53 @@ void scenario_print(Scenario in)
 	artifact_print(in.loadout.circlet);
 	printf("\n");
 }
+
+typedef enum crit_type {
+	MEAN_CRIT,
+	ON_CRIT,
+	OFF_CRIT,
+} CritType;
+
+typedef struct simple_base_damage_args {
+	StatType scale_stat;
+	StatType elem_bonus;
+	CritType crit;
+} SimpleDamageArgs;
+
+float simple_base_damage(StatAccumulators sto, SimpleDamageArgs args)
+{
+	float dmg_bonus_fac = 1 + (sto.ar[BONUS_DAMAGE] + sto.ar[args.elem_bonus]) / 100;
+	float atk = sto.ar[args.scale_stat];
+	float crit_fac = 1 + sto.ar[CRIT_DAMAGE] / 100;
+	float mean_crit_fac = 1 + sto.ar[CRIT_DAMAGE] * sto.ar[CRIT_RATE] / 10000;
+
+	if (args.crit == MEAN_CRIT) return atk * dmg_bonus_fac * mean_crit_fac;
+	if (args.crit == ON_CRIT) return atk * dmg_bonus_fac * crit_fac;
+	return atk * dmg_bonus_fac;
+}
+
+float amplifying_damage(StatAccumulators sto, SimpleDamageArgs args)
+{
+	float dmg_bonus_fac = 1 + (sto.ar[BONUS_DAMAGE] + sto.ar[args.elem_bonus]) / 100;
+	float atk = sto.ar[args.scale_stat];
+	float crit_fac = 1 + sto.ar[CRIT_DAMAGE] / 100;
+	float mean_crit_fac = 1 + sto.ar[CRIT_DAMAGE] * sto.ar[CRIT_RATE] / 10000;
+	float em_bonus_fac = 1 + 2.78 * sto.ar[ELEMENTAL_MASTERY]/ (sto.ar[ELEMENTAL_MASTERY] + 1400);
+
+	if (args.crit == MEAN_CRIT) return atk * dmg_bonus_fac * mean_crit_fac * em_bonus_fac;
+	if (args.crit == ON_CRIT) return atk * dmg_bonus_fac * crit_fac* em_bonus_fac;
+	return atk * dmg_bonus_fac * em_bonus_fac;
+}
+
+/* TODO:
+ * aggravate
+ * spread
+ * 
+ * transformative reactions
+ *
+ * lunar-charged
+ * lunar-charged direct
+ * lunar-bloom
+ */
 
 #endif
