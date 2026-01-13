@@ -30,19 +30,9 @@ int main(void)
 	Clay_ErrorHandler errorHandler = {HandleClayErrors};
 	Clay_Context * clayContext = Clay_Initialize(clayMemory, windowSize, errorHandler);
 
-	Font fonts[6];
+	Font fonts[1];
 	fonts[FONT_ID_HONCHOKOMONO] = LoadFontEx("resources/fonts/honchokomono-regular-normal.otf", 48, NULL, 0);
-  fonts[FONT_ID_HONCHOKOMONO_ITALIC] = LoadFontEx("resources/fonts/honchokomono-regular-italic", 48, NULL, 0);
-  fonts[FONT_ID_HONCHOKOMONO_LIGHT] = LoadFontEx("resources/fonts/honchokomono-light", 48, NULL, 0); 
-  fonts[FONT_ID_HONCHOKOMONO_LIGHT_ITALIC] = LoadFontEx("resources/fonts/honchokomono-light-italic", 48, NULL, 0);
-  fonts[FONT_ID_HONCHOKOMONO_BOLD] = LoadFontEx("resources/fonts/honchokomono-bold", 48, NULL, 0);
-  fonts[FONT_ID_HONCHOKOMONO_BOLD_ITALIC] = LoadFontEx("resources/fonts/honchokomono-bold-italic", 48, NULL, 0);
 	SetTextureFilter(fonts[FONT_ID_HONCHOKOMONO].texture, TEXTURE_FILTER_BILINEAR); 
-  SetTextureFilter(fonts[FONT_ID_HONCHOKOMONO_ITALIC].texture, TEXTURE_FILTER_BILINEAR); 
-  SetTextureFilter(fonts[FONT_ID_HONCHOKOMONO_LIGHT].texture, TEXTURE_FILTER_BILINEAR); 
-  SetTextureFilter(fonts[FONT_ID_HONCHOKOMONO_LIGHT_ITALIC].texture, TEXTURE_FILTER_BILINEAR); 
-  SetTextureFilter(fonts[FONT_ID_HONCHOKOMONO_BOLD].texture, TEXTURE_FILTER_BILINEAR);
-  SetTextureFilter(fonts[FONT_ID_HONCHOKOMONO_BOLD_ITALIC].texture, TEXTURE_FILTER_BILINEAR);
 	Clay_SetMeasureTextFunction(Raylib_MeasureText, fonts);  
 
 	ic_initcache(599, 1024);

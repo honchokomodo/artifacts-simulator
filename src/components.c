@@ -44,7 +44,6 @@ typedef struct k_opt_opt {
 } K_Opt;
 
 typedef struct {
-	int x1, y1, x2, y2;
 	float radius;
 	Color start1, end1, start2, end2;
 } CircleGradient;
@@ -61,16 +60,11 @@ typedef struct {
 } CustomElement;
 
 const int FONT_ID_HONCHOKOMONO = 0;
-const int FONT_ID_HONCHOKOMONO_ITALIC = 1;
-const int FONT_ID_HONCHOKOMONO_LIGHT = 2;
-const int FONT_ID_HONCHOKOMONO_LIGHT_ITALIC = 3;
-const int FONT_ID_HONCHOKOMONO_BOLD = 4;
-const int FONT_ID_HONCHOKOMONO_BOLD_ITALIC = 5;
 
 Clay_Color COLOR_TEXT = { 0x00, 0x00, 0x00, 0xff };
 Clay_Color COLOR_BG = {0xe6, 0xf8, 0xbd, 255};
 Clay_Color COLOR_BG_ALT = {0xff, 0xff, 0xff, 0xff}; //primary
-Clay_Color COLOR_BORDER = {0x4a, 0xb6, 0x80, 0xff};   // primary
+Clay_Color COLOR_BORDER = {0x4a, 0xb6, 0x80, 0xff};   // primary (brighter)
 Clay_Color COLOR_BORDER_SECONDARY = {0xbf, 0xe4, 0xc5, 0xff};  // secondary
 Clay_Color COLOR_BUTTON = {0x8f, 0xe4, 0xc5, 0xff};
 
