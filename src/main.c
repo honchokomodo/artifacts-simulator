@@ -42,6 +42,9 @@ int main(void)
 		exit(1);
 
 	Interface_Data uiData = uiData_Initialize();
+
+	state = 0;
+	sentinel = 0;
     
 	while(!WindowShouldClose())
 	{

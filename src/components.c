@@ -6,6 +6,7 @@
 #include <clay.h>
 #include "clay_renderer_raylib.c"
 #include <raylib.h>
+#include <raymath.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <string.h>
@@ -25,11 +26,6 @@ typedef struct {
 	bool isLeftMouseDown;
 	float frameTime;
 	bool showDebug;
-	bool state[3]; // this doesn't feel right
-         // we should find a way to remove the bools array
-         // but if we find that we have to keep them its fine
-	// we will need more stuff here later like character builds
-	// and artifact sets plus other useful values
 } Interface_Data;
 
 Interface_Data uiData_Initialize() {
@@ -59,6 +55,9 @@ typedef struct {
   } customData;
 } CustomElement;
 
+int state;
+bool sentinel;
+
 const int FONT_ID_HONCHOKOMONO = 0;
 
 Clay_Color COLOR_TEXT = { 0x00, 0x00, 0x00, 0xff };
@@ -78,6 +77,11 @@ Clay_Sizing layoutExpand = {
 Clay_Sizing layoutWide = {
 	.width = CLAY_SIZING_GROW(0),
 };
+
+Clay_Sizing layoutPercentHoriz(float percent_x)
+{
+	return (Clay_Sizing) { .width = CLAY_SIZING_PERCENT(percent_x), .height = CLAY_SIZING_GROW(0) };
+}
 
 Clay_String ch2str(char const * const s)
 {
@@ -126,6 +130,7 @@ void text_p(Clay_String text){
 		})
 	);
 }
+
 
 void easy_button(int * dest, int value, bool * sentinel)
 {
@@ -479,5 +484,16 @@ void int_slider(Clay_ElementId id, int * dest, int min, int max, bool * sentinel
 		if (sentinel) *sentinel = true;
 	}
 }
+
+/* TODO: 
+ * [] draw outer circle with color border + empty backgroundColor
+ * [] draw smaller solid circle with colored background 
+ * [] pass image through another clay macro with clipping property
+ */	
+// aesthetic repeatable blocks
+/*void circle_img_thumbnail(Texture2D* img, int radius)
+{
+	CLAY(CLAY_ID_LOCAL("circ_img_thumbnail"), {.layout = }){}
+}*/
 
 #endif
