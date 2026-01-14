@@ -123,6 +123,7 @@ typedef enum crit_type {
 
 typedef struct simple_base_damage_args {
 	StatType scale_stat;
+	float scale_factor;
 	StatType elem_bonus;
 	CritType crit;
 } SimpleDamageArgs;
@@ -130,34 +131,50 @@ typedef struct simple_base_damage_args {
 float simple_base_damage(StatAccumulators sto, SimpleDamageArgs args)
 {
 	float dmg_bonus_fac = 1 + (sto.ar[BONUS_DAMAGE] + sto.ar[args.elem_bonus]) / 100;
-	float atk = sto.ar[args.scale_stat];
+	float base_dmg = sto.ar[args.scale_stat] * args.scale_factor;
 	float crit_fac = 1 + sto.ar[CRIT_DAMAGE] / 100;
 	float mean_crit_fac = 1 + sto.ar[CRIT_DAMAGE] * sto.ar[CRIT_RATE] / 10000;
 
-	if (args.crit == MEAN_CRIT) return atk * dmg_bonus_fac * mean_crit_fac;
-	if (args.crit == ON_CRIT) return atk * dmg_bonus_fac * crit_fac;
-	return atk * dmg_bonus_fac;
+	if (args.crit == MEAN_CRIT) {
+		return base_dmg * dmg_bonus_fac * mean_crit_fac;
+	} else if (args.crit == ON_CRIT) {
+		return base_dmg * dmg_bonus_fac * crit_fac;
+	}
+
+	return base_dmg * dmg_bonus_fac;
 }
 
 float amplifying_damage(StatAccumulators sto, SimpleDamageArgs args)
 {
 	float dmg_bonus_fac = 1 + (sto.ar[BONUS_DAMAGE] + sto.ar[args.elem_bonus]) / 100;
-	float atk = sto.ar[args.scale_stat];
+	float base_dmg = sto.ar[args.scale_stat] * args.scale_factor;
 	float crit_fac = 1 + sto.ar[CRIT_DAMAGE] / 100;
 	float mean_crit_fac = 1 + sto.ar[CRIT_DAMAGE] * sto.ar[CRIT_RATE] / 10000;
 	float em_bonus_fac = 1 + 2.78 * sto.ar[ELEMENTAL_MASTERY]/ (sto.ar[ELEMENTAL_MASTERY] + 1400);
+	//TODO: include reaction bonus
 
-	if (args.crit == MEAN_CRIT) return atk * dmg_bonus_fac * mean_crit_fac * em_bonus_fac;
-	if (args.crit == ON_CRIT) return atk * dmg_bonus_fac * crit_fac* em_bonus_fac;
-	return atk * dmg_bonus_fac * em_bonus_fac;
+	if (args.crit == MEAN_CRIT) {
+		return base_dmg * dmg_bonus_fac * mean_crit_fac * em_bonus_fac;
+	} else if (args.crit == ON_CRIT) {
+		return base_dmg * dmg_bonus_fac * crit_fac * em_bonus_fac;
+	}
+
+	return base_dmg * dmg_bonus_fac * em_bonus_fac;
+}
+
+/* TODO: transformative reactions
+ * requires:
+ * elemental mastery
+ * reaction bonus
+ */
+float transformative_damage(StatAccumulators sto)
+{
 }
 
 /* TODO:
  * aggravate
  * spread
  * 
- * transformative reactions
- *
  * lunar-charged
  * lunar-charged direct
  * lunar-bloom
