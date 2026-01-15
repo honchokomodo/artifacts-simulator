@@ -5,11 +5,18 @@
 #include "weapon.c"
 #include "character.c"
 
+typedef enum crit_type {
+	MEAN_CRIT,
+	ON_CRIT,
+	OFF_CRIT,
+} CritType;
+
 typedef struct scenario {
 	CharacterStats character;
 	Weapon weapon;
 	ArtifactLoadout loadout;
 	StatAccumulators buffs;
+	CritType crit;
 } Scenario;
 
 StatAccumulators acc_character_stats(StatAccumulators in,
@@ -115,21 +122,18 @@ void scenario_print(Scenario in)
 	printf("\n");
 }
 
-typedef enum crit_type {
-	MEAN_CRIT,
-	ON_CRIT,
-	OFF_CRIT,
-} CritType;
-
 typedef struct simple_base_damage_args {
 	StatType scale_stat;
 	float scale_factor;
 	StatType elem_bonus;
-	CritType crit;
 } SimpleDamageArgs;
 
-float simple_base_damage(StatAccumulators sto, SimpleDamageArgs args)
+// no elemental reaction
+float simple_base_damage(Scenario in, void * vargs)
 {
+	SimpleDamageArgs args = *(SimpleDamageArgs *) vargs;
+	StatAccumulators sto = aggregate_stats(in);
+
 	float dmg_bonus_fac = 1 + (sto.ar[BONUS_DAMAGE] + sto.ar[args.elem_bonus]) / 100;
 	float base_dmg = sto.ar[args.scale_stat] * args.scale_factor;
 	float crit_fac = 1 + sto.ar[CRIT_DAMAGE] / 100;
@@ -144,37 +148,60 @@ float simple_base_damage(StatAccumulators sto, SimpleDamageArgs args)
 	return base_dmg * dmg_bonus_fac;
 }
 
-float amplifying_damage(StatAccumulators sto, SimpleDamageArgs args)
+float amplifying_damage(Scenario in, void * vargs)
 {
+	SimpleDamageArgs args = *(SimpleDamageArgs *) vargs;
+	StatAccumulators sto = aggregate_stats(in);
+
+	float base_dmg = simple_base_damage(sto, args);
+	float amplifying_bonus_fac = 1 + 2.78 * sto.ar[ELEMENTAL_MASTERY]/ (sto.ar[ELEMENTAL_MASTERY] + 1400);
+	//TODO: include reaction bonus
+
+	return base_dmg * amplifying_bonus_fac;
+}
+
+float transformative_damage(Scenario in, void * unused)
+{
+	StatAccumulators sto = aggregate_stats(in);
+
+	// reaction_mult * lvl_mult * (1 + em_bonus + reaction_bonus) + additive_bonus
+	// this would be SO MUCH EASIER if the additive bonus wasn't here
+
+	float em_bonus = 16 * sto.ar[ELEMENTAL_MASTERY] / (sto.ar[ELEMENTAL_MASTERY] + 2000);
+	return em_bonus; // i give up
+}
+
+float catalyze_damage(Scenario in, void * vargs)
+{
+	SimpleDamageArgs args = *(SimpleDamageArgs *) vargs;
+	StatAccumulators sto = aggregate_stats(in);
+
 	float dmg_bonus_fac = 1 + (sto.ar[BONUS_DAMAGE] + sto.ar[args.elem_bonus]) / 100;
 	float base_dmg = sto.ar[args.scale_stat] * args.scale_factor;
 	float crit_fac = 1 + sto.ar[CRIT_DAMAGE] / 100;
 	float mean_crit_fac = 1 + sto.ar[CRIT_DAMAGE] * sto.ar[CRIT_RATE] / 10000;
-	float em_bonus_fac = 1 + 2.78 * sto.ar[ELEMENTAL_MASTERY]/ (sto.ar[ELEMENTAL_MASTERY] + 1400);
-	//TODO: include reaction bonus
 
-	if (args.crit == MEAN_CRIT) {
-		return base_dmg * dmg_bonus_fac * mean_crit_fac * em_bonus_fac;
-	} else if (args.crit == ON_CRIT) {
-		return base_dmg * dmg_bonus_fac * crit_fac * em_bonus_fac;
+	float reaction_mult = 0;
+	if (args.elem_bonus == ELECTRO_BONUS) {
+		reaction_mult = 1.15;
+	} else if (args.elem_bonus == DENDRO_BONUS) {
+		reaction_mult = 1.25;
 	}
 
-	return base_dmg * dmg_bonus_fac * em_bonus_fac;
-}
+	float em_bonus = 5 * sto.ar[ELEMENTAL_MASTERY] / (sto.ar[ELEMENTAL_MASTERY] + 1200);
+	float additive_bonus = reaction_mult * ch_lvl_mult * (1 + em_bonus);
+	base_dmg += additive_bonus;
 
-/* TODO: transformative reactions
- * requires:
- * elemental mastery
- * reaction bonus
- */
-float transformative_damage(StatAccumulators sto)
-{
+	if (args.crit == MEAN_CRIT) {
+		return base_dmg * dmg_bonus_fac * mean_crit_fac;
+	} else if (args.crit == ON_CRIT) {
+		return base_dmg * dmg_bonus_fac * crit_fac;
+	}
+
+	return base_dmg * dmg_bonus_fac;
 }
 
 /* TODO:
- * aggravate
- * spread
- * 
  * lunar-charged
  * lunar-charged direct
  * lunar-bloom
